@@ -6,7 +6,7 @@
 //   By: ngoguey <ngoguey@student.42.fr>            +#+  +:+       +#+        //
 //                                                +#+#+#+#+#+   +#+           //
 //   Created: 2015/12/08 19:29:27 by ngoguey           #+#    #+#             //
-//   Updated: 2015/12/08 19:34:40 by ngoguey          ###   ########.fr       //
+//   Updated: 2015/12/08 20:27:39 by ngoguey          ###   ########.fr       //
 //                                                                            //
 // ************************************************************************** //
 
@@ -48,15 +48,15 @@ template <>			struct operand_enum<double>
 // IOperand.hpp
 class IOperand {
 public:
-	// virtual int getPrecision( void ) const = 0; // Precision of the type of the instance
-	virtual eOperandType getType( void ) const = 0;
-	virtual IOperand const * operator+( IOperand const & rhs ) const = 0;
-	virtual IOperand const * operator-( IOperand const & rhs ) const = 0;
-	virtual IOperand const * operator*( IOperand const & rhs ) const = 0;
-	virtual IOperand const * operator/( IOperand const & rhs ) const = 0;
-	virtual IOperand const * operator%( IOperand const & rhs ) const = 0;
-	virtual std::string const & toString( void ) const = 0;
-	virtual ~IOperand( void ) {}
+	// virtual int getPrecision(void) const = 0; // Precision of the type of the instance
+	virtual eOperandType		getType(void) const = 0;
+	virtual IOperand const		*operator+(IOperand const &rhs) const = 0;
+	virtual IOperand const		*operator-(IOperand const &rhs) const = 0;
+	virtual IOperand const		*operator*(IOperand const &rhs) const = 0;
+	virtual IOperand const		*operator/(IOperand const &rhs) const = 0;
+	virtual IOperand const		*operator%(IOperand const &rhs) const = 0;
+	virtual std::string const	&toString(void) const = 0;
+	virtual ~IOperand(void) {}
 };
 
 
@@ -68,18 +68,19 @@ class Operand;
 
 class OpFactory
 {
-	typedef IOperand const *(OpFactory::*fun_t)( std::string const & value ) const;
+	typedef IOperand const *(OpFactory::*fun_t)(std::string const &value) const;
 
-	IOperand const * createInt8( std::string const & value ) const;
-	IOperand const * createInt16( std::string const & value ) const;
-	IOperand const * createInt32( std::string const & value ) const;
-	IOperand const * createFloat( std::string const & value ) const;
-	IOperand const * createDouble( std::string const & value ) const;
+	IOperand const 		*createInt8(std::string const &value) const;
+	IOperand const 		*createInt16(std::string const &value) const;
+	IOperand const 		*createInt32(std::string const &value) const;
+	IOperand const 		*createFloat(std::string const &value) const;
+	IOperand const 		*createDouble(std::string const &value) const;
 
-	static fun_t const		funs[5];
+	static fun_t const	funs[5];
 
 public:
-	IOperand const * createOperand( eOperandType type, std::string const & value ) const;
+	IOperand const		*createOperand(
+		eOperandType type, std::string const &value) const;
 
 };
 
@@ -89,17 +90,7 @@ public:
 template <class T>
 class Evalexpr
 {
-public:
-	enum eOperation
-	{
-		Add = 0,
-		Sub,
-		Div,
-		Mul,
-		Mod
-	};
 
-private:
 	static std::string		conv(T v) {
 		return std::to_string(v);
 	}
@@ -123,6 +114,15 @@ private:
 
 public:
 
+	enum eOperation
+	{
+		Add = 0,
+		Sub,
+		Div,
+		Mul,
+		Mod
+	};
+
 	static std::string		eval(
 		std::string const &lhs, eOperation o, std::string const &rhs) {
 		T const		res = operations[o](conv(lhs), conv(rhs));
@@ -140,7 +140,7 @@ const std::function< T(T, T) >		Evalexpr<T>::operations[5] = {
 	[](T a, T b){ return std::fmod(a, b); },
 };
 // fmod has a special overload working with integer types
-// Promoted		fmod( Arithmetic1 x, Arithmetic2 y );
+// Promoted		fmod(Arithmetic1 x, Arithmetic2 y);
 // http://en.cppreference.com/w/cpp/numeric/math/fmod
 
 
@@ -165,11 +165,11 @@ public:
 	Operand				&operator=(Operand const &rhs) = delete;
 	Operand				&operator=(Operand &&rhs) = delete;
 
-	eOperandType		getType( void ) const override {
+	eOperandType		getType(void) const override {
 		return TEnumVal;
 	}
 
-	std::string const	&toString( void ) const override {
+	std::string const	&toString(void) const override {
 		return _val;
 	}
 
@@ -200,19 +200,19 @@ public:
 
 
 // OpFactory.cpp
-IOperand const * OpFactory::createInt8( std::string const & value ) const {
+IOperand const *OpFactory::createInt8(std::string const &value) const {
 	return new Operand<int8_t>(*this, value);
 }
-IOperand const * OpFactory::createInt16( std::string const & value ) const {
+IOperand const *OpFactory::createInt16(std::string const &value) const {
 	return new Operand<int16_t>(*this, value);
 }
-IOperand const * OpFactory::createInt32( std::string const & value ) const {
+IOperand const *OpFactory::createInt32(std::string const &value) const {
 	return new Operand<int32_t>(*this, value);
 }
-IOperand const * OpFactory::createFloat( std::string const & value ) const {
+IOperand const *OpFactory::createFloat(std::string const &value) const {
 	return new Operand<float>(*this, value);
 }
-IOperand const * OpFactory::createDouble( std::string const & value ) const {
+IOperand const *OpFactory::createDouble(std::string const &value) const {
 	return new Operand<double>(*this, value);
 }
 
@@ -224,7 +224,7 @@ OpFactory::fun_t const		OpFactory::funs[5] = {
 	&OpFactory::createDouble,
 };
 
-IOperand const * OpFactory::createOperand( eOperandType type, std::string const & value ) const
+IOperand const *OpFactory::createOperand(eOperandType type, std::string const &value) const
 {
 	return (this ->* funs[static_cast<int>(type)])(value);
 }
@@ -294,35 +294,35 @@ int							main(void)
 // #define TEST(A, B) testfun(A + B)
 #define TEST(A, B) testfun(static_cast< result_type<decltype(A), decltype(B)>::type >(A + B))
 
-		TEST(i8, i8);
-		TEST(i8, i16);
-		TEST(i8, i32);
-		TEST(i8, f);
-		TEST(i8, d);
-		std::cout << "" << std::endl;
-		TEST(i16, i8);
-		TEST(i16, i16);
-		TEST(i16, i32);
-		TEST(i16, f);
-		TEST(i16, d);
-		std::cout << "" << std::endl;
-		TEST(i32, i8);
-		TEST(i32, i16);
-		TEST(i32, i32);
-		TEST(i32, f);
-		TEST(i32, d);
-		std::cout << "" << std::endl;
-		TEST(f, i8);
-		TEST(f, i16);
-		TEST(f, i32);
-		TEST(f, f);
-		TEST(f, d);
-		std::cout << "" << std::endl;
-		TEST(d, i8);
-		TEST(d, i16);
-		TEST(d, i32);
-		TEST(d, f);
-		TEST(d, d);
-		std::cout << "" << std::endl;
-		return (0);
+	TEST(i8, i8);
+	TEST(i8, i16);
+	TEST(i8, i32);
+	TEST(i8, f);
+	TEST(i8, d);
+	std::cout << "" << std::endl;
+	TEST(i16, i8);
+	TEST(i16, i16);
+	TEST(i16, i32);
+	TEST(i16, f);
+	TEST(i16, d);
+	std::cout << "" << std::endl;
+	TEST(i32, i8);
+	TEST(i32, i16);
+	TEST(i32, i32);
+	TEST(i32, f);
+	TEST(i32, d);
+	std::cout << "" << std::endl;
+	TEST(f, i8);
+	TEST(f, i16);
+	TEST(f, i32);
+	TEST(f, f);
+	TEST(f, d);
+	std::cout << "" << std::endl;
+	TEST(d, i8);
+	TEST(d, i16);
+	TEST(d, i32);
+	TEST(d, f);
+	TEST(d, d);
+	std::cout << "" << std::endl;
+	return (0);
 }
