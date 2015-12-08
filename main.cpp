@@ -1,0 +1,244 @@
+
+#include <iostream>
+#include <cstdint>
+#include <type_traits>
+#include <algorithm>
+
+
+enum class eOperandType
+{
+	Int8 = 0,
+		Int16,
+		Int32,
+		Float,
+		Double
+		};
+
+template <class T>	struct operand_enum;
+template <>			struct operand_enum<int8_t>
+	: std::integral_constant<eOperandType, eOperandType::Int8> {};
+template <>			struct operand_enum<int16_t>
+	: std::integral_constant<eOperandType, eOperandType::Int16> {};
+template <>			struct operand_enum<int32_t>
+	: std::integral_constant<eOperandType, eOperandType::Int32> {};
+template <>			struct operand_enum<float>
+	: std::integral_constant<eOperandType, eOperandType::Float> {};
+template <>			struct operand_enum<double>
+	: std::integral_constant<eOperandType, eOperandType::Double> {};
+
+
+class IOperand {
+public:
+	// virtual int getPrecision( void ) const = 0; // Precision of the type of the instance
+	virtual eOperandType getType( void ) const = 0; // Type of the instance
+	virtual IOperand const * operator+( IOperand const & rhs ) const = 0; // Sum
+	// virtual IOperand const * operator-( IOperand const & rhs ) const = 0; // Difference
+	// virtual IOperand const * operator*( IOperand const & rhs ) const = 0; // Product
+	// virtual IOperand const * operator/( IOperand const & rhs ) const = 0; // Quotient
+	// virtual IOperand const * operator%( IOperand const & rhs ) const = 0; // Modulo
+	virtual std::string const & toString( void ) const = 0; // String representation of the instance
+	virtual ~IOperand( void ) {}
+};
+
+
+template <class T, eOperandType TEnumVal>
+class Operand;
+
+class OpFactory
+{
+	typedef IOperand const *(OpFactory::*fun_t)( std::string const & value ) const;
+
+	IOperand const * createInt8( std::string const & value ) const;
+	IOperand const * createInt16( std::string const & value ) const;
+	IOperand const * createInt32( std::string const & value ) const;
+	IOperand const * createFloat( std::string const & value ) const;
+	IOperand const * createDouble( std::string const & value ) const;
+
+	static fun_t const		funs[5];
+
+public:
+	IOperand const * createOperand( eOperandType type, std::string const & value ) const;
+
+};
+
+class Evalexpr
+{
+
+public:
+	static std::string		eval(std::string const &str, eOperandType outType) {
+		(void)str;
+		(void)outType;
+		return "";
+	}
+};
+
+
+template <class T, eOperandType TEnumVal = operand_enum<T>::value>
+class Operand : public IOperand
+{
+	OpFactory const		&_fact;
+	std::string const	_val;
+
+public:
+
+	~Operand() {}
+	Operand(OpFactory const &fact, std::string const &str)
+		: _fact(fact), _val(Evalexpr::eval(str, TEnumVal)) {}
+
+	Operand() = delete;
+	Operand(Operand const &src) = delete;
+	Operand(Operand &&src) = delete;
+	Operand               &operator=(Operand const &rhs) = delete;
+	Operand               &operator=(Operand &&rhs) = delete;
+
+	eOperandType getType( void ) const override {
+		return TEnumVal;
+	}
+
+	std::string const & toString( void ) const override {
+		return _val;
+	}
+
+	IOperand const *operator+( IOperand const & rhs) const override {
+		std::string const	expr = _val + "+" + rhs.toString();
+
+		return _fact.createOperand(std::max(rhs.getType(), TEnumVal), expr);
+	}
+};
+
+
+
+IOperand const * OpFactory::createInt8( std::string const & value ) const {
+	return new Operand<int8_t>(*this, value);
+}
+IOperand const * OpFactory::createInt16( std::string const & value ) const {
+	return new Operand<int16_t>(*this, value);
+}
+IOperand const * OpFactory::createInt32( std::string const & value ) const {
+	return new Operand<int32_t>(*this, value);
+}
+IOperand const * OpFactory::createFloat( std::string const & value ) const {
+	return new Operand<float>(*this, value);
+}
+IOperand const * OpFactory::createDouble( std::string const & value ) const {
+	return new Operand<double>(*this, value);
+}
+
+OpFactory::fun_t const		OpFactory::funs[5] = {
+	&OpFactory::createInt8,
+	&OpFactory::createInt16,
+	&OpFactory::createInt32,
+	&OpFactory::createFloat,
+	&OpFactory::createDouble,
+};
+
+IOperand const * OpFactory::createOperand( eOperandType type, std::string const & value ) const
+{
+	return (this ->* funs[static_cast<int>(type)])(value);
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+// IOperand const * OpFactory::createOperand( eOperandType type, std::string const & value ) const;
+
+
+
+namespace internal // ~~~~~~~~~~~~~~~~~~~~~~~~~ //
+{ // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ //
+
+template <class A, class B, bool AF, bool BF>
+struct result_type {
+	typedef typename std::conditional<(sizeof(A) > sizeof(B)), A, B>::type type;
+};
+
+template <class A, class B>
+struct result_type<A, B, true, false> {
+	typedef A	type;
+};
+
+template <class A, class B>
+struct result_type<A, B, false, true> {
+	typedef B	type;
+};
+
+}; // ~~~~~~~~~~~~~~~ END OF NAMESPACE INTERNAL //
+// ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ //
+
+# define ISFLOAT(T) std::is_floating_point<T>::value
+
+template <class A, class B>
+struct result_type : public internal::result_type<A, B, ISFLOAT(A), ISFLOAT(B)>
+{};
+
+# undef ISFLOAT
+
+#define TESTFUN(T)								\
+	void	testfun(T)							\
+	{											\
+		std::cout << #T << std::endl;			\
+		return ;								\
+	}
+
+TESTFUN(int8_t)
+	TESTFUN(int16_t)
+	TESTFUN(int32_t)
+	TESTFUN(float)
+	TESTFUN(double)
+
+	int							main(void)
+{
+	int8_t		i8 = 8;
+	int16_t		i16 = 16;
+	int32_t		i32 = 32;
+	float		f = 40.f;
+	double		d = 80.;
+
+// #define TEST(A, B) testfun(A + B)
+#define TEST(A, B) testfun(static_cast<result_type<decltype(A), decltype(B)>::type>(A + B))
+
+		TEST(i8, i8);
+		TEST(i8, i16);
+		TEST(i8, i32);
+		TEST(i8, f);
+		TEST(i8, d);
+		std::cout << "" << std::endl;
+		TEST(i16, i8);
+		TEST(i16, i16);
+		TEST(i16, i32);
+		TEST(i16, f);
+		TEST(i16, d);
+		std::cout << "" << std::endl;
+		TEST(i32, i8);
+		TEST(i32, i16);
+		TEST(i32, i32);
+		TEST(i32, f);
+		TEST(i32, d);
+		std::cout << "" << std::endl;
+		TEST(f, i8);
+		TEST(f, i16);
+		TEST(f, i32);
+		TEST(f, f);
+		TEST(f, d);
+		std::cout << "" << std::endl;
+		TEST(d, i8);
+		TEST(d, i16);
+		TEST(d, i32);
+		TEST(d, f);
+		TEST(d, d);
+		std::cout << "" << std::endl;
+
+
+		return (0);
+}
