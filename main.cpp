@@ -5,8 +5,8 @@
 //                                                    +:+ +:+         +:+     //
 //   By: ngoguey <ngoguey@student.42.fr>            +#+  +:+       +#+        //
 //                                                +#+#+#+#+#+   +#+           //
-//   Created: 2015/12/08 19:07:00 by ngoguey           #+#    #+#             //
-//   Updated: 2015/12/08 19:23:22 by ngoguey          ###   ########.fr       //
+//   Created: 2015/12/08 19:29:27 by ngoguey           #+#    #+#             //
+//   Updated: 2015/12/08 19:34:40 by ngoguey          ###   ########.fr       //
 //                                                                            //
 // ************************************************************************** //
 
@@ -16,6 +16,8 @@
 #include <algorithm>
 #include <cmath>
 
+
+// eOperandType.hpp
 enum class eOperandType
 {
 	Int8 = 0,
@@ -26,31 +28,41 @@ enum class eOperandType
 		};
 
 template <class T>	struct operand_enum;
+
 template <>			struct operand_enum<int8_t>
 	: std::integral_constant<eOperandType, eOperandType::Int8> {};
+
 template <>			struct operand_enum<int16_t>
 	: std::integral_constant<eOperandType, eOperandType::Int16> {};
+
 template <>			struct operand_enum<int32_t>
 	: std::integral_constant<eOperandType, eOperandType::Int32> {};
+
 template <>			struct operand_enum<float>
 	: std::integral_constant<eOperandType, eOperandType::Float> {};
+
 template <>			struct operand_enum<double>
 	: std::integral_constant<eOperandType, eOperandType::Double> {};
 
+
+// IOperand.hpp
 class IOperand {
 public:
 	// virtual int getPrecision( void ) const = 0; // Precision of the type of the instance
-	virtual eOperandType getType( void ) const = 0; // Type of the instance
-	virtual IOperand const * operator+( IOperand const & rhs ) const = 0; // Sum
-	virtual IOperand const * operator-( IOperand const & rhs ) const = 0; // Difference
-	virtual IOperand const * operator*( IOperand const & rhs ) const = 0; // Product
-	virtual IOperand const * operator/( IOperand const & rhs ) const = 0; // Quotient
-	virtual IOperand const * operator%( IOperand const & rhs ) const = 0; // Modulo
-	virtual std::string const & toString( void ) const = 0; // String representation of the instance
+	virtual eOperandType getType( void ) const = 0;
+	virtual IOperand const * operator+( IOperand const & rhs ) const = 0;
+	virtual IOperand const * operator-( IOperand const & rhs ) const = 0;
+	virtual IOperand const * operator*( IOperand const & rhs ) const = 0;
+	virtual IOperand const * operator/( IOperand const & rhs ) const = 0;
+	virtual IOperand const * operator%( IOperand const & rhs ) const = 0;
+	virtual std::string const & toString( void ) const = 0;
 	virtual ~IOperand( void ) {}
 };
 
 
+
+
+// OpFactory.hpp
 template <class T, eOperandType TEnumVal>
 class Operand;
 
@@ -72,6 +84,8 @@ public:
 };
 
 
+
+// Evalexpr.hpp
 template <class T>
 class Evalexpr
 {
@@ -131,6 +145,8 @@ const std::function< T(T, T) >		Evalexpr<T>::operations[5] = {
 
 
 
+
+// Operand.hpp
 template <class T, eOperandType TEnumVal = operand_enum<T>::value>
 class Operand : public IOperand
 {
@@ -146,69 +162,44 @@ public:
 	Operand() = delete;
 	Operand(Operand const &src) = delete;
 	Operand(Operand &&src) = delete;
-	Operand               &operator=(Operand const &rhs) = delete;
-	Operand               &operator=(Operand &&rhs) = delete;
+	Operand				&operator=(Operand const &rhs) = delete;
+	Operand				&operator=(Operand &&rhs) = delete;
 
-	eOperandType getType( void ) const override {
+	eOperandType		getType( void ) const override {
 		return TEnumVal;
 	}
 
-	std::string const & toString( void ) const override {
+	std::string const	&toString( void ) const override {
 		return _val;
 	}
 
-	IOperand const *operator+( IOperand const & rhs) const override {
-		eOperandType const	dstType = std::max(rhs.getType(), TEnumVal);
-
-		if (dstType != TEnumVal)
-			return rhs + *this;
-		else
-			return _fact.createOperand(
-				dstType, Evalexpr<T>::eval(_val, Evalexpr<T>::Add, rhs.toString()));
+# define DEFINE_OPERATOR(OP, OPNAME)									\
+	IOperand const		*operator OP(IOperand const &rhs) const override { \
+		using Ee = Evalexpr<T>;											\
+																		\
+		eOperandType const	dstType = std::max(rhs.getType(), TEnumVal); \
+																		\
+		if (dstType != TEnumVal)										\
+			return rhs + *this;											\
+		else															\
+			return _fact.createOperand(									\
+				dstType, Ee::eval(_val, Ee::OPNAME, rhs.toString()));	\
 	}
 
-	IOperand const *operator-( IOperand const & rhs) const override {
-		eOperandType const	dstType = std::max(rhs.getType(), TEnumVal);
+	DEFINE_OPERATOR(+, Add)
+	DEFINE_OPERATOR(-, Sub)
+	DEFINE_OPERATOR(*, Mul)
+	DEFINE_OPERATOR(/, Div)
+	DEFINE_OPERATOR(%, Mod)
 
-		if (dstType != TEnumVal)
-			return rhs + *this;
-		else
-			return _fact.createOperand(
-				dstType, Evalexpr<T>::eval(_val, Evalexpr<T>::Sub, rhs.toString()));
-	}
-	IOperand const *operator*( IOperand const & rhs) const override {
-		eOperandType const	dstType = std::max(rhs.getType(), TEnumVal);
+# undef DEFINE_OPERATOR
 
-		if (dstType != TEnumVal)
-			return rhs + *this;
-		else
-			return _fact.createOperand(
-				dstType, Evalexpr<T>::eval(_val, Evalexpr<T>::Mul, rhs.toString()));
-	}
-	IOperand const *operator/( IOperand const & rhs) const override {
-		eOperandType const	dstType = std::max(rhs.getType(), TEnumVal);
-
-		if (dstType != TEnumVal)
-			return rhs + *this;
-		else
-			return _fact.createOperand(
-				dstType, Evalexpr<T>::eval(_val, Evalexpr<T>::Div, rhs.toString()));
-	}
-	IOperand const *operator%( IOperand const & rhs) const override {
-		eOperandType const	dstType = std::max(rhs.getType(), TEnumVal);
-
-		if (dstType != TEnumVal)
-			return rhs + *this;
-		else
-			return _fact.createOperand(
-				dstType, Evalexpr<T>::eval(_val, Evalexpr<T>::Mod, rhs.toString()));
-	}
 };
 
 
 
 
-
+// OpFactory.cpp
 IOperand const * OpFactory::createInt8( std::string const & value ) const {
 	return new Operand<int8_t>(*this, value);
 }
@@ -239,7 +230,14 @@ IOperand const * OpFactory::createOperand( eOperandType type, std::string const 
 }
 
 
-// IOperand const * OpFactory::createOperand( eOperandType type, std::string const & value ) const;
+
+
+
+
+
+
+
+
 
 
 
@@ -275,7 +273,7 @@ struct result_type : public internal::result_type<A, B, ISFLOAT(A), ISFLOAT(B)>
 #define TESTFUN(T)								\
 	void	testfun(T)							\
 	{											\
-		std::cout << #T << std::endl;	\
+		std::cout << #T << std::endl;			\
 		return ;								\
 	}
 
@@ -296,35 +294,35 @@ int							main(void)
 // #define TEST(A, B) testfun(A + B)
 #define TEST(A, B) testfun(static_cast< result_type<decltype(A), decltype(B)>::type >(A + B))
 
-	TEST(i8, i8);
-	TEST(i8, i16);
-	TEST(i8, i32);
-	TEST(i8, f);
-	TEST(i8, d);
-	std::cout << "" << std::endl;
-	TEST(i16, i8);
-	TEST(i16, i16);
-	TEST(i16, i32);
-	TEST(i16, f);
-	TEST(i16, d);
-	std::cout << "" << std::endl;
-	TEST(i32, i8);
-	TEST(i32, i16);
-	TEST(i32, i32);
-	TEST(i32, f);
-	TEST(i32, d);
-	std::cout << "" << std::endl;
-	TEST(f, i8);
-	TEST(f, i16);
-	TEST(f, i32);
-	TEST(f, f);
-	TEST(f, d);
-	std::cout << "" << std::endl;
-	TEST(d, i8);
-	TEST(d, i16);
-	TEST(d, i32);
-	TEST(d, f);
-	TEST(d, d);
-	std::cout << "" << std::endl;
-	return (0);
+		TEST(i8, i8);
+		TEST(i8, i16);
+		TEST(i8, i32);
+		TEST(i8, f);
+		TEST(i8, d);
+		std::cout << "" << std::endl;
+		TEST(i16, i8);
+		TEST(i16, i16);
+		TEST(i16, i32);
+		TEST(i16, f);
+		TEST(i16, d);
+		std::cout << "" << std::endl;
+		TEST(i32, i8);
+		TEST(i32, i16);
+		TEST(i32, i32);
+		TEST(i32, f);
+		TEST(i32, d);
+		std::cout << "" << std::endl;
+		TEST(f, i8);
+		TEST(f, i16);
+		TEST(f, i32);
+		TEST(f, f);
+		TEST(f, d);
+		std::cout << "" << std::endl;
+		TEST(d, i8);
+		TEST(d, i16);
+		TEST(d, i32);
+		TEST(d, f);
+		TEST(d, d);
+		std::cout << "" << std::endl;
+		return (0);
 }
