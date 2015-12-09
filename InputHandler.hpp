@@ -6,7 +6,7 @@
 //   By: ngoguey <ngoguey@student.42.fr>            +#+  +:+       +#+        //
 //                                                +#+#+#+#+#+   +#+           //
 //   Created: 2015/12/09 12:24:05 by ngoguey           #+#    #+#             //
-//   Updated: 2015/12/09 15:41:49 by ngoguey          ###   ########.fr       //
+//   Updated: 2015/12/09 15:43:47 by ngoguey          ###   ########.fr       //
 //                                                                            //
 // ************************************************************************** //
 
@@ -25,21 +25,24 @@ public:
 	InputHandler(std::istream &stream, bool fd0) noexcept;
 	~InputHandler();
 
-	std::queue<std::string>		handle() noexcept;
-
 	InputHandler() = delete;
 	InputHandler(InputHandler const &src) = delete;
 	InputHandler(InputHandler &&src) = delete;
-	InputHandler			&operator=(InputHandler const &rhs) = delete;
-	InputHandler			&operator=(InputHandler &&rhs) = delete;
+	InputHandler	&operator=(InputHandler const &rhs) = delete;
+	InputHandler	&operator=(InputHandler &&rhs) = delete;
+
+	auto			handle() noexcept
+		-> std::queue<std::string>;
 
 private:
 
-	void		extractLine(void);
-	void		handleCommas(void);
-	void		storeLine(void);
-	bool		endOfInput(void);
+	/* INTERNAL ********************* */
+	void			extractLine(void);
+	void			handleCommas(void);
+	void			storeLine(void);
+	bool			endOfInput(void);
 
+	/* ATTRIBUTES ******************* */
 	std::istream				&_is;
 	bool						_fd0;
 	std::queue<std::string>		_q;
