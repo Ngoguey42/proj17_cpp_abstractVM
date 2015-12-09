@@ -6,11 +6,12 @@
 //   By: ngoguey <ngoguey@student.42.fr>            +#+  +:+       +#+        //
 //                                                +#+#+#+#+#+   +#+           //
 //   Created: 2015/12/08 19:29:27 by ngoguey           #+#    #+#             //
-//   Updated: 2015/12/09 11:14:12 by ngoguey          ###   ########.fr       //
+//   Updated: 2015/12/09 11:45:36 by ngoguey          ###   ########.fr       //
 //                                                                            //
 // ************************************************************************** //
 
 #include <iostream>
+#include "MStack.hpp"
 
 #include "Operands.hpp"
 #include "Evalexpr.hpp"
@@ -57,7 +58,7 @@ TESTFUN(int32_t)
 TESTFUN(float)
 TESTFUN(double)
 
-int							main(void)
+int							ololmainold(void)
 {
 	int8_t		i8 = 8;
 	int16_t		i16 = 16;
@@ -98,5 +99,22 @@ int							main(void)
 	TEST(d, f);
 	TEST(d, d);
 	std::cout << "" << std::endl;
+	return (0);
+}
+
+int							main(void)
+{
+	MStack<int>		s;
+
+
+	for (int i = 0; i < 10; i++)
+	{
+		s.push(i);
+	}
+	MStack<int> const		&sptr = s;
+	for (auto const &elt : sptr)
+	{
+		std::cout << elt << std::endl;
+	}
 	return (0);
 }
