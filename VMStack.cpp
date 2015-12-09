@@ -6,13 +6,11 @@
 //   By: ngoguey <ngoguey@student.42.fr>            +#+  +:+       +#+        //
 //                                                +#+#+#+#+#+   +#+           //
 //   Created: 2015/12/09 18:12:25 by ngoguey           #+#    #+#             //
-//   Updated: 2015/12/09 18:50:45 by ngoguey          ###   ########.fr       //
+//   Updated: 2015/12/09 19:03:29 by ngoguey          ###   ########.fr       //
 //                                                                            //
 // ************************************************************************** //
 
 #include "VMStack.hpp"
-
-# include <functional>
 
 using VMS = VMStack;
 namespace PH {
@@ -31,5 +29,20 @@ VMS::opmap_t const		opmap = { /*static*/
 	{"div", std::bind(&VMS::arithmetic, PH::_1, &IOperand::operator/, PH::_2)},
 	{"mod", std::bind(&VMS::arithmetic, PH::_1, &IOperand::operator%, PH::_2)},
 	{"print", &VMS::print},
-	{"exit", &VMS::exit},
+	{"exit", &VMS::exit}
 };
+
+void		VMS::arithmetic(VMS::arithfun_t f, std::string const &)
+{
+	IOperand const		*a;
+	IOperand const		*b;
+
+	if (this->size() < 2)
+		throw std::out_of_range("Stack size too low for arithmetic");
+	a = this->top();
+	MStack::pop();
+	b = this->top();
+	MStack::pop();
+	(b ->* f)(*a);
+	return ;
+}

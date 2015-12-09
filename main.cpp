@@ -6,7 +6,7 @@
 //   By: ngoguey <ngoguey@student.42.fr>            +#+  +:+       +#+        //
 //                                                +#+#+#+#+#+   +#+           //
 //   Created: 2015/12/08 19:29:27 by ngoguey           #+#    #+#             //
-//   Updated: 2015/12/09 16:01:27 by ngoguey          ###   ########.fr       //
+//   Updated: 2015/12/09 19:09:38 by ngoguey          ###   ########.fr       //
 //                                                                            //
 // ************************************************************************** //
 
@@ -105,7 +105,6 @@ int							ololmainold(void)
 int							mainoulol(void)
 {
 	MStack<int>		s;
-
 
 	for (int i = 0; i < 10; i++)
 	{

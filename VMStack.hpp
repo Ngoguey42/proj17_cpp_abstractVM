@@ -6,7 +6,7 @@
 //   By: ngoguey <ngoguey@student.42.fr>            +#+  +:+       +#+        //
 //                                                +#+#+#+#+#+   +#+           //
 //   Created: 2015/12/09 17:44:53 by ngoguey           #+#    #+#             //
-//   Updated: 2015/12/09 18:49:07 by ngoguey          ###   ########.fr       //
+//   Updated: 2015/12/09 19:02:28 by ngoguey          ###   ########.fr       //
 //                                                                            //
 // ************************************************************************** //
 
@@ -36,7 +36,7 @@ public:
 	void		pop(std::string const &) {}
 	void		dump(std::string const &) {}
 	void		assert(std::string const &arg) {}
-	void		arithmetic(arithfun_t f, std::string const &) {}
+	void		arithmetic(arithfun_t f, std::string const &);
 	void		print(std::string const &) {}
 	void		exit(std::string const &) {}
 	// enum class Operation
