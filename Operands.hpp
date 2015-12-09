@@ -6,7 +6,7 @@
 //   By: ngoguey <ngoguey@student.42.fr>            +#+  +:+       +#+        //
 //                                                +#+#+#+#+#+   +#+           //
 //   Created: 2015/12/09 11:04:37 by ngoguey           #+#    #+#             //
-//   Updated: 2015/12/09 11:14:21 by ngoguey          ###   ########.fr       //
+//   Updated: 2015/12/09 13:36:59 by ngoguey          ###   ########.fr       //
 //                                                                            //
 // ************************************************************************** //
 
@@ -121,7 +121,7 @@ public:
 		eOperandType const	dstType = std::max(rhs.getType(), TEnumVal); \
 																		\
 		if (dstType != TEnumVal)										\
-			return rhs + *this;											\
+			return rhs OP *this;											\
 		else															\
 			return _fact.createOperand(									\
 				dstType, Ee::eval(_val, Ee::OPNAME, rhs.toString()));	\
