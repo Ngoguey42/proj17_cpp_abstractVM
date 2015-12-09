@@ -6,17 +6,15 @@
 //   By: ngoguey <ngoguey@student.42.fr>            +#+  +:+       +#+        //
 //                                                +#+#+#+#+#+   +#+           //
 //   Created: 2015/12/09 11:02:52 by ngoguey           #+#    #+#             //
-//   Updated: 2015/12/09 11:03:15 by ngoguey          ###   ########.fr       //
+//   Updated: 2015/12/09 11:14:16 by ngoguey          ###   ########.fr       //
 //                                                                            //
 // ************************************************************************** //
 
 #ifndef EVALEXPR_HPP
 # define EVALEXPR_HPP
 
-#include <iostream>
-#include <cstdint>
-#include <type_traits>
-#include <algorithm>
+#include <cstdlib>
+#include <functional>
 #include <cmath>
 
 # define OK_IF(PRED) typename std::enable_if<PRED>::type* = nullptr

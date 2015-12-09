@@ -6,15 +6,12 @@
 //   By: ngoguey <ngoguey@student.42.fr>            +#+  +:+       +#+        //
 //                                                +#+#+#+#+#+   +#+           //
 //   Created: 2015/12/08 19:29:27 by ngoguey           #+#    #+#             //
-//   Updated: 2015/12/09 11:07:12 by ngoguey          ###   ########.fr       //
+//   Updated: 2015/12/09 11:14:12 by ngoguey          ###   ########.fr       //
 //                                                                            //
 // ************************************************************************** //
 
 #include <iostream>
-#include <cstdint>
-#include <type_traits>
-#include <algorithm>
-#include <cmath>
+
 #include "Operands.hpp"
 #include "Evalexpr.hpp"
 

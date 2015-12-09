@@ -6,18 +6,15 @@
 //   By: ngoguey <ngoguey@student.42.fr>            +#+  +:+       +#+        //
 //                                                +#+#+#+#+#+   +#+           //
 //   Created: 2015/12/09 11:04:37 by ngoguey           #+#    #+#             //
-//   Updated: 2015/12/09 11:08:07 by ngoguey          ###   ########.fr       //
+//   Updated: 2015/12/09 11:14:21 by ngoguey          ###   ########.fr       //
 //                                                                            //
 // ************************************************************************** //
 
 #ifndef OPERANDS_HPP
 # define OPERANDS_HPP
 
-#include <iostream>
-#include <cstdint>
 #include <type_traits>
-#include <algorithm>
-#include <cmath>
+#include <string>
 
 #include "Evalexpr.hpp"
 
@@ -29,11 +26,11 @@
 enum class eOperandType // eOperandType from subject.pdf
 {
 	Int8 = 0,
-		Int16,
-		Int32,
-		Float,
-		Double
-		};
+	Int16,
+	Int32,
+	Float,
+	Double
+};
 
 template <class T>	struct operand_enum;
 
