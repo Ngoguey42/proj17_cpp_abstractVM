@@ -6,7 +6,7 @@
 //   By: ngoguey <ngoguey@student.42.fr>            +#+  +:+       +#+        //
 //                                                +#+#+#+#+#+   +#+           //
 //   Created: 2015/12/09 12:24:05 by ngoguey           #+#    #+#             //
-//   Updated: 2015/12/09 15:43:47 by ngoguey          ###   ########.fr       //
+//   Updated: 2015/12/09 17:33:22 by ngoguey          ###   ########.fr       //
 //                                                                            //
 // ************************************************************************** //
 
@@ -16,6 +16,8 @@
 # include <istream>
 # include <string>
 # include <queue>
+
+// Ouputs a queue of strings, ready for the grammar given in subject
 
 class InputHandler
 {

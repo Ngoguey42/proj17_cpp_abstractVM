@@ -6,7 +6,7 @@
 //   By: ngoguey <ngoguey@student.42.fr>            +#+  +:+       +#+        //
 //                                                +#+#+#+#+#+   +#+           //
 //   Created: 2015/12/09 11:04:37 by ngoguey           #+#    #+#             //
-//   Updated: 2015/12/09 13:36:59 by ngoguey          ###   ########.fr       //
+//   Updated: 2015/12/09 17:59:30 by ngoguey          ###   ########.fr       //
 //                                                                            //
 // ************************************************************************** //
 
@@ -15,6 +15,7 @@
 
 #include <type_traits>
 #include <string>
+#include <stack>
 
 #include "Evalexpr.hpp"
 
@@ -22,7 +23,7 @@
 // IOperand from subject.pdf
 // OpFactory from subject.pdf
 
-// Enum ***************************** //
+// Enum *************************************** //
 enum class eOperandType // eOperandType from subject.pdf
 {
 	Int8 = 0,
@@ -49,7 +50,7 @@ template <>			struct operand_enum<float>
 template <>			struct operand_enum<double>
 	: std::integral_constant<eOperandType, eOperandType::Double> {};
 
-// Interface ************************ //
+// Interface ********************************** //
 class IOperand // IOperand from subject.pdf
 {
 public:
@@ -64,13 +65,15 @@ public:
 	virtual ~IOperand() {}
 };
 
-// Operand ** forward declaration *** //
+// Operand ** forward declaration ************* //
 template <class T, eOperandType TEnumVal>
 class Operand;
 
-// Operand Factory ****************** //
+// Operand Factory **************************** //
 class OpFactory // OpFactory from subject.pdf
 {
+	static std::stack<IOperand *>	_garbageCollector;
+
 	typedef IOperand const *(OpFactory::*fun_t)(std::string const &value) const;
 
 	IOperand const 		*createInt8(std::string const &value) const;
@@ -87,7 +90,7 @@ public:
 
 };
 
-// Operand ************************** //
+// Operand ************************************ //
 template <class T, eOperandType TEnumVal = operand_enum<T>::value>
 class Operand : public IOperand
 {

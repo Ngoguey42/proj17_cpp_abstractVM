@@ -6,7 +6,7 @@
 //   By: ngoguey <ngoguey@student.42.fr>            +#+  +:+       +#+        //
 //                                                +#+#+#+#+#+   +#+           //
 //   Created: 2015/12/09 12:19:29 by ngoguey           #+#    #+#             //
-//   Updated: 2015/12/09 15:41:35 by ngoguey          ###   ########.fr       //
+//   Updated: 2015/12/09 17:32:31 by ngoguey          ###   ########.fr       //
 //                                                                            //
 // ************************************************************************** //
 
@@ -42,8 +42,7 @@ void	IH::handleCommas(void)
 
 void	IH::storeLine(void)
 {
-	if (_line.find_first_not_of(" \t") != std::string::npos)
-		_q.emplace(std::move(_line));
+	_q.emplace(std::move(_line));
 	return ;
 }
 
@@ -55,10 +54,11 @@ bool	IH::endOfInput(void)
 auto	IH::handle(void) noexcept
 	-> std::queue<std::string>
 {
-	do {
+	while (!endOfInput())
+	{
 		extractLine();
 		handleCommas();
 		storeLine();
-	} while (!endOfInput());
+	}
 	return _q;
 }

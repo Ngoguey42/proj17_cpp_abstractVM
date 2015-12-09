@@ -6,7 +6,7 @@
 //   By: ngoguey <ngoguey@student.42.fr>            +#+  +:+       +#+        //
 //                                                +#+#+#+#+#+   +#+           //
 //   Created: 2015/12/08 19:29:27 by ngoguey           #+#    #+#             //
-//   Updated: 2015/12/09 11:45:36 by ngoguey          ###   ########.fr       //
+//   Updated: 2015/12/09 16:01:27 by ngoguey          ###   ########.fr       //
 //                                                                            //
 // ************************************************************************** //
 
@@ -102,7 +102,7 @@ int							ololmainold(void)
 	return (0);
 }
 
-int							main(void)
+int							mainoulol(void)
 {
 	MStack<int>		s;
 
@@ -116,5 +116,34 @@ int							main(void)
 	{
 		std::cout << elt << std::endl;
 	}
+	return (0);
+}
+
+int							main(void)
+{
+	MStack<IOperand const*>		st;
+	OpFactory					fact;
+	IOperand const				*prev = nullptr;
+
+	st.push(fact.createOperand(eOperandType::Float, "24.1546"));
+	st.push(fact.createOperand(eOperandType::Double, "0.000000000001"));
+
+	for (auto const elt : st)
+		std::cout << elt->toString() << std::endl;
+
+	prev = nullptr;
+	for (auto const elt : st)
+	{
+		if (prev != nullptr)
+		{
+			prev = *prev + *elt;
+		}
+		else
+			prev = elt;
+	}
+	st.push(prev);
+	std::cout << "" << std::endl;
+	for (auto const elt : st)
+		std::cout << elt->toString() << std::endl;
 	return (0);
 }
