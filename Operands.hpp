@@ -6,7 +6,7 @@
 //   By: ngoguey <ngoguey@student.42.fr>            +#+  +:+       +#+        //
 //                                                +#+#+#+#+#+   +#+           //
 //   Created: 2015/12/09 11:04:37 by ngoguey           #+#    #+#             //
-//   Updated: 2015/12/09 17:59:30 by ngoguey          ###   ########.fr       //
+//   Updated: 2015/12/10 12:26:01 by ngoguey          ###   ########.fr       //
 //                                                                            //
 // ************************************************************************** //
 
@@ -27,11 +27,11 @@
 enum class eOperandType // eOperandType from subject.pdf
 {
 	Int8 = 0,
-	Int16,
-	Int32,
-	Float,
-	Double
-};
+		Int16,
+		Int32,
+		Float,
+		Double
+		};
 
 template <class T>	struct operand_enum;
 
@@ -123,9 +123,9 @@ public:
 																		\
 		eOperandType const	dstType = std::max(rhs.getType(), TEnumVal); \
 																		\
-		if (dstType != TEnumVal)										\
-			return rhs OP *this;											\
-		else															\
+		if (dstType != TEnumVal) // nornmal case						\
+			return rhs OP *this;										\
+		else // reverse case											\
 			return _fact.createOperand(									\
 				dstType, Ee::eval(_val, Ee::OPNAME, rhs.toString()));	\
 	}
