@@ -6,7 +6,7 @@
 //   By: ngoguey <ngoguey@student.42.fr>            +#+  +:+       +#+        //
 //                                                +#+#+#+#+#+   +#+           //
 //   Created: 2015/12/09 17:44:53 by ngoguey           #+#    #+#             //
-//   Updated: 2016/01/14 16:56:56 by ngoguey          ###   ########.fr       //
+//   Updated: 2016/01/14 17:21:43 by ngoguey          ###   ########.fr       //
 //                                                                            //
 // ************************************************************************** //
 
@@ -66,6 +66,5 @@ public:
 private:
 	OpFactory const			&_opFact;
 };
-//std::ostream			&operator<<(std::ostream &o, VMStack const &rhs);
 
 #endif /* ******************************************************* VMSTACK_HPP */

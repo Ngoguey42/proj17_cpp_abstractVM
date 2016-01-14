@@ -6,7 +6,7 @@
 //   By: ngoguey <ngoguey@student.42.fr>            +#+  +:+       +#+        //
 //                                                +#+#+#+#+#+   +#+           //
 //   Created: 2015/12/08 19:29:27 by ngoguey           #+#    #+#             //
-//   Updated: 2016/01/14 17:10:16 by ngoguey          ###   ########.fr       //
+//   Updated: 2016/01/14 17:29:47 by ngoguey          ###   ########.fr       //
 //                                                                            //
 // ************************************************************************** //
 
@@ -130,11 +130,65 @@ int							mainoulol(void)
 	return (0);
 }
 
+void add_dump_pop(VMStack &vmst)
+{
+	VMStack::actmap.at("add")(&vmst, "");
+	VMStack::actmap.at("dump")(&vmst, "");
+	VMStack::actmap.at("pop")(&vmst, "");
+	return ;
+}
+
+
+#include <iomanip>
+
+#define DUMP(T, F)														\
+	std::cout << std::setw(15) << #F ": " << std::numeric_limits<T>::F() << std::endl
+
+
+
 int							main(void)
 {
 	OpFactory fact;
 	VMStack vmst(fact);
 
+	DUMP(float, min);
+	DUMP(float, lowest);
+	DUMP(float, max);
+	DUMP(float, epsilon);
+	DUMP(float, round_error);
+	DUMP(float, infinity);
+	DUMP(float, denorm_min);
+	std::cout << std::endl;
+	DUMP(double, min);
+	DUMP(double, lowest);
+	DUMP(double, max);
+	DUMP(double, epsilon);
+	DUMP(double, round_error);
+	DUMP(double, infinity);
+	DUMP(double, denorm_min);
+	std::cout << std::endl;
+
+
+	VMStack::actmap.at("push")(&vmst, "Float(1000000000)");
+	VMStack::actmap.at("push")(&vmst, "Float(+0)");
+	VMStack::actmap.at("add")(&vmst, "");
+	VMStack::actmap.at("push")(&vmst, "Float(10000000000)");
+	VMStack::actmap.at("push")(&vmst, "Float(+0)");
+	VMStack::actmap.at("add")(&vmst, "");
+	VMStack::actmap.at("push")(&vmst, "Float(100000000000)");
+	VMStack::actmap.at("push")(&vmst, "Float(+0)");
+	VMStack::actmap.at("add")(&vmst, "");
+	VMStack::actmap.at("push")(&vmst, "Float(1000000000000)");
+	VMStack::actmap.at("push")(&vmst, "Float(+0)");
+	VMStack::actmap.at("add")(&vmst, "");
+	VMStack::actmap.at("push")(&vmst, "Float(10000000000000)");
+	VMStack::actmap.at("push")(&vmst, "Float(+0)");
+	VMStack::actmap.at("add")(&vmst, "");
+	VMStack::actmap.at("dump")(&vmst, "");
+	// add_dump_pop(vmst);
+	std::cout << "" << std::endl;
+
+	return 0;
 	VMStack::actmap.at("push")(&vmst, "Int16(-128)");
 	VMStack::actmap.at("push")(&vmst, "Int16(2)");
 	VMStack::actmap.at("sub")(&vmst, "");

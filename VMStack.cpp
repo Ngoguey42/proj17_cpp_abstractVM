@@ -6,7 +6,7 @@
 //   By: ngoguey <ngoguey@student.42.fr>            +#+  +:+       +#+        //
 //                                                +#+#+#+#+#+   +#+           //
 //   Created: 2015/12/09 18:12:25 by ngoguey           #+#    #+#             //
-//   Updated: 2016/01/14 17:15:28 by ngoguey          ###   ########.fr       //
+//   Updated: 2016/01/14 17:16:15 by ngoguey          ###   ########.fr       //
 //                                                                            //
 // ************************************************************************** //
 
@@ -63,17 +63,6 @@ void		VMS::dump(std::string const &) /*unused argument*/
 		std::cout << op->toString() << std::endl;
 	return ;
 }
-
-/*
-** For non commutative operations, consider the stack v1 on v2 on stack_tail,
-** the calculation in infix notation v2 op v1.
-** *
-** -> v1            30
-** -> v2            42
-** -> stack tail
-** *
-** v2 - v1 = 42 - 30 = 12
-*/
 
 void		VMS::arithmetic(VMS::arithfun_t f, std::string const &) /*unused arg2*/
 {
