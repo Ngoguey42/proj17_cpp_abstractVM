@@ -6,7 +6,7 @@
 //   By: ngoguey <ngoguey@student.42.fr>            +#+  +:+       +#+        //
 //                                                +#+#+#+#+#+   +#+           //
 //   Created: 2015/12/09 17:44:53 by ngoguey           #+#    #+#             //
-//   Updated: 2015/12/09 19:02:28 by ngoguey          ###   ########.fr       //
+//   Updated: 2016/01/14 15:23:15 by ngoguey          ###   ########.fr       //
 //                                                                            //
 // ************************************************************************** //
 
@@ -20,6 +20,11 @@
 
 # include "MStack.hpp"
 # include "Operands.hpp"
+
+// VMStack is an iterable stack of IOperand const
+//		supports 11 operations (5 arithmetic)
+// 5 arithmetic
+//		may throw std::out_of_range
 
 class VMStack : public MStack<IOperand const *>
 {

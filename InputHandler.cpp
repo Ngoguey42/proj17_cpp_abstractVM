@@ -6,7 +6,7 @@
 //   By: ngoguey <ngoguey@student.42.fr>            +#+  +:+       +#+        //
 //                                                +#+#+#+#+#+   +#+           //
 //   Created: 2015/12/09 12:19:29 by ngoguey           #+#    #+#             //
-//   Updated: 2015/12/09 17:32:31 by ngoguey          ###   ########.fr       //
+//   Updated: 2016/01/14 15:15:08 by ngoguey          ###   ########.fr       //
 //                                                                            //
 // ************************************************************************** //
 
@@ -14,7 +14,7 @@
 
 using IH = InputHandler;
 
-IH::InputHandler(std::istream &stream, bool fd0) noexcept
+IH::InputHandler(std::istream &stream, bool fd0)
 	: _is(stream), _fd0(fd0), _q(), _line()
 {}
 
@@ -51,7 +51,7 @@ bool	IH::endOfInput(void)
 	return !_is.good();
 }
 
-auto	IH::handle(void) noexcept
+auto	IH::handle(void)
 	-> std::queue<std::string>
 {
 	while (!endOfInput())
@@ -60,5 +60,9 @@ auto	IH::handle(void) noexcept
 		handleCommas();
 		storeLine();
 	}
+	if (_is.bad())
+		throw std::runtime_error("I/O error while reading");
+	else if (!file.eof())
+		throw std::runtime_error("Line read too long");
 	return _q;
 }

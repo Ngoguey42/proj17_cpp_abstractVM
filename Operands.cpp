@@ -6,7 +6,7 @@
 //   By: ngoguey <ngoguey@student.42.fr>            +#+  +:+       +#+        //
 //                                                +#+#+#+#+#+   +#+           //
 //   Created: 2015/12/09 11:03:21 by ngoguey           #+#    #+#             //
-//   Updated: 2015/12/09 17:58:14 by ngoguey          ###   ########.fr       //
+//   Updated: 2016/01/14 15:29:18 by ngoguey          ###   ########.fr       //
 //                                                                            //
 // ************************************************************************** //
 
@@ -16,37 +16,20 @@
 
 using OF = OpFactory;
 
-std::stack<IOperand *>	OF::_garbageCollector{};
-
 IOperand const *OF::createInt8(std::string const &value) const {
-	auto 	i = new Operand<int8_t>(*this, value);
-
-	_garbageCollector.push(i);
-	return i;
+	return new Operand<int8_t>(*this, value);
 }
 IOperand const *OF::createInt16(std::string const &value) const {
-	auto 	i = new Operand<int16_t>(*this, value);
-
-	_garbageCollector.push(i);
-	return i;
+	return new Operand<int16_t>(*this, value);
 }
 IOperand const *OF::createInt32(std::string const &value) const {
-	auto 	i = new Operand<int32_t>(*this, value);
-
-	_garbageCollector.push(i);
-	return i;
+	return new Operand<int32_t>(*this, value);
 }
 IOperand const *OF::createFloat(std::string const &value) const {
-	auto 	i = new Operand<float>(*this, value);
-
-	_garbageCollector.push(i);
-	return i;
+	return new Operand<float>(*this, value);
 }
 IOperand const *OF::createDouble(std::string const &value) const {
-	auto 	i = new Operand<double>(*this, value);
-
-	_garbageCollector.push(i);
-	return i;
+	return new Operand<double>(*this, value);
 }
 
 OF::fun_t const		OF::funs[5] = {

@@ -6,7 +6,7 @@
 //   By: ngoguey <ngoguey@student.42.fr>            +#+  +:+       +#+        //
 //                                                +#+#+#+#+#+   +#+           //
 //   Created: 2015/12/09 11:02:52 by ngoguey           #+#    #+#             //
-//   Updated: 2015/12/09 13:01:13 by ngoguey          ###   ########.fr       //
+//   Updated: 2016/01/14 15:42:42 by ngoguey          ###   ########.fr       //
 //                                                                            //
 // ************************************************************************** //
 
@@ -19,6 +19,11 @@
 
 # define OK_IF(PRED) typename std::enable_if<PRED>::type* = nullptr
 # define ISFLOAT(V) std::is_floating_point<V>::value
+
+// eval()
+//		may throw std::overflow_error
+//		may throw std::underflow_error
+//		may throw std::range_error
 
 template <class T>
 class Evalexpr
@@ -66,7 +71,7 @@ const std::function< T(T, T) >		Evalexpr<T>::operations[5] = {
 	std::divides<T>(),
 	[](T a, T b){ return std::fmod(a, b); },
 };
-// fmod has a special overload working with integer types
+// fmod has a special overload working with integer types:
 // Promoted		fmod(Arithmetic1 x, Arithmetic2 y);
 // http://en.cppreference.com/w/cpp/numeric/math/fmod
 

@@ -6,7 +6,7 @@
 //   By: ngoguey <ngoguey@student.42.fr>            +#+  +:+       +#+        //
 //                                                +#+#+#+#+#+   +#+           //
 //   Created: 2015/12/09 12:24:05 by ngoguey           #+#    #+#             //
-//   Updated: 2015/12/09 17:33:22 by ngoguey          ###   ########.fr       //
+//   Updated: 2016/01/14 15:18:41 by ngoguey          ###   ########.fr       //
 //                                                                            //
 // ************************************************************************** //
 
@@ -17,14 +17,17 @@
 # include <string>
 # include <queue>
 
-// Ouputs a queue of strings, ready for the grammar given in subject
+// Constructor() takes istream informations
+// handle() - ouputs a queue of strings read from stream
+//			- does not close the stream
+//			- may throw std::runtime_error
 
 class InputHandler
 {
 public:
 
 	/* CONSTRUCTION ***************** */
-	InputHandler(std::istream &stream, bool fd0) noexcept;
+	InputHandler(std::istream &stream, bool fd0);
 	~InputHandler();
 
 	InputHandler() = delete;
@@ -33,7 +36,7 @@ public:
 	InputHandler	&operator=(InputHandler const &rhs) = delete;
 	InputHandler	&operator=(InputHandler &&rhs) = delete;
 
-	auto			handle() noexcept
+	auto			handle(void)
 		-> std::queue<std::string>;
 
 private:

@@ -6,7 +6,7 @@
 //   By: ngoguey <ngoguey@student.42.fr>            +#+  +:+       +#+        //
 //                                                +#+#+#+#+#+   +#+           //
 //   Created: 2015/12/09 11:04:37 by ngoguey           #+#    #+#             //
-//   Updated: 2016/01/14 15:00:11 by ngoguey          ###   ########.fr       //
+//   Updated: 2016/01/14 15:39:00 by ngoguey          ###   ########.fr       //
 //                                                                            //
 // ************************************************************************** //
 
@@ -19,9 +19,37 @@
 
 #include "Evalexpr.hpp"
 
-// eOperandType from subject.pdf
-// IOperand from subject.pdf
-// OpFactory from subject.pdf
+// eOperandType defined in subject.pdf
+//		simple enum
+
+// operand_enum
+//		static type -> enum conversions
+
+// IOperand defined in subject.pdf
+//		interface will all allowed operations
+
+// OpFactory required by subject.pdf
+//		factory
+
+// Operand required by subject.pdf
+// OpFactory defined in subject.pdf
+
+
+// Operand constructor
+//		may throw std::? if given a bad string
+// OpFactory
+//		may throw std::? from Operand constructor call
+
+// IOperand operator +
+//		may throw std:: from Evalexpr call
+// IOperand operator -
+//		may throw std:: from Evalexpr call
+// IOperand operator *
+//		may throw std:: from Evalexpr call
+// IOperand operator /
+//		may throw std:: from Evalexpr call
+// IOperand operator %
+//		may throw std:: from Evalexpr call
 
 // Enum *************************************** //
 enum class eOperandType // eOperandType from subject.pdf
@@ -54,7 +82,7 @@ template <>			struct operand_enum<double>
 class IOperand // IOperand from subject.pdf
 {
 public:
-	// virtual int getPrecision(void) const = 0; // Precision of the type of the instance
+	virtual int getPrecision(void) const = 0;
 	virtual eOperandType		getType(void) const = 0;
 	virtual IOperand const		*operator+(IOperand const &rhs) const = 0;
 	virtual IOperand const		*operator-(IOperand const &rhs) const = 0;
@@ -72,7 +100,6 @@ class Operand;
 // Operand Factory **************************** //
 class OpFactory // OpFactory from subject.pdf
 {
-	static std::stack<IOperand *>	_garbageCollector;
 
 	typedef IOperand const *(OpFactory::*fun_t)(std::string const &value) const;
 
@@ -101,13 +128,20 @@ public:
 
 	~Operand() {}
 	Operand(OpFactory const &fact, std::string const &str)
-		: _fact(fact), _val(str) {}
+		: _fact(fact), _val(str) {
+		// TODO: check str validity
+	}
 
 	Operand() = delete;
 	Operand(Operand const &src) = delete;
 	Operand(Operand &&src) = delete;
 	Operand				&operator=(Operand const &rhs) = delete;
 	Operand				&operator=(Operand &&rhs) = delete;
+
+
+	int					getPrecision(void) const override {
+		return TEnumVal;
+	}
 
 	eOperandType		getType(void) const override {
 		return TEnumVal;
