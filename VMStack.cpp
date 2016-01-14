@@ -6,7 +6,7 @@
 //   By: ngoguey <ngoguey@student.42.fr>            +#+  +:+       +#+        //
 //                                                +#+#+#+#+#+   +#+           //
 //   Created: 2015/12/09 18:12:25 by ngoguey           #+#    #+#             //
-//   Updated: 2015/12/10 12:25:59 by ngoguey          ###   ########.fr       //
+//   Updated: 2016/01/14 15:00:27 by ngoguey          ###   ########.fr       //
 //                                                                            //
 // ************************************************************************** //
 
@@ -47,6 +47,5 @@ void		VMS::arithmetic(VMS::arithfun_t f, std::string const &)
 		(b ->* f)(*a);
 	else // reverse case
 		(a ->* f)(*b);
-	else
 	return ;
 }
