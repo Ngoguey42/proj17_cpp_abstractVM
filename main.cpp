@@ -6,7 +6,7 @@
 //   By: ngoguey <ngoguey@student.42.fr>            +#+  +:+       +#+        //
 //                                                +#+#+#+#+#+   +#+           //
 //   Created: 2015/12/08 19:29:27 by ngoguey           #+#    #+#             //
-//   Updated: 2016/01/14 16:52:51 by ngoguey          ###   ########.fr       //
+//   Updated: 2016/01/14 17:10:16 by ngoguey          ###   ########.fr       //
 //                                                                            //
 // ************************************************************************** //
 
@@ -135,22 +135,22 @@ int							main(void)
 	OpFactory fact;
 	VMStack vmst(fact);
 
-	VMStack::actmap.at("push")(&vmst, "Int8(42)");
-	VMStack::actmap.at("push")(&vmst, "Int8(30)");
+	VMStack::actmap.at("push")(&vmst, "Int16(-128)");
+	VMStack::actmap.at("push")(&vmst, "Int16(2)");
 	VMStack::actmap.at("sub")(&vmst, "");
 	VMStack::actmap.at("dump")(&vmst, "");
 	VMStack::actmap.at("pop")(&vmst, "");
 	std::cout << "" << std::endl;
 
-	VMStack::actmap.at("push")(&vmst, "Int8(42)");
-	VMStack::actmap.at("push")(&vmst, "Int16(30)");
+	VMStack::actmap.at("push")(&vmst, "Int8(-128)");
+	VMStack::actmap.at("push")(&vmst, "Int16(2)");
 	VMStack::actmap.at("sub")(&vmst, "");
 	VMStack::actmap.at("dump")(&vmst, "");
 	VMStack::actmap.at("pop")(&vmst, "");
 	std::cout << "" << std::endl;
 
-	VMStack::actmap.at("push")(&vmst, "Int16(42)");
-	VMStack::actmap.at("push")(&vmst, "Int8(30)");
+	VMStack::actmap.at("push")(&vmst, "Int16(-128)");
+	VMStack::actmap.at("push")(&vmst, "Int8(2)");
 	VMStack::actmap.at("sub")(&vmst, "");
 	VMStack::actmap.at("dump")(&vmst, "");
 	VMStack::actmap.at("pop")(&vmst, "");

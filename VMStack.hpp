@@ -6,7 +6,7 @@
 //   By: ngoguey <ngoguey@student.42.fr>            +#+  +:+       +#+        //
 //                                                +#+#+#+#+#+   +#+           //
 //   Created: 2015/12/09 17:44:53 by ngoguey           #+#    #+#             //
-//   Updated: 2016/01/14 16:54:25 by ngoguey          ###   ########.fr       //
+//   Updated: 2016/01/14 16:56:56 by ngoguey          ###   ########.fr       //
 //                                                                            //
 // ************************************************************************** //
 
@@ -52,25 +52,9 @@ public:
 	void		arithmetic(arithfun_t f, std::string const &);
 	void		print(std::string const &) {}
 	void		exit(std::string const &) {}
-	// enum class Operation
-	// {
-	// 	Push = 0,
-	// 		Pop,
-	// 		Dump,
-	// 		Assert,
-	// 		Add,
-	// 		Sub,
-	// 		Mul,
-	// 		Div,
-	// 		Mod,
-	// 		Print,
-	// 		Exit
-	// 		};
-
 
 	/* CONSTRUCTION ***************** */
 	VMStack(OpFactory const &opFact);
-	// virtual ~VMStack();
 	~VMStack() {}
 
 	VMStack() = delete;

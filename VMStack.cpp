@@ -6,7 +6,7 @@
 //   By: ngoguey <ngoguey@student.42.fr>            +#+  +:+       +#+        //
 //                                                +#+#+#+#+#+   +#+           //
 //   Created: 2015/12/09 18:12:25 by ngoguey           #+#    #+#             //
-//   Updated: 2016/01/14 16:55:37 by ngoguey          ###   ########.fr       //
+//   Updated: 2016/01/14 17:15:28 by ngoguey          ###   ########.fr       //
 //                                                                            //
 // ************************************************************************** //
 
@@ -87,10 +87,7 @@ void		VMS::arithmetic(VMS::arithfun_t f, std::string const &) /*unused arg2*/
 	MStack::pop();
 	v2 = std::move(this->top());
 	MStack::pop();
-	if (v2->getType() >= v1->getType()) // normal case
-		newop = (v2 ->* f)(*v1);
-	else // reverse case
-		newop = (v1 ->* f)(*v2);
+	newop = (v2 ->* f)(*v1);
 	MStack::push(newop);
 	delete(v1);
 	delete(v2);

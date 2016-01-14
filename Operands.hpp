@@ -6,7 +6,7 @@
 //   By: ngoguey <ngoguey@student.42.fr>            +#+  +:+       +#+        //
 //                                                +#+#+#+#+#+   +#+           //
 //   Created: 2015/12/09 11:04:37 by ngoguey           #+#    #+#             //
-//   Updated: 2016/01/14 16:52:06 by ngoguey          ###   ########.fr       //
+//   Updated: 2016/01/14 17:14:45 by ngoguey          ###   ########.fr       //
 //                                                                            //
 // ************************************************************************** //
 
@@ -15,6 +15,7 @@
 
 #include <type_traits>
 #include <string>
+#include <iostream> //tmp
 // #include <stack>
 #include <unordered_map>
 
@@ -159,16 +160,26 @@ public:
 
 # define DEFINE_OPERATOR(OP, OPNAME)									\
 	IOperand const		*operator OP(IOperand const &rhs) const override { \
+																		\
 		using Ee = Evalexpr<T>;											\
 																		\
 		eOperandType const	dstType = std::max(rhs.getType(), TEnumVal); \
+		IOperand const *tmp, *ret;										\
 																		\
 		if (dstType == TEnumVal)										\
+		{																\
 			return _fact.createOperand(									\
 				dstType, Ee::eval(_val, Ee::OPNAME, rhs.toString()));	\
+		}																\
 		else															\
-			return rhs OP *this;										\
+		{																\
+			tmp = this->_fact.createOperand(dstType, _val);				\
+			ret = *tmp OP rhs;											\
+			delete(tmp);												\
+			return ret;													\
+		}																\
 	}
+
 
 	DEFINE_OPERATOR(+, Add)
 	DEFINE_OPERATOR(-, Sub)
