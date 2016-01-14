@@ -6,7 +6,7 @@
 //   By: ngoguey <ngoguey@student.42.fr>            +#+  +:+       +#+        //
 //                                                +#+#+#+#+#+   +#+           //
 //   Created: 2015/12/09 17:44:53 by ngoguey           #+#    #+#             //
-//   Updated: 2016/01/14 15:23:15 by ngoguey          ###   ########.fr       //
+//   Updated: 2016/01/14 16:54:25 by ngoguey          ###   ########.fr       //
 //                                                                            //
 // ************************************************************************** //
 
@@ -22,24 +22,32 @@
 # include "Operands.hpp"
 
 // VMStack is an iterable stack of IOperand const
-//		supports 11 operations (5 arithmetic)
+//		supports 11 actions (5 arithmetic)
+//		all arguments are grammar valid, only 2 actions use argument
+
+
+// 1 pop
+//		may throw std::out_of_range if stack size too low
+// 1 push
+//		may throw std::invalid_argument from OpFactory.createOperand()
 // 5 arithmetic
-//		may throw std::out_of_range
+//		may throw std::out_of_range if stack size too low
+//		may throw std::?
 
 class VMStack : public MStack<IOperand const *>
 {
 public:
 
-	typedef std::function<void(VMStack *, std::string const &arg)>	operation_t;
-	typedef std::unordered_map<std::string, operation_t> opmap_t;
+	typedef std::function<void(VMStack *, std::string const &arg)>	action_t;
+	typedef std::unordered_map<std::string, action_t> actmap_t;
 
-	static opmap_t const opmap;
+	static actmap_t const actmap;
 
 	typedef IOperand const *(IOperand::*arithfun_t)(IOperand const &) const;
 
-	void		push(std::string const &arg) {}
-	void		pop(std::string const &) {}
-	void		dump(std::string const &) {}
+	void		push(std::string const &arg);
+	void		pop(std::string const &);
+	void		dump(std::string const &);
 	void		assert(std::string const &arg) {}
 	void		arithmetic(arithfun_t f, std::string const &);
 	void		print(std::string const &) {}
@@ -61,18 +69,18 @@ public:
 
 
 	/* CONSTRUCTION ***************** */
-	VMStack();
+	VMStack(OpFactory const &opFact);
 	// virtual ~VMStack();
-	virtual ~VMStack() {}
+	~VMStack() {}
 
-	// VMStack() = delete;
+	VMStack() = delete;
 	VMStack(VMStack const &src) = delete;
 	VMStack(VMStack &&src) = delete;
 	VMStack					&operator=(VMStack const &rhs) = delete;
 	VMStack					&operator=(VMStack &&rhs) = delete;
 
-protected:
 private:
+	OpFactory const			&_opFact;
 };
 //std::ostream			&operator<<(std::ostream &o, VMStack const &rhs);
 

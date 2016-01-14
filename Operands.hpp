@@ -6,7 +6,7 @@
 //   By: ngoguey <ngoguey@student.42.fr>            +#+  +:+       +#+        //
 //                                                +#+#+#+#+#+   +#+           //
 //   Created: 2015/12/09 11:04:37 by ngoguey           #+#    #+#             //
-//   Updated: 2016/01/14 15:44:24 by ngoguey          ###   ########.fr       //
+//   Updated: 2016/01/14 16:52:06 by ngoguey          ###   ########.fr       //
 //                                                                            //
 // ************************************************************************** //
 
@@ -15,7 +15,8 @@
 
 #include <type_traits>
 #include <string>
-#include <stack>
+// #include <stack>
+#include <unordered_map>
 
 #include "Evalexpr.hpp"
 
@@ -23,7 +24,10 @@
 //		simple enum
 
 // operand_enum
-//		static type -> enum conversions
+//		static (type -> enum) conversions
+
+// OperandMap
+//		runtime (string -> enum) conversions
 
 // IOperand defined in subject.pdf
 //		interface will all allowed operations
@@ -36,9 +40,9 @@
 
 
 // Operand constructor
-//		may throw std::? if given a bad string
+//		may throw std::invalid_argument if given a bad string
 // OpFactory
-//		may throw std::? from Operand constructor call
+//		may throw std::invalid_argument from Operand constructor call
 
 // IOperand operator +
 //		may throw std:: from Evalexpr call
@@ -77,6 +81,8 @@ template <>			struct operand_enum<float>
 
 template <>			struct operand_enum<double>
 	: std::integral_constant<eOperandType, eOperandType::Double> {};
+
+extern std::unordered_map<std::string, eOperandType> const operandMap;
 
 // Interface ********************************** //
 class IOperand // IOperand from subject.pdf
@@ -129,7 +135,7 @@ public:
 	~Operand() {}
 	Operand(OpFactory const &fact, std::string const &str)
 		: _fact(fact), _val(str) {
-		// TODO: check str validity
+		// TODO: check str validity and std::invalid_argument
 	}
 
 	Operand() = delete;
@@ -157,11 +163,11 @@ public:
 																		\
 		eOperandType const	dstType = std::max(rhs.getType(), TEnumVal); \
 																		\
-		if (dstType != TEnumVal)										\
-			return rhs OP *this;										\
-		else															\
+		if (dstType == TEnumVal)										\
 			return _fact.createOperand(									\
 				dstType, Ee::eval(_val, Ee::OPNAME, rhs.toString()));	\
+		else															\
+			return rhs OP *this;										\
 	}
 
 	DEFINE_OPERATOR(+, Add)

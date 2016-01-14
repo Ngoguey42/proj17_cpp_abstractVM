@@ -6,15 +6,27 @@
 //   By: ngoguey <ngoguey@student.42.fr>            +#+  +:+       +#+        //
 //                                                +#+#+#+#+#+   +#+           //
 //   Created: 2015/12/08 19:29:27 by ngoguey           #+#    #+#             //
-//   Updated: 2015/12/09 19:09:38 by ngoguey          ###   ########.fr       //
+//   Updated: 2016/01/14 16:52:51 by ngoguey          ###   ########.fr       //
 //                                                                            //
 // ************************************************************************** //
 
 #include <iostream>
 #include "MStack.hpp"
+#include "VMStack.hpp"
 
 #include "Operands.hpp"
 #include "Evalexpr.hpp"
+
+/*
+** For non commutative operations, consider the stack v1 on v2 on stack_tail,
+** the calculation in infix notation v2 op v1.
+** *
+** -> v1			30
+** -> v2			42
+** -> stack tail
+** *
+** v2 - v1 = 42 - 30 = 12
+*/
 
 namespace internal // ~~~~~~~~~~~~~~~~~~~~~~~~~ //
 { // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ //
@@ -120,29 +132,28 @@ int							mainoulol(void)
 
 int							main(void)
 {
-	MStack<IOperand const*>		st;
-	OpFactory					fact;
-	IOperand const				*prev = nullptr;
+	OpFactory fact;
+	VMStack vmst(fact);
 
-	st.push(fact.createOperand(eOperandType::Float, "24.1546"));
-	st.push(fact.createOperand(eOperandType::Double, "0.000000000001"));
-
-	for (auto const elt : st)
-		std::cout << elt->toString() << std::endl;
-
-	prev = nullptr;
-	for (auto const elt : st)
-	{
-		if (prev != nullptr)
-		{
-			prev = *prev + *elt;
-		}
-		else
-			prev = elt;
-	}
-	st.push(prev);
+	VMStack::actmap.at("push")(&vmst, "Int8(42)");
+	VMStack::actmap.at("push")(&vmst, "Int8(30)");
+	VMStack::actmap.at("sub")(&vmst, "");
+	VMStack::actmap.at("dump")(&vmst, "");
+	VMStack::actmap.at("pop")(&vmst, "");
 	std::cout << "" << std::endl;
-	for (auto const elt : st)
-		std::cout << elt->toString() << std::endl;
+
+	VMStack::actmap.at("push")(&vmst, "Int8(42)");
+	VMStack::actmap.at("push")(&vmst, "Int16(30)");
+	VMStack::actmap.at("sub")(&vmst, "");
+	VMStack::actmap.at("dump")(&vmst, "");
+	VMStack::actmap.at("pop")(&vmst, "");
+	std::cout << "" << std::endl;
+
+	VMStack::actmap.at("push")(&vmst, "Int16(42)");
+	VMStack::actmap.at("push")(&vmst, "Int8(30)");
+	VMStack::actmap.at("sub")(&vmst, "");
+	VMStack::actmap.at("dump")(&vmst, "");
+	VMStack::actmap.at("pop")(&vmst, "");
+	std::cout << "" << std::endl;
 	return (0);
 }
