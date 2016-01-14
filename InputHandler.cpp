@@ -6,7 +6,7 @@
 //   By: ngoguey <ngoguey@student.42.fr>            +#+  +:+       +#+        //
 //                                                +#+#+#+#+#+   +#+           //
 //   Created: 2015/12/09 12:19:29 by ngoguey           #+#    #+#             //
-//   Updated: 2016/01/14 15:15:08 by ngoguey          ###   ########.fr       //
+//   Updated: 2016/01/14 15:44:41 by ngoguey          ###   ########.fr       //
 //                                                                            //
 // ************************************************************************** //
 
@@ -62,7 +62,7 @@ auto	IH::handle(void)
 	}
 	if (_is.bad())
 		throw std::runtime_error("I/O error while reading");
-	else if (!file.eof())
+	else if (!_is.eof())
 		throw std::runtime_error("Line read too long");
 	return _q;
 }

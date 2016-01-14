@@ -6,7 +6,7 @@
 //   By: ngoguey <ngoguey@student.42.fr>            +#+  +:+       +#+        //
 //                                                +#+#+#+#+#+   +#+           //
 //   Created: 2015/12/09 11:04:37 by ngoguey           #+#    #+#             //
-//   Updated: 2016/01/14 15:39:00 by ngoguey          ###   ########.fr       //
+//   Updated: 2016/01/14 15:44:24 by ngoguey          ###   ########.fr       //
 //                                                                            //
 // ************************************************************************** //
 
@@ -140,7 +140,7 @@ public:
 
 
 	int					getPrecision(void) const override {
-		return TEnumVal;
+		return static_cast<int>(TEnumVal);
 	}
 
 	eOperandType		getType(void) const override {
