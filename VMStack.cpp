@@ -72,9 +72,9 @@ void		VMS::arithmetic(VMS::arithfun_t f, std::string const &) /*unused arg2*/
 
 	if (this->size() < 2)
 		throw std::out_of_range("Stack size too low for arithmetic");
-	v1 = std::move(this->top());
+	v1 = this->top();
 	MStack::pop();
-	v2 = std::move(this->top());
+	v2 = this->top();
 	MStack::pop();
 	newop = (v2 ->* f)(*v1);
 	MStack::push(newop);
