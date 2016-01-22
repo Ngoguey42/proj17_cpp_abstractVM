@@ -6,7 +6,7 @@
 //   By: ngoguey <ngoguey@student.42.fr>            +#+  +:+       +#+        //
 //                                                +#+#+#+#+#+   +#+           //
 //   Created: 2015/12/09 17:44:53 by ngoguey           #+#    #+#             //
-//   Updated: 2016/01/14 17:21:43 by ngoguey          ###   ########.fr       //
+//   Updated: 2016/01/22 19:26:47 by ngoguey          ###   ########.fr       //
 //                                                                            //
 // ************************************************************************** //
 
@@ -55,7 +55,7 @@ public:
 
 	/* CONSTRUCTION ***************** */
 	VMStack(OpFactory const &opFact);
-	~VMStack() {}
+	~VMStack() {} //TODO: check functions implemented in a header
 
 	VMStack() = delete;
 	VMStack(VMStack const &src) = delete;

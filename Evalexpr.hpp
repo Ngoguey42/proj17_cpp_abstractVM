@@ -6,7 +6,7 @@
 //   By: ngoguey <ngoguey@student.42.fr>            +#+  +:+       +#+        //
 //                                                +#+#+#+#+#+   +#+           //
 //   Created: 2015/12/09 11:02:52 by ngoguey           #+#    #+#             //
-//   Updated: 2016/01/22 19:21:27 by ngoguey          ###   ########.fr       //
+//   Updated: 2016/01/22 19:55:49 by ngoguey          ###   ########.fr       //
 //                                                                            //
 // ************************************************************************** //
 
@@ -62,22 +62,6 @@ namespace detail // ~~~~~~~~~~~~~~~~~~~~~~~~~~~ //
 
 
 // Is operand Div or Mod ================================ //
-struct OperationChar
-{
-	constexpr char operator [] (eOperation const &op) const {
-
-		constexpr char value[] = {
-			[eOperation::Add] = '+',
-			[eOperation::Sub] = '-',
-			[eOperation::Div] = '/',
-			[eOperation::Mul] = '*',
-			[eOperation::Mod] = '%',
-		};
-		return value[op];
-	}
-};
-
-// Is operand Div or Mod ================================ //
 template <eOperation> struct IsDivOrMod
 	: public std::integral_constant<bool, false>
 {};
@@ -110,13 +94,52 @@ template <class T> struct RawOperation<T, eOperation::Mod, false> {
 	static constexpr auto func = std::modulus<T>();
 };
 
+// eOperation to char =================================== //
+struct OperationChar
+{
+	constexpr char operator [] (eOperation const &op) const {
+
+		constexpr char value[] = {
+			[eOperation::Add] = '+',
+			[eOperation::Sub] = '-',
+			[eOperation::Div] = '/',
+			[eOperation::Mul] = '*',
+			[eOperation::Mod] = '%',
+		};
+		return value[op];
+	}
+};
+
+// Operation to ostringstream =========================== //
+template <class T, eOperation Operation>
+struct OperationToOss
+{
+	void operator () (std::stringstream &oss, T const &x, T const &y) {
+
+		oss << "(" << x << " " << OperationChar()[Operation] << " " << y << ")";
+		return ;
+	}
+};
+
+template <eOperation Operation>
+struct OperationToOss<int8_t, Operation>
+{
+	void operator () (
+		std::stringstream &oss, int8_t const &x, int8_t const &y) {
+
+		oss << "(" << int(x) << " " << OperationChar()[Operation]
+			<< " " << int(y) << ")";
+		return ;
+	}
+};
+
 // Error handling ======================================= //
 template <class T, eOperation Operation>
 [[ noreturn ]] void floatThrow(T const &x, T const &y) {
 
 	std::stringstream oss{};
 
-	oss << "( " << x << OperationChar()[Operation] << y << ")";
+	OperationToOss<T, Operation>()(oss, x, y);
 	if (std::fetestexcept(FE_DIVBYZERO))
 	{
 		oss << "(div by 0)";
@@ -137,7 +160,7 @@ template <class T, eOperation Operation>
 
 	std::stringstream oss{};
 
-	oss << "( " << x << OperationChar()[Operation] << y << ") ";
+	OperationToOss<T, Operation>()(oss, x, y);
 	throw std::overflow_error(oss.str());
 }
 
@@ -146,7 +169,8 @@ template <class T, eOperation Operation>
 
 	std::stringstream oss{};
 
-	oss << "( " << x << OperationChar()[Operation] << y << ") " << "(div by 0)";
+	OperationToOss<T, Operation>()(oss, x, y);
+	oss << "(div by 0)";
 	throw std::domain_error(oss.str());
 }
 
@@ -196,8 +220,11 @@ struct SecuredOperation<T, Operation, false, false>
 {
 	T operator ()(T const &x, T const &y) {
 
-		T const ret = RawOperation<T, Operation, false>::func(x, y);
-		T const reti = RawOperation<int64_t, Operation, false>::func(x, y);
+		using ROp = RawOperation<T, Operation, false>;
+		using ROpi = RawOperation<int64_t, Operation, false>;
+
+		T const ret = ROp::func(x, y);
+		int64_t const reti = ROpi::func(x, y);
 
 		if (int64_t(ret) != reti)
 			integerOverflowThrow<T, Operation>(x, y);

@@ -6,7 +6,7 @@
 //   By: ngoguey <ngoguey@student.42.fr>            +#+  +:+       +#+        //
 //                                                +#+#+#+#+#+   +#+           //
 //   Created: 2015/12/08 19:29:27 by ngoguey           #+#    #+#             //
-//   Updated: 2016/01/22 14:11:02 by ngoguey          ###   ########.fr       //
+//   Updated: 2016/01/22 19:49:04 by ngoguey          ###   ########.fr       //
 //                                                                            //
 // ************************************************************************** //
 
@@ -43,6 +43,51 @@ void add_dump_pop(VMStack &vmst)
 	return ;
 }
 
+void sub_dump_pop(VMStack &vmst)
+{
+	VMStack::actmap.at("sub")(&vmst, "");
+	VMStack::actmap.at("dump")(&vmst, "");
+	VMStack::actmap.at("pop")(&vmst, "");
+	return ;
+}
+
+
+
+int							main(void)
+{
+	OpFactory fact;
+	VMStack vmst(fact);
+
+	VMStack::actmap.at("push")(&vmst, "Int8(127)");
+	VMStack::actmap.at("push")(&vmst, "Int8(1)");
+	VMStack::actmap.at("dump")(&vmst, "");
+	std::cout << std::endl;
+	add_dump_pop(vmst);
+
+	VMStack::actmap.at("push")(&vmst, "Int16(-32768)");
+	VMStack::actmap.at("push")(&vmst, "Int16(1)");
+	VMStack::actmap.at("dump")(&vmst, "");
+	std::cout << std::endl;
+	sub_dump_pop(vmst);
+
+
+	// int a = 42;
+	// int b = 12;
+
+	// auto d = ee::detail::RawOperation<float, ee::Add, true>::func(a, b);
+
+	// std::cout << d << std::endl;
+	// std::cout << typeid(decltype(a)).name() << std::endl;
+	// std::cout << typeid(decltype(b)).name() << std::endl;
+	// std::cout << typeid(decltype(d)).name() << std::endl;
+
+	return (0);
+}
+
+
+
+
+
 #define DUMP(T, F)														\
 	std::cout << std::setw(15) << #F ": " << std::numeric_limits<T>::F() << std::endl
 
@@ -69,108 +114,6 @@ void dumpFeExcept(void)
 		std::cout << " val -> " << (isflt ? val : (int)val) << std::endl; \
 		dumpFeExcept();													\
 	} while (0)
-
-
-
-char plus(char a, char b)
-{
-	char const res = a + b;
-
-	if (b > char(0))
-	{
-		if (res < a)
-			throw std::overflow_error("bordel!");
-	}
-	else
-	{
-		if (res > a)
-			throw std::overflow_error("bordel!");
-	}
-	return res;
-}
-
-char minus(char a, char b)
-{
-	char const res = a - b;
-
-	if (b > char(0))
-	{
-		if (res > a)
-			throw std::overflow_error("bordel!");
-	}
-	else
-	{
-		if (res < a)
-			throw std::overflow_error("bordel!");
-	}
-	return res;
-}
-
-char multiplies(char a, char b)
-{
-	char const res = a * b;
-
-	if ((a > char(0)) == (b > char(0)))
-	{
-		if (res < a)
-			throw std::overflow_error("bordel!");
-	}
-	else
-	{
-		if (res > a)
-			throw std::overflow_error("bordel!");
-	}
-	return res;
-}
-
-
-void test(char (*fc)(char, char), std::function< int(int, int) > fi)
-{
-	char i = -128;
-	int nsucc = 0;
-
-	do {
-		char j = -128;
-		// std::cout << int(i) << " ";
-		do {
-			int const resi = fi(i, j);
-			char res;
-			bool thrown;
-			bool overflow;
-
-			try {
-				res = fc(i, j);
-				thrown = false;
-			} catch (...) {
-				thrown = true;
-			}
-			overflow = resi != int(res);
-
-			if (overflow != thrown)
-			{
-				std::cout << "thrown(" << std::boolalpha << thrown
-						  << ") at op(" << int(i) << ", " << int (j)
-						  << ")"
-						  << std::endl;
-			}
-			else
-				nsucc++;
-		} while (j++ < 127);
-	} while (i++ < 127);
-	std::cout << "Done " << nsucc << " success" << std::endl;
-	return ;
-}
-
-
-int	main(void)
-{
-
-	test(&minus, std::minus<int>());
-	test(&plus, std::plus<int>());
-	test(&multiplies, std::multiplies<int>());
-
-	return (0);
-}
 
 
 int mainold()

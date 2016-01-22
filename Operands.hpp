@@ -6,7 +6,7 @@
 //   By: ngoguey <ngoguey@student.42.fr>            +#+  +:+       +#+        //
 //                                                +#+#+#+#+#+   +#+           //
 //   Created: 2015/12/09 11:04:37 by ngoguey           #+#    #+#             //
-//   Updated: 2016/01/22 19:19:02 by ngoguey          ###   ########.fr       //
+//   Updated: 2016/01/22 19:24:33 by ngoguey          ###   ########.fr       //
 //                                                                            //
 // ************************************************************************** //
 
@@ -179,7 +179,6 @@ public:
 			return ret;													\
 		}																\
 	}
-
 
 	DEFINE_OPERATOR(+, Add)
 	DEFINE_OPERATOR(-, Sub)
