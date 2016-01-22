@@ -6,7 +6,7 @@
 //   By: ngoguey <ngoguey@student.42.fr>            +#+  +:+       +#+        //
 //                                                +#+#+#+#+#+   +#+           //
 //   Created: 2015/12/09 11:02:52 by ngoguey           #+#    #+#             //
-//   Updated: 2016/01/14 15:42:42 by ngoguey          ###   ########.fr       //
+//   Updated: 2016/01/22 13:41:29 by ngoguey          ###   ########.fr       //
 //                                                                            //
 // ************************************************************************** //
 
@@ -20,10 +20,25 @@
 # define OK_IF(PRED) typename std::enable_if<PRED>::type* = nullptr
 # define ISFLOAT(V) std::is_floating_point<V>::value
 
-// eval()
-//		may throw std::overflow_error
-//		may throw std::underflow_error
-//		may throw std::range_error
+/*
+** Floating Point
+**  Add std::plus		overflow_error
+**  Sub std::minus		overflow_error
+**  Div std::divides	overflow_error underflow_error domain_error
+**		0. / 0. gives FE_INVALID
+**		x / 0. gives FE_DIVBYZERO
+**  Mul std::multiplies	overflow_error underflow_error
+**  Mod std::ftoi		domain_error
+**		0. % 0. gives FE_INVALID
+**		x % 0. gives FE_INVALID
+**
+** Integer
+**  Add std::plus		overflow_error
+**  Sub std::minus		overflow_error
+**  Div std::divides	domain_error
+**  Mul std::multiplies	overflow_error
+**  Mod std::modulus	domain_error
+*/
 
 template <class T>
 class Evalexpr
@@ -55,7 +70,7 @@ public:
 		Mod
 	};
 
-	static std::string		eval(
+	static std::string eval(
 		std::string const &lhs, eOperation o, std::string const &rhs) {
 		T const		res = operations[o](conv(lhs), conv(rhs));
 
@@ -63,17 +78,38 @@ public:
 	}
 };
 
+
+namespace detail // ~~~~~~~~~~~~~~~~~~~~~~~~~~~ //
+{ // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ //
+
+
+template <class T, bool ISFLOAT>
+struct Modulo;
+
 template <class T>
-const std::function< T(T, T) >		Evalexpr<T>::operations[5] = {
+struct Modulo<T, true>
+{
+	T operator () (T const &x, T const &y) const{
+		return x;
+	}
+};
+
+template <class T>
+struct Modulo<T, false> : std::modulus<T> {};
+
+
+}; // ~~~~~~~~~~~~~~~~~ END OF NAMESPACE DETAIL //
+// ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ //
+
+
+template <class T>
+const std::function< T(T, T) > Evalexpr<T>::operations[5] = {
 	std::plus<T>(),
 	std::minus<T>(),
 	std::multiplies<T>(),
 	std::divides<T>(),
-	[](T a, T b){ return std::fmod(a, b); },
+	detail::Modulo<T, ISFLOAT(T)>(),
 };
-// fmod has a special overload working with integer types:
-// Promoted		fmod(Arithmetic1 x, Arithmetic2 y);
-// http://en.cppreference.com/w/cpp/numeric/math/fmod
 
 # undef OF_IF
 # undef ISFLOAT

@@ -6,7 +6,7 @@
 //   By: ngoguey <ngoguey@student.42.fr>            +#+  +:+       +#+        //
 //                                                +#+#+#+#+#+   +#+           //
 //   Created: 2015/12/08 19:29:27 by ngoguey           #+#    #+#             //
-//   Updated: 2016/01/22 11:56:42 by ngoguey          ###   ########.fr       //
+//   Updated: 2016/01/22 13:32:20 by ngoguey          ###   ########.fr       //
 //                                                                            //
 // ************************************************************************** //
 
@@ -49,11 +49,9 @@ void add_dump_pop(VMStack &vmst)
 void dumpFeExcept(void)
 {
 #define REPORT(FLAG)									\
-	std::cout << std::setw(13) << #FLAG;				\
 	if (std::fetestexcept((FLAG)))						\
-		std::cout << " \033[31m1\033[0m" << std::endl;	\
-	else												\
-		std::cout << " 0" << std::endl
+		std::cout << std::setw(13) << #FLAG <<			\
+			" \033[31m1\033[0m" << std::endl
 	REPORT(FE_DIVBYZERO);
 	REPORT(FE_INVALID);
 	REPORT(FE_OVERFLOW);
@@ -65,15 +63,13 @@ void dumpFeExcept(void)
 #define TESTA(EXPR)														\
 	do {																\
 		std::feclearexcept(FE_ALL_EXCEPT);								\
-		std::cout << #EXPR << std::endl;								\
+		std::cout << #EXPR << ";" << std::endl;							\
 		EXPR;															\
 		bool isflt = std::is_floating_point<decltype(val)>::value;		\
 		std::cout << " val -> " << (isflt ? val : (int)val) << std::endl; \
 		dumpFeExcept();													\
 	} while (0)
 
-#define TESTB(EXPR)														\
-	std::cout << #EXPR << " gave type: " << type_of_expr(EXPR) << '\n'
 
 int main()
 {
@@ -87,21 +83,41 @@ int main()
 	std::cout << std::endl;
 
 #define DEFINE(TYPE, FUN)												\
-	std::cout << "defined: " #TYPE #FUN << std::endl;					\
+	std::cout << "defined: " #TYPE #FUN << ";" << std::endl;			\
 	volatile const TYPE TYPE##FUN = std::numeric_limits<TYPE>::FUN();	\
 	(void)TYPE##FUN
 
 	DEFINE(double, max);
-	DEFINE(float, max);
+	// DEFINE(float, max);
 	DEFINE(double, lowest);
-	DEFINE(float, lowest);
+	// DEFINE(float, lowest);
 	DEFINE(double, min);
-	DEFINE(float, min);
+	// DEFINE(float, min);
 	DEFINE(double, denorm_min);
-	DEFINE(float, denorm_min);
+	// DEFINE(float, denorm_min);
+	volatile const double doublezero = 0.; (void)doublezero;
+	// volatile const float floatzero = 0.; (void)floatzero;
 
+	std::cout << "==================================================" << std::endl;
 	TESTA(const double val = doublemax + doublemax);
 	TESTA(const double val = doublelowest + doublelowest);
-	TESTA(const double val = doubledenorm_min / 2);
+	TESTA(const double val = doublelowest * 2.);
+	TESTA(const double val = 1. / doubledenorm_min);
+	std::cout << "==================================================" << std::endl;
+	TESTA(const double val = doubledenorm_min / 2.);
+	TESTA(const double val = 1. / doublemax);
+	TESTA(const double val = doubledenorm_min * doubledenorm_min);
+	std::cout << "==================================================" << std::endl;
+	TESTA(const double val = 1. / doublezero);
+	std::cout << "==================================================" << std::endl;
+	TESTA(const double val = doublezero / doublezero);
+	TESTA(const double val = fmod(doublezero, doublezero));
+	TESTA(const double val = fmod(1., doublezero));
+	TESTA(const double val = fmod(doubledenorm_min, doubledenorm_min));
+	TESTA(const double val = fmod(doublemax, doubledenorm_min));
+	TESTA(const double val = fmod(doubledenorm_min, doublemax));
+	TESTA(const double val = fmod(doublemax, doublemax));
+
+
 	return 0;
 }

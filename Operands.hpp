@@ -6,7 +6,7 @@
 //   By: ngoguey <ngoguey@student.42.fr>            +#+  +:+       +#+        //
 //                                                +#+#+#+#+#+   +#+           //
 //   Created: 2015/12/09 11:04:37 by ngoguey           #+#    #+#             //
-//   Updated: 2016/01/14 17:16:21 by ngoguey          ###   ########.fr       //
+//   Updated: 2016/01/22 11:59:21 by ngoguey          ###   ########.fr       //
 //                                                                            //
 // ************************************************************************** //
 
@@ -46,15 +46,16 @@
 //		may throw std::invalid_argument from Operand constructor call
 
 // IOperand operator +
-//		may throw std:: from Evalexpr call
+//		may throw std::overflow_error from Evalexpr call
 // IOperand operator -
-//		may throw std:: from Evalexpr call
+//		may throw std::overflow_error from Evalexpr call
 // IOperand operator *
-//		may throw std:: from Evalexpr call
+//		may throw std::overflow_error from Evalexpr call
 // IOperand operator /
-//		may throw std:: from Evalexpr call
+//		may throw std::domain_error from Evalexpr call
+//		may throw std::underflow_error from Evalexpr call
 // IOperand operator %
-//		may throw std:: from Evalexpr call
+//		may throw std::domain_error from Evalexpr call
 
 // Enum *************************************** //
 enum class eOperandType // eOperandType from subject.pdf
