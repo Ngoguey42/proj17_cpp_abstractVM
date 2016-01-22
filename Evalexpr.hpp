@@ -6,7 +6,7 @@
 //   By: ngoguey <ngoguey@student.42.fr>            +#+  +:+       +#+        //
 //                                                +#+#+#+#+#+   +#+           //
 //   Created: 2015/12/09 11:02:52 by ngoguey           #+#    #+#             //
-//   Updated: 2016/01/22 17:23:15 by ngoguey          ###   ########.fr       //
+//   Updated: 2016/01/22 18:02:46 by ngoguey          ###   ########.fr       //
 //                                                                            //
 // ************************************************************************** //
 
@@ -54,6 +54,21 @@ enum eOperation
 	Mod
 };
 
+struct OperationChar
+{
+	constexpr char operator [] (eOperation const &op) const {
+
+		constexpr char value[] = {
+			[eOperation::Add] = '+',
+			[eOperation::Sub] = '-',
+			[eOperation::Div] = '/',
+			[eOperation::Mul] = '*',
+			[eOperation::Mod] = '%',
+		};
+		return value[op];
+	}
+};
+
 namespace detail // ~~~~~~~~~~~~~~~~~~~~~~~~~~~ //
 { // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ //
 
@@ -90,19 +105,23 @@ template <class T> struct RawOperation<T, eOperation::Mod, false> {
 	static const auto func = std::modulus<T>();
 };
 
-// Error msg builder ==================================== //
-template <class T>
-[[ noreturn ]] void floatErr(T const &x, T const &y) {
+// Error handling ======================================= //
+template <class T, eOperation Operation>
+[[ noreturn ]] void floatThrow(T const &x, T const &y) {
 
-	std::stringstream ret;
+	std::stringstream oss{};
 
-	ret << "( " << x << " todo " << y << ") ";
+	oss << "( " << x << OperationChar()[Operation] << y << ") ";
 	if (std::fetestexcept(FE_DIVBYZERO))
-	{
-		ret << "Division by 0";
-		throw std::domain_error(ret.str());
-	}
-	throw 42;
+		throw std::domain_error(oss.str());
+	else if (std::fetestexcept(FE_INVALID))
+		throw std::domain_error(oss.str());
+	else if (std::fetestexcept(FE_OVERFLOW))
+		throw std::overflow_error(oss.str());
+	else if (std::fetestexcept(FE_UNDERFLOW))
+		throw std::underflow_error(oss.str());
+	oss << __FUNCTION__ << ":" << __LINE__ << "Should not be reached";
+	throw std::logic_error(oss.str());
 }
 
 
@@ -113,7 +132,16 @@ struct Evalexpr;
 template <class T, eOperation Operation, bool IsDivOrMod>
 struct Evalexpr<T, Operation, true, IsDivOrMod>
 {
+	T operator ()(T const &x, T const &y) {
 
+		T ret;
+
+		std::feclearexcept(FE_ALL_EXCEPT);
+		ret = RawOperation<T, Operation, true>::func(x, y);
+		if (std::fetestexcept(FE_ALL_EXCEPT & ~FE_INEXACT))
+			floatThrow<T, eOperation::Mod>(x, y);
+		return ret;
+	}
 };
 
 template <class T>
@@ -132,8 +160,7 @@ struct Evalexpr<T, eOperation::Mod, true, true>
 				std::feclearexcept(FE_INVALID);
 				std::feraiseexcept(FE_DIVBYZERO);
 			}
-				// throw std::domain_error("msg div by zero");
-
+			floatThrow<T, eOperation::Mod>(x, y);
 		}
 		return ret;
 	}
