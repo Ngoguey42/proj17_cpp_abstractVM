@@ -6,7 +6,7 @@
 //   By: ngoguey <ngoguey@student.42.fr>            +#+  +:+       +#+        //
 //                                                +#+#+#+#+#+   +#+           //
 //   Created: 2015/12/09 11:02:52 by ngoguey           #+#    #+#             //
-//   Updated: 2016/01/22 19:55:49 by ngoguey          ###   ########.fr       //
+//   Updated: 2016/01/22 20:03:24 by ngoguey          ###   ########.fr       //
 //                                                                            //
 // ************************************************************************** //
 
@@ -116,7 +116,8 @@ struct OperationToOss
 {
 	void operator () (std::stringstream &oss, T const &x, T const &y) {
 
-		oss << "(" << x << " " << OperationChar()[Operation] << " " << y << ")";
+		oss << "(" << x << " " << OperationChar()[Operation]
+			<< " " << y << ")";
 		return ;
 	}
 };
@@ -181,7 +182,7 @@ struct SecuredOperation;
 template <class T, eOperation Operation, bool IsDivOrMod>
 struct SecuredOperation<T, Operation, true, IsDivOrMod>
 {
-	T operator ()(T const &x, T const &y) {
+	T operator () (T const &x, T const &y) {
 
 		T ret;
 
@@ -196,7 +197,7 @@ struct SecuredOperation<T, Operation, true, IsDivOrMod>
 template <class T>
 struct SecuredOperation<T, eOperation::Mod, true, true>
 {
-	T operator ()(T const &x, T const &y) {
+	T operator () (T const &x, T const &y) {
 
 		T ret;
 
@@ -218,7 +219,7 @@ struct SecuredOperation<T, eOperation::Mod, true, true>
 template <class T, eOperation Operation>
 struct SecuredOperation<T, Operation, false, false>
 {
-	T operator ()(T const &x, T const &y) {
+	T operator () (T const &x, T const &y) {
 
 		using ROp = RawOperation<T, Operation, false>;
 		using ROpi = RawOperation<int64_t, Operation, false>;
@@ -236,7 +237,7 @@ struct SecuredOperation<T, Operation, false, false>
 template <class T, eOperation Operation, bool IsDivOrMod>
 struct SecuredOperation<T, Operation, false, IsDivOrMod>
 {
-	T operator ()(T const &x, T const &y) {
+	T operator () (T const &x, T const &y) {
 
 		T ret;
 
@@ -262,7 +263,7 @@ template <class T, eOperation Operation>
 class Evalexpr
 {
 
-	static std::string		conv(T v) {
+	static std::string		conv(T v) { //TODO: improve conversions
 		return std::to_string(v);
 	}
 
