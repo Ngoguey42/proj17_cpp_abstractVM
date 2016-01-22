@@ -6,7 +6,7 @@
 //   By: ngoguey <ngoguey@student.42.fr>            +#+  +:+       +#+        //
 //                                                +#+#+#+#+#+   +#+           //
 //   Created: 2015/12/09 11:04:37 by ngoguey           #+#    #+#             //
-//   Updated: 2016/01/22 11:59:21 by ngoguey          ###   ########.fr       //
+//   Updated: 2016/01/22 19:19:02 by ngoguey          ###   ########.fr       //
 //                                                                            //
 // ************************************************************************** //
 
@@ -162,15 +162,14 @@ public:
 # define DEFINE_OPERATOR(OP, OPNAME)									\
 	IOperand const		*operator OP(IOperand const &rhs) const override { \
 																		\
-		using Ee = Evalexpr<T>;											\
+		using Ee = ee::Evalexpr<T, ee::OPNAME>;							\
 																		\
 		eOperandType const	dstType = std::max(rhs.getType(), TEnumVal); \
 		IOperand const *tmp, *ret;										\
 																		\
 		if (dstType == TEnumVal)										\
 		{																\
-			return _fact.createOperand(									\
-				dstType, Ee::eval(_val, Ee::OPNAME, rhs.toString()));	\
+			return _fact.createOperand(dstType, Ee()(_val, rhs.toString())); \
 		}																\
 		else															\
 		{																\

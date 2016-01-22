@@ -6,7 +6,7 @@
 //   By: ngoguey <ngoguey@student.42.fr>            +#+  +:+       +#+        //
 //                                                +#+#+#+#+#+   +#+           //
 //   Created: 2015/12/09 11:02:52 by ngoguey           #+#    #+#             //
-//   Updated: 2016/01/22 18:02:46 by ngoguey          ###   ########.fr       //
+//   Updated: 2016/01/22 19:21:27 by ngoguey          ###   ########.fr       //
 //                                                                            //
 // ************************************************************************** //
 
@@ -42,8 +42,10 @@
 **  Mod std::modulus	domain_error
 */
 
-namespace tmp // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ //
+
+namespace ee // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ //
 { // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ //
+
 
 enum eOperation
 {
@@ -54,6 +56,12 @@ enum eOperation
 	Mod
 };
 
+
+namespace detail // ~~~~~~~~~~~~~~~~~~~~~~~~~~~ //
+{ // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ //
+
+
+// Is operand Div or Mod ================================ //
 struct OperationChar
 {
 	constexpr char operator [] (eOperation const &op) const {
@@ -68,9 +76,6 @@ struct OperationChar
 		return value[op];
 	}
 };
-
-namespace detail // ~~~~~~~~~~~~~~~~~~~~~~~~~~~ //
-{ // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ //
 
 // Is operand Div or Mod ================================ //
 template <eOperation> struct IsDivOrMod
@@ -87,22 +92,22 @@ template <> struct IsDivOrMod<eOperation::Mod>
 template <class T, eOperation, bool> struct RawOperation;
 
 template <class T, bool Float> struct RawOperation<T, eOperation::Add, Float> {
-	static const auto func = std::plus<T>();
+	static constexpr auto func = std::plus<T>();
 };
 template <class T, bool Float> struct RawOperation<T, eOperation::Sub, Float> {
-	static const auto func = std::minus<T>();
+	static constexpr auto func = std::minus<T>();
 };
 template <class T, bool Float> struct RawOperation<T, eOperation::Div, Float> {
-	static const auto func = std::divides<T>();
+	static constexpr auto func = std::divides<T>();
 };
 template <class T, bool Float> struct RawOperation<T, eOperation::Mul, Float> {
-	static const auto func = std::multiplies<T>();
+	static constexpr auto func = std::multiplies<T>();
 };
 template <class T> struct RawOperation<T, eOperation::Mod, true> {
 	static constexpr auto func = static_cast< T(*)(T, T) >(std::fmod);
 };
 template <class T> struct RawOperation<T, eOperation::Mod, false> {
-	static const auto func = std::modulus<T>();
+	static constexpr auto func = std::modulus<T>();
 };
 
 // Error handling ======================================= //
@@ -111,9 +116,12 @@ template <class T, eOperation Operation>
 
 	std::stringstream oss{};
 
-	oss << "( " << x << OperationChar()[Operation] << y << ") ";
+	oss << "( " << x << OperationChar()[Operation] << y << ")";
 	if (std::fetestexcept(FE_DIVBYZERO))
+	{
+		oss << "(div by 0)";
 		throw std::domain_error(oss.str());
+	}
 	else if (std::fetestexcept(FE_INVALID))
 		throw std::domain_error(oss.str());
 	else if (std::fetestexcept(FE_OVERFLOW))
@@ -124,13 +132,30 @@ template <class T, eOperation Operation>
 	throw std::logic_error(oss.str());
 }
 
+template <class T, eOperation Operation>
+[[ noreturn ]] void integerOverflowThrow(T const &x, T const &y) {
+
+	std::stringstream oss{};
+
+	oss << "( " << x << OperationChar()[Operation] << y << ") ";
+	throw std::overflow_error(oss.str());
+}
+
+template <class T, eOperation Operation>
+[[ noreturn ]] void integerDivZeroThrow(T const &x, T const &y) {
+
+	std::stringstream oss{};
+
+	oss << "( " << x << OperationChar()[Operation] << y << ") " << "(div by 0)";
+	throw std::domain_error(oss.str());
+}
 
 // Secured Operations =================================== //
 template <class T, eOperation Operation, bool IsFloat, bool IsDivOrMod>
-struct Evalexpr;
+struct SecuredOperation;
 
 template <class T, eOperation Operation, bool IsDivOrMod>
-struct Evalexpr<T, Operation, true, IsDivOrMod>
+struct SecuredOperation<T, Operation, true, IsDivOrMod>
 {
 	T operator ()(T const &x, T const &y) {
 
@@ -145,7 +170,7 @@ struct Evalexpr<T, Operation, true, IsDivOrMod>
 };
 
 template <class T>
-struct Evalexpr<T, eOperation::Mod, true, true>
+struct SecuredOperation<T, eOperation::Mod, true, true>
 {
 	T operator ()(T const &x, T const &y) {
 
@@ -167,15 +192,39 @@ struct Evalexpr<T, eOperation::Mod, true, true>
 };
 
 template <class T, eOperation Operation>
-struct Evalexpr<T, Operation, false, false>
+struct SecuredOperation<T, Operation, false, false>
 {
+	T operator ()(T const &x, T const &y) {
 
+		T const ret = RawOperation<T, Operation, false>::func(x, y);
+		T const reti = RawOperation<int64_t, Operation, false>::func(x, y);
+
+		if (int64_t(ret) != reti)
+			integerOverflowThrow<T, Operation>(x, y);
+		return ret;
+
+	}
 };
 
 template <class T, eOperation Operation, bool IsDivOrMod>
-struct Evalexpr<T, Operation, false, IsDivOrMod>
+struct SecuredOperation<T, Operation, false, IsDivOrMod>
 {
+	T operator ()(T const &x, T const &y) {
+
+		T ret;
+
+		if (y == 0)
+			integerDivZeroThrow<T, Operation>(x, y);
+		ret = RawOperation<T, Operation, false>::func(x, y);
+		return ret;
+	};
 };
+
+// Operations entry point =============================== //
+template <class T, eOperation Operation>
+struct ExecOperation : public detail::SecuredOperation<
+	T, Operation, ISFLOAT(T), detail::IsDivOrMod<Operation>::value>
+{};
 
 
 }; // ~~~~~~~~~~~~~~~~~ END OF NAMESPACE DETAIL //
@@ -183,30 +232,6 @@ struct Evalexpr<T, Operation, false, IsDivOrMod>
 
 
 template <class T, eOperation Operation>
-struct Evalexpr : public detail::Evalexpr<
-	T, Operation, ISFLOAT(T), detail::IsDivOrMod<Operation>::value>
-{};
-
-static inline void lol(void) {
-	// Evalexpr<float, eOperation::Add>()(42, 42);
-	// Evalexpr<float, eOperation::Sub>()(42, 42);
-	// Evalexpr<float, eOperation::Div>()(42, 42);
-	// Evalexpr<float, eOperation::Mul>()(42, 42);
-	Evalexpr<float, eOperation::Mod>()(42, 42);
-	// Evalexpr<short, eOperation::Add>()(42, 42);
-	// Evalexpr<short, eOperation::Sub>()(42, 42);
-	// Evalexpr<short, eOperation::Div>()(42, 42);
-	// Evalexpr<short, eOperation::Mul>()(42, 42);
-	// Evalexpr<short, eOperation::Mod>()(42, 42);
-
-}
-
-
-}; // ~~~~~~~~~~~~~~~~~~~~ END OF NAMESPACE TMP //
-// ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ //
-
-
-template <class T>
 class Evalexpr
 {
 
@@ -223,59 +248,21 @@ class Evalexpr
 		return std::atol(v.c_str());
 	}
 
-	static const std::function< T(T, T) > operations[5];
-
 public:
 
-	enum eOperation
-	{
-		Add = 0,
-		Sub,
-		Div,
-		Mul,
-		Mod
-	};
+	std::string operator () (std::string const &lhs, std::string const &rhs) {
 
-	static std::string eval(
-		std::string const &lhs, eOperation o, std::string const &rhs) {
-		T const		res = operations[o](conv(lhs), conv(rhs));
+		T const		res =
+			detail::ExecOperation<T, Operation>()(conv(lhs), conv(rhs));
 
 		return conv(res);
 	}
 };
 
 
-namespace detail // ~~~~~~~~~~~~~~~~~~~~~~~~~~~ //
-{ // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ //
-
-
-template <class T, bool ISFLOAT>
-struct Modulo;
-
-template <class T>
-struct Modulo<T, true>
-{
-	T operator () (T const &x, T const &y) const{
-		return x;
-	}
-};
-
-template <class T>
-struct Modulo<T, false> : std::modulus<T> {};
-
-
-}; // ~~~~~~~~~~~~~~~~~ END OF NAMESPACE DETAIL //
+}; // ~~~~~~~~~~~~~~~~~~~~~ END OF NAMESPACE EE //
 // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ //
 
-
-template <class T>
-const std::function< T(T, T) > Evalexpr<T>::operations[5] = {
-	std::plus<T>(),
-	std::minus<T>(),
-	std::multiplies<T>(),
-	std::divides<T>(),
-	detail::Modulo<T, ISFLOAT(T)>(),
-};
 
 # undef OF_IF
 # undef ISFLOAT
