@@ -6,7 +6,7 @@
 //   By: ngoguey <ngoguey@student.42.fr>            +#+  +:+       +#+        //
 //                                                +#+#+#+#+#+   +#+           //
 //   Created: 2015/12/09 11:02:52 by ngoguey           #+#    #+#             //
-//   Updated: 2016/01/22 16:23:17 by ngoguey          ###   ########.fr       //
+//   Updated: 2016/01/22 17:23:15 by ngoguey          ###   ########.fr       //
 //                                                                            //
 // ************************************************************************** //
 
@@ -17,6 +17,7 @@
 #include <functional>
 #include <cfenv>
 #include <cmath>
+#include <sstream>
 
 # define OK_IF(PRED) typename std::enable_if<PRED>::type* = nullptr
 # define ISFLOAT(V) std::is_floating_point<V>::value
@@ -58,75 +59,95 @@ namespace detail // ~~~~~~~~~~~~~~~~~~~~~~~~~~~ //
 
 // Is operand Div or Mod ================================ //
 template <eOperation> struct IsDivOrMod
-	: std::integral_constant<bool, false>
+	: public std::integral_constant<bool, false>
 {};
 template <> struct IsDivOrMod<eOperation::Div>
-	: std::integral_constant<bool, true>
+	: public std::integral_constant<bool, true>
 {};
 template <> struct IsDivOrMod<eOperation::Mod>
-	: std::integral_constant<bool, true>
+	: public std::integral_constant<bool, true>
 {};
 
-// Operations =========================================== //
+// Raw Operations ======================================= //
+template <class T, eOperation, bool> struct RawOperation;
 
-template <class T, eOperation> struct FloatOperation;
-
-template <class T> struct FloatOperation<T, eOperation::Add> {
+template <class T, bool Float> struct RawOperation<T, eOperation::Add, Float> {
 	static const auto func = std::plus<T>();
 };
-template <class T> struct FloatOperation<T, eOperation::Sub> {
+template <class T, bool Float> struct RawOperation<T, eOperation::Sub, Float> {
 	static const auto func = std::minus<T>();
 };
-template <class T> struct FloatOperation<T, eOperation::Div> {
+template <class T, bool Float> struct RawOperation<T, eOperation::Div, Float> {
 	static const auto func = std::divides<T>();
 };
-template <class T> struct FloatOperation<T, eOperation::Mul> {
+template <class T, bool Float> struct RawOperation<T, eOperation::Mul, Float> {
 	static const auto func = std::multiplies<T>();
 };
-template <class T> struct FloatOperation<T, eOperation::Mod> {
-	static const auto func = static_cast< T(T, T) >(std::fmod);
+template <class T> struct RawOperation<T, eOperation::Mod, true> {
+	static constexpr auto func = static_cast< T(*)(T, T) >(std::fmod);
+};
+template <class T> struct RawOperation<T, eOperation::Mod, false> {
+	static const auto func = std::modulus<T>();
 };
 
-// Evalexpr implementations ============================= //
+// Error msg builder ==================================== //
+template <class T>
+[[ noreturn ]] void floatErr(T const &x, T const &y) {
+
+	std::stringstream ret;
+
+	ret << "( " << x << " todo " << y << ") ";
+	if (std::fetestexcept(FE_DIVBYZERO))
+	{
+		ret << "Division by 0";
+		throw std::domain_error(ret.str());
+	}
+	throw 42;
+}
+
+
+// Secured Operations =================================== //
 template <class T, eOperation Operation, bool IsFloat, bool IsDivOrMod>
-class Evalexpr;
+struct Evalexpr;
 
 template <class T, eOperation Operation, bool IsDivOrMod>
-class Evalexpr<T, Operation, true, IsDivOrMod>
+struct Evalexpr<T, Operation, true, IsDivOrMod>
 {
 
 };
 
 template <class T>
-class Evalexpr<T, eOperation::Mod, true, true>
+struct Evalexpr<T, eOperation::Mod, true, true>
 {
+	T operator ()(T const &x, T const &y) {
 
+		T ret;
+
+		std::feclearexcept(FE_ALL_EXCEPT);
+		ret = RawOperation<T, eOperation::Mod, true>::func(x, y);
+		if (std::fetestexcept(FE_ALL_EXCEPT & ~FE_INEXACT))
+		{
+			if (std::fpclassify(y) == FP_ZERO)
+			{
+				std::feclearexcept(FE_INVALID);
+				std::feraiseexcept(FE_DIVBYZERO);
+			}
+				// throw std::domain_error("msg div by zero");
+
+		}
+		return ret;
+	}
 };
 
 template <class T, eOperation Operation>
-class Evalexpr<T, Operation, false, false>
+struct Evalexpr<T, Operation, false, false>
 {
 
 };
 
 template <class T, eOperation Operation, bool IsDivOrMod>
-class Evalexpr<T, Operation, false, IsDivOrMod>
+struct Evalexpr<T, Operation, false, IsDivOrMod>
 {
-	T operator ()(T const &x, T const &y) {
-
-		std::function< T(T const &, T const &) > const arr[] = {
-			[eOperation::Mod] = std::fmod,
-			[eOperation::Div] = std::divides<T>(),
-		};
-		T ret;
-
-		std::feclearexcept(FE_ALL_EXCEPT);
-		// ret = arr[Operation](x, y);
-		ret = FloatOperation<T, Operation>(x, y);
-		// if (std::fpclassify() == FP_ZERO)
-		// 	throw std::domain_error("msg");
-		return ret;
-	}
 };
 
 
@@ -135,21 +156,21 @@ class Evalexpr<T, Operation, false, IsDivOrMod>
 
 
 template <class T, eOperation Operation>
-class Evalexpr : detail::Evalexpr<
+struct Evalexpr : public detail::Evalexpr<
 	T, Operation, ISFLOAT(T), detail::IsDivOrMod<Operation>::value>
 {};
 
 static inline void lol(void) {
-	Evalexpr<float, eOperation::Add>();
-	Evalexpr<float, eOperation::Sub>();
-	Evalexpr<float, eOperation::Div>();
-	Evalexpr<float, eOperation::Mul>();
-	Evalexpr<float, eOperation::Mod>();
-	Evalexpr<short, eOperation::Add>();
-	Evalexpr<short, eOperation::Sub>();
-	Evalexpr<short, eOperation::Div>();
-	Evalexpr<short, eOperation::Mul>();
-	Evalexpr<short, eOperation::Mod>();
+	// Evalexpr<float, eOperation::Add>()(42, 42);
+	// Evalexpr<float, eOperation::Sub>()(42, 42);
+	// Evalexpr<float, eOperation::Div>()(42, 42);
+	// Evalexpr<float, eOperation::Mul>()(42, 42);
+	Evalexpr<float, eOperation::Mod>()(42, 42);
+	// Evalexpr<short, eOperation::Add>()(42, 42);
+	// Evalexpr<short, eOperation::Sub>()(42, 42);
+	// Evalexpr<short, eOperation::Div>()(42, 42);
+	// Evalexpr<short, eOperation::Mul>()(42, 42);
+	// Evalexpr<short, eOperation::Mod>()(42, 42);
 
 }
 
