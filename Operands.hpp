@@ -41,7 +41,6 @@
 
 
 // Operand constructor
-//		may throw std::invalid_argument if given a bad string
 // OpFactory
 //		may throw std::invalid_argument from Operand constructor call
 
@@ -49,10 +48,12 @@
 //		may throw std::overflow_error from Evalexpr call
 // IOperand operator -
 //		may throw std::overflow_error from Evalexpr call
-// IOperand operator *
-//		may throw std::overflow_error from Evalexpr call
 // IOperand operator /
 //		may throw std::domain_error from Evalexpr call
+//		may throw std::underflow_error from Evalexpr call
+//		may throw std::overflow_error from Evalexpr call
+// IOperand operator *
+//		may throw std::overflow_error from Evalexpr call
 //		may throw std::underflow_error from Evalexpr call
 // IOperand operator %
 //		may throw std::domain_error from Evalexpr call
@@ -101,10 +102,6 @@ public:
 	virtual ~IOperand() {}
 };
 
-// Operand ** forward declaration ************* //
-template <class T, eOperandType TEnumVal>
-class Operand;
-
 // Operand Factory **************************** //
 class OpFactory // OpFactory from subject.pdf
 {
@@ -136,9 +133,8 @@ public:
 
 	~Operand() {}
 	Operand(OpFactory const &fact, std::string const &str)
-		: _fact(fact), _val(str) {
-		// TODO: check str validity and std::invalid_argument
-	}
+		: _fact(fact), _val(str)
+	{}
 
 	Operand() = delete;
 	Operand(Operand const &src) = delete;
@@ -162,14 +158,14 @@ public:
 # define DEFINE_OPERATOR(OP, OPNAME)									\
 	IOperand const		*operator OP(IOperand const &rhs) const override { \
 																		\
-		using Ee = ee::Evalexpr<T, ee::OPNAME>;							\
 																		\
 		eOperandType const	dstType = std::max(rhs.getType(), TEnumVal); \
 		IOperand const *tmp, *ret;										\
 																		\
 		if (dstType == TEnumVal)										\
 		{																\
-			return _fact.createOperand(dstType, Ee()(_val, rhs.toString())); \
+			return _fact.createOperand(									\
+				dstType, ee::eval<T, ee::OPNAME>(_val, rhs.toString())); \
 		}																\
 		else															\
 		{																\

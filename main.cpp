@@ -191,6 +191,13 @@ int							main(void)
 
 	std::srand(time(NULL));
 
+	test12<double>(9007199254740990.);
+	test12<double>(9007199254740991.);
+	test12<double>(9007199254740992.);
+	test12<double>(9007199254740993.);
+	test12<double>(9007199254740994.);
+	test12<double>(9007199254740995.);
+	
 	test12<float>(42.42f);
 	test12<double>(42.42f);
 	test12<int8_t>(42);

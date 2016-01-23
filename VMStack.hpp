@@ -26,13 +26,16 @@
 //		all arguments are grammar valid, only 2 actions use argument
 
 
+// 1 push
+//		may throw std::invalid_argument
 // 1 pop
 //		may throw std::out_of_range if stack size too low
-// 1 push
-//		may throw std::invalid_argument from OpFactory.createOperand()
+// 1 dump (no throw)
 // 5 arithmetic
 //		may throw std::out_of_range if stack size too low
-//		may throw std::?
+//		may throw std::domain_error from Operators call
+//		may throw std::underflow_error from Operators call
+//		may throw std::overflow_error from Operators call
 
 class VMStack : public MStack<IOperand const *>
 {

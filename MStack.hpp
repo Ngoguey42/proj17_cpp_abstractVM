@@ -16,6 +16,10 @@
 #include <stack>
 #include <iterator>
 
+/*
+** MStack (Mutant Stack) is an iterable stack.
+*/
+
 template<typename T>
 class MStack: public std::stack<T>
 {
