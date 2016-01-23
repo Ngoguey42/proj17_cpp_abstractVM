@@ -6,7 +6,7 @@
 //   By: ngoguey <ngoguey@student.42.fr>            +#+  +:+       +#+        //
 //                                                +#+#+#+#+#+   +#+           //
 //   Created: 2015/12/08 19:29:27 by ngoguey           #+#    #+#             //
-//   Updated: 2016/01/23 15:57:32 by ngoguey          ###   ########.fr       //
+//   Updated: 2016/01/23 16:15:22 by ngoguey          ###   ########.fr       //
 //                                                                            //
 // ************************************************************************** //
 
@@ -170,13 +170,33 @@ void testerloop(void)
 	return ;
 }
 
+template <class T>
+void test12(T const &x)
+{
+	std::cout << "test12 with: " << x << std::endl;
+
+	auto tostr = conv::convert(x);
+	std::cout << "tostr: " << tostr << std::endl;
+
+	T tot = conv::convert<T>(tostr);
+	std::cout << "back to T: " << tot << std::endl;
+	std::cout << "identical? " << std::boolalpha << (x == tot) << std::endl;
+
+	std::cout << "" << std::endl;
+}
 
 int							main(void)
 {
 
 	std::srand(time(NULL));
 
-	testerloop<double>();
+	test12<float>(42.42f);
+	test12<double>(42.42f);
+	test12<int8_t>(42);
+	test12<int16_t>(42);
+	test12<int32_t>(42);
+	// testerloop<double>();
+	// testerloop<float>();
 
 	return (0);
 }
