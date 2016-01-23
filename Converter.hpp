@@ -6,7 +6,7 @@
 //   By: ngoguey <ngoguey@student.42.fr>            +#+  +:+       +#+        //
 //                                                +#+#+#+#+#+   +#+           //
 //   Created: 2016/01/23 12:42:06 by ngoguey           #+#    #+#             //
-//   Updated: 2016/01/23 16:17:41 by ngoguey          ###   ########.fr       //
+//   Updated: 2016/01/23 16:21:05 by ngoguey          ###   ########.fr       //
 //                                                                            //
 // ************************************************************************** //
 
@@ -75,22 +75,24 @@ inline std::string convert<int8_t>(int8_t const &x) {
 }
 
 // string -> T
+// (does not check str correctness)
 template <typename T>
-T convert(std::string const &x) {
+T convert(std::string const &str) {
 
 	T val;
 
-	std::stringstream(x) >> val;
+	std::stringstream(str) >> val;
 	return val;
 }
 
 // string -> T		char overload
+// (does not check str correctness)
 template <>
-inline int8_t convert<int8_t>(std::string const &x) {
+inline int8_t convert<int8_t>(std::string const &str) {
 
 	int16_t val;
 
-	std::stringstream(x) >> val;
+	std::stringstream(str) >> val;
 	return val;
 }
 
