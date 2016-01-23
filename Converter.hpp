@@ -30,7 +30,7 @@ namespace conv // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ //
 { // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ //
 
 /*
-** %errors on floating point serial/deserial:
+** %fails on floating point serial+deserial operation
 ** *
 ** 0% with std::setprecision(std::numeric_limits<float>::max_digits10 + 2)
 ** 0% with std::setprecision(std::numeric_limits<double>::max_digits10 + 2)
@@ -100,6 +100,8 @@ inline int8_t convert<int8_t>(std::string const &str) {
 	std::stringstream(str) >> val;
 	return val;
 }
+
+//TODO: rename all to serial / unserial_unsafe, make unserial_safe
 
 }; // ~~~~~~~~~~~~~~~~~~~ END OF NAMESPACE CONV //
 // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ //
