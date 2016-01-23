@@ -6,7 +6,7 @@
 //   By: ngoguey <ngoguey@student.42.fr>            +#+  +:+       +#+        //
 //                                                +#+#+#+#+#+   +#+           //
 //   Created: 2015/12/08 19:29:27 by ngoguey           #+#    #+#             //
-//   Updated: 2016/01/22 19:49:04 by ngoguey          ###   ########.fr       //
+//   Updated: 2016/01/23 15:57:32 by ngoguey          ###   ########.fr       //
 //                                                                            //
 // ************************************************************************** //
 
@@ -23,6 +23,7 @@
 
 #include "Operands.hpp"
 #include "Evalexpr.hpp"
+#include "Converter.hpp"
 
 /*
 ** For non commutative operations, consider the stack v1 on v2 on stack_tail,
@@ -53,22 +54,231 @@ void sub_dump_pop(VMStack &vmst)
 
 
 
+
+template <class T, class Stream>
+void setflags(Stream &s)
+{
+	s << std::setprecision(std::numeric_limits<T>::max_digits10);
+	s << std::fixed;
+	return ;
+}
+
+
+template <class T>
+void dotest(T const &f)
+{
+	// setflags<T>(std::cout);
+	std::cout << "direct output: " << f << std::endl;
+	std::cout << "built output:  " << conv::convert<T>(f) << std::endl;
+	std::cout << "" << std::endl;
+	return ;
+}
+#define DUMP(T, F)														\
+	std::cout << std::setw(15) << #F ": " << std::numeric_limits<T>::F() << std::endl
+
+
+
+union Bordel
+{
+	float f;
+	double d;
+	size_t i;
+
+	Bordel &randomize(void) {
+
+		size_t j = 0;
+
+		for (unsigned int k = 0; k < sizeof(Bordel) * 8; k++)
+		{
+			if (std::rand() % 2)
+				j |= 1;
+			// this->i = (this->i & ~(1 << i)) | ((std::rand() % 2) << i);
+			j <<= 1;
+		}
+		this->i = j;
+		return *this;
+	}
+
+	operator float (void) {
+		return this->f;
+	}
+	operator double (void) {
+		return this->f;
+	}
+
+};
+
+
+template <typename T>
+void testerloop(void)
+{
+	T ref;
+	std::string tostr;
+	int err = 0;
+	int max = 1 * 1000 * 1000;
+	T toT;
+	int clas;
+	std::unordered_map<int, size_t> occ_map = {
+
+		{FP_INFINITE, 0u},
+		{FP_NAN, 0u},
+		{FP_NORMAL, 0u},
+		{FP_SUBNORMAL, 0u},
+		{FP_ZERO, 0u},
+	};
+
+	for (int i = 0; i < max; i++)
+	{
+		ref = Bordel{}.randomize();
+		clas = std::fpclassify(ref);
+		occ_map[clas]++;
+		if (clas != FP_NAN && clas != FP_INFINITE)
+		{
+			tostr = conv::convert<T>(ref);
+			toT = conv::convert<T>(tostr);
+
+			if (ref != toT)
+			{
+				err++;
+				// std::cout << "Bordel" << std::endl;
+
+				// std::cout << ref << std::endl;
+				// std::cout << tostr << std::endl;
+				// std::cout << toT << std::endl;
+
+				// break;
+			}
+
+		}
+	}
+
+	for (auto occ : occ_map)
+	{
+		switch(occ.first) {
+		case FP_INFINITE:  std::cout << "Inf"; break;
+		case FP_NAN:       std::cout << "NaN"; break;
+		case FP_NORMAL:    std::cout << "normal"; break;
+		case FP_SUBNORMAL: std::cout << "subnormal"; break;
+		case FP_ZERO:      std::cout << "zero"; break;
+		default:           std::cout << "unknown"; break;
+		}
+		std::cout << " (" << occ.second << ") times" << std::endl;
+	}
+	std::cout << "Fails: (" << err << ")" << std::endl;
+	std::cout << float(err) / float(max) * 100.f << "%" << std::endl;
+
+	return ;
+}
+
+
 int							main(void)
 {
-	OpFactory fact;
-	VMStack vmst(fact);
 
-	VMStack::actmap.at("push")(&vmst, "Int8(127)");
-	VMStack::actmap.at("push")(&vmst, "Int8(1)");
-	VMStack::actmap.at("dump")(&vmst, "");
-	std::cout << std::endl;
-	add_dump_pop(vmst);
+	std::srand(time(NULL));
 
-	VMStack::actmap.at("push")(&vmst, "Int16(-32768)");
-	VMStack::actmap.at("push")(&vmst, "Int16(1)");
-	VMStack::actmap.at("dump")(&vmst, "");
+	testerloop<double>();
+
+	return (0);
+}
+
+int mainoldlu(void)
+{
+
+	DUMP(float, min);
+	DUMP(float, lowest);
+	DUMP(float, max);
+	DUMP(float, epsilon);
+	DUMP(float, infinity);
+	DUMP(float, denorm_min);
+
+
+// dotest<float>((int32_t(42) + int32_t(33)) * float(44.55f));
+	// dotest<double>(42.42);
+#define DEFINE(TYPE, FUN)										\
+	const TYPE TYPE##FUN = std::numeric_limits<TYPE>::FUN();	\
+	(void)TYPE##FUN
+
+	DEFINE(double, max);
+	DEFINE(float, max);
+	DEFINE(double, epsilon);
+	DEFINE(float, epsilon);
+	DEFINE(double, lowest);
+	DEFINE(float, lowest);
+	DEFINE(double, min);
+	DEFINE(float, min);
+	DEFINE(double, denorm_min);
+	DEFINE(float, denorm_min);
 	std::cout << std::endl;
-	sub_dump_pop(vmst);
+
+	// float f = floatmax;
+
+	std::cout << "min" << std::endl;
+	dotest<float>(floatmin);
+	dotest<float>(doublemin);
+	dotest<double>(doublemin);
+	std::cout << std::endl;
+	std::cout << "lowest" << std::endl;
+	dotest<float>(floatlowest);
+	dotest<float>(doublelowest);
+	dotest<double>(doublelowest);
+	std::cout << std::endl;
+	std::cout << "max" << std::endl;
+	dotest<float>(floatmax);
+	dotest<float>(doublemax);
+	dotest<double>(doublemax);
+	std::cout << std::endl;
+	std::cout << "epsilon" << std::endl;
+	dotest<float>(floatepsilon);
+	dotest<float>(doubleepsilon);
+	dotest<double>(doubleepsilon);
+	std::cout << std::endl;
+	std::cout << "denorm_min" << std::endl;
+	dotest<float>(floatdenorm_min);
+	dotest<float>(doubledenorm_min);
+	dotest<double>(doubledenorm_min);
+	std::cout << std::endl;
+	std::cout << "curstom:" << std::endl;
+	// dotest<float>(0.00004242f);
+	// dotest<float>(0.0004242f);
+	// dotest<float>(0.004242f);
+	// dotest<float>(0.04242f);
+	// dotest<float>(0.4242f);
+	// dotest<float>(4.242f);
+	// dotest<float>(42.42f);
+	// dotest<float>(42.42f);
+	// dotest<float>(42.42f);
+	for (int i = -8; i < 9; i++)
+	{
+		std::cout << "42.42f * 10.f ^ " << i << ".f:" << std::endl;
+		dotest<float>(42.42f * std::pow(10.f, float(i)));
+	}
+
+
+
+	// DUMP(float, min);
+	// DUMP(float, lowest);
+	// DUMP(float, max);
+	// DUMP(float, epsilon);
+	// DUMP(float, round_error);
+	// DUMP(float, infinity);
+	// DUMP(float, denorm_min);
+	// std::cout << std::endl;
+
+
+// OpFactory fact;
+	// VMStack vmst(fact);
+
+	// VMStack::actmap.at("push")(&vmst, "Int8(127)");
+	// VMStack::actmap.at("push")(&vmst, "Int8(1)");
+	// VMStack::actmap.at("dump")(&vmst, "");
+	// std::cout << std::endl;
+	// add_dump_pop(vmst);
+
+	// VMStack::actmap.at("push")(&vmst, "Int16(-32768)");
+	// VMStack::actmap.at("push")(&vmst, "Int16(1)");
+	// VMStack::actmap.at("dump")(&vmst, "");
+	// std::cout << std::endl;
+	// sub_dump_pop(vmst);
 
 
 	// int a = 42;
@@ -88,8 +298,6 @@ int							main(void)
 
 
 
-#define DUMP(T, F)														\
-	std::cout << std::setw(15) << #F ": " << std::numeric_limits<T>::F() << std::endl
 
 void dumpFeExcept(void)
 {
@@ -118,50 +326,29 @@ void dumpFeExcept(void)
 
 int mainold()
 {
-	DUMP(double, min);
-	DUMP(double, lowest);
-	DUMP(double, max);
-	DUMP(double, epsilon);
-	DUMP(double, round_error);
-	DUMP(double, infinity);
-	DUMP(double, denorm_min);
-	std::cout << std::endl;
-
-#define DEFINE(TYPE, FUN)												\
-	std::cout << "defined: " #TYPE #FUN << ";" << std::endl;			\
-	volatile const TYPE TYPE##FUN = std::numeric_limits<TYPE>::FUN();	\
-	(void)TYPE##FUN
-
-	DEFINE(double, max);
-	// DEFINE(float, max);
-	DEFINE(double, lowest);
-	// DEFINE(float, lowest);
-	DEFINE(double, min);
-	// DEFINE(float, min);
-	DEFINE(double, denorm_min);
 	// DEFINE(float, denorm_min);
-	volatile const double doublezero = 0.; (void)doublezero;
+	// volatile const double doublezero = 0.; (void)doublezero;
 	// volatile const float floatzero = 0.; (void)floatzero;
 
-	std::cout << "==================================================" << std::endl;
-	TESTA(const double val = doublemax + doublemax);
-	TESTA(const double val = doublelowest + doublelowest);
-	TESTA(const double val = doublelowest * 2.);
-	TESTA(const double val = 1. / doubledenorm_min);
-	std::cout << "==================================================" << std::endl;
-	TESTA(const double val = doubledenorm_min / 2.);
-	TESTA(const double val = 1. / doublemax);
-	TESTA(const double val = doubledenorm_min * doubledenorm_min);
-	std::cout << "==================================================" << std::endl;
-	TESTA(const double val = 1. / doublezero);
-	std::cout << "==================================================" << std::endl;
-	TESTA(const double val = doublezero / doublezero);
-	TESTA(const double val = fmod(doublezero, doublezero));
-	TESTA(const double val = fmod(1., doublezero));
-	TESTA(const double val = fmod(doubledenorm_min, doubledenorm_min));
-	TESTA(const double val = fmod(doublemax, doubledenorm_min));
-	TESTA(const double val = fmod(doubledenorm_min, doublemax));
-	TESTA(const double val = fmod(doublemax, doublemax));
+	// std::cout << "==================================================" << std::endl;
+	// TESTA(const double val = doublemax + doublemax);
+	// TESTA(const double val = doublelowest + doublelowest);
+	// TESTA(const double val = doublelowest * 2.);
+	// TESTA(const double val = 1. / doubledenorm_min);
+	// std::cout << "==================================================" << std::endl;
+	// TESTA(const double val = doubledenorm_min / 2.);
+	// TESTA(const double val = 1. / doublemax);
+	// TESTA(const double val = doubledenorm_min * doubledenorm_min);
+	// std::cout << "==================================================" << std::endl;
+	// TESTA(const double val = 1. / doublezero);
+	// std::cout << "==================================================" << std::endl;
+	// TESTA(const double val = doublezero / doublezero);
+	// TESTA(const double val = fmod(doublezero, doublezero));
+	// TESTA(const double val = fmod(1., doublezero));
+	// TESTA(const double val = fmod(doubledenorm_min, doubledenorm_min));
+	// TESTA(const double val = fmod(doublemax, doubledenorm_min));
+	// TESTA(const double val = fmod(doubledenorm_min, doublemax));
+	// TESTA(const double val = fmod(doublemax, doublemax));
 
 
 	return 0;
