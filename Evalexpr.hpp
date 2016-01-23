@@ -19,6 +19,8 @@
 #include <cmath>
 #include <sstream>
 
+#include "Converter.hpp"
+
 # define OK_IF(PRED) typename std::enable_if<PRED>::type* = nullptr
 # define ISFLOAT(V) std::is_floating_point<V>::value
 
@@ -263,27 +265,27 @@ template <class T, eOperation Operation>
 class Evalexpr
 {
 
-	static std::string		conv(T v) { //TODO: improve conversions
-		return std::to_string(v);
-	}
+	// static std::string		conv(T v) { //TODO: improve conversions
+		// return std::to_string(v);
+	// }
 
-	template <class U = T, OK_IF(ISFLOAT(U))>
-	static T				conv(std::string const &v) {
-		return std::atof(v.c_str());
-	}
-	template <class U = T, OK_IF(!ISFLOAT(U))>
-	static T				conv(std::string const &v) {
-		return std::atol(v.c_str());
-	}
+	// template <class U = T, OK_IF(ISFLOAT(U))>
+	// static T				conv(std::string const &v) {
+		// return std::atof(v.c_str());
+	// }
+	// template <class U = T, OK_IF(!ISFLOAT(U))>
+	// static T				conv(std::string const &v) {
+		// return std::atol(v.c_str());
+	// }
 
 public:
 
 	std::string operator () (std::string const &lhs, std::string const &rhs) {
 
-		T const		res =
-			detail::ExecOperation<T, Operation>()(conv(lhs), conv(rhs));
+		T const		res = detail::ExecOperation<T, Operation>()(
+			conv::convert<T>(lhs), conv::convert<T>(rhs));
 
-		return conv(res);
+		return conv::convert<T>(res);
 	}
 };
 

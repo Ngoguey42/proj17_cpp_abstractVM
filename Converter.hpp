@@ -15,6 +15,11 @@
 
 # include <sstream>
 # include <iomanip>
+# include <limits>
+// # include <ios>
+// #include <iostream>
+// #include <sstream>
+
 // # include <cmath> //tmp
 // # include <iostream> //debug
 
@@ -48,7 +53,7 @@ std::string convert(T const &x) {
 	std::stringstream iss;
 
     iss << std::setprecision(std::numeric_limits<T>::max_digits10);
-	iss << std::defaultfloat;
+	// iss << std::defaultfloat; //TODO: undefined with cygwin
 	iss << std::noshowpos;
 	iss << x;
 	return iss.str();

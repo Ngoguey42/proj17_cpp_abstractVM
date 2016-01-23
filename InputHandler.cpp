@@ -10,6 +10,8 @@
 //                                                                            //
 // ************************************************************************** //
 
+#include <stdexcept>
+
 #include "InputHandler.hpp"
 
 using IH = InputHandler;
