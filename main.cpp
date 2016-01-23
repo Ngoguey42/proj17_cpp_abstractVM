@@ -90,10 +90,11 @@ union Bordel
 
 		for (unsigned int k = 0; k < sizeof(Bordel) * 8; k++)
 		{
+			if (k != 0)
+				j <<= 1;
 			if (std::rand() % 2)
 				j |= 1;
 			// this->i = (this->i & ~(1 << i)) | ((std::rand() % 2) << i);
-			j <<= 1;
 		}
 		this->i = j;
 		return *this;
