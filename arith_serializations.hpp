@@ -6,7 +6,7 @@
 //   By: ngoguey <ngoguey@student.42.fr>            +#+  +:+       +#+        //
 //                                                +#+#+#+#+#+   +#+           //
 //   Created: 2016/01/24 15:54:40 by ngoguey           #+#    #+#             //
-//   Updated: 2016/01/24 15:54:49 by ngoguey          ###   ########.fr       //
+//   Updated: 2016/01/24 16:33:35 by ngoguey          ###   ########.fr       //
 //                                                                            //
 // ************************************************************************** //
 
@@ -116,9 +116,6 @@ template <typename T>
 		+ str + "\" to " + TypeToString<T>::name);
 }
 
-}; // ~~~~~~~~~~~~~~~~~ END OF NAMESPACE DETAIL //
-// ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ //
-
 // string -> T		floating point overload
 // (takes [-]?[0..9]+.[0..9]+ only strings, checks str correctness)
 template <typename T, OK_IF(ISFLOAT(T))>
@@ -171,6 +168,32 @@ inline int8_t unserial_safe<int8_t>(std::string const &str) {
 	if (str != reserial)
 		detail::unserial_failed<int8_t>("Overflow", str);
 	return static_cast<int8_t>(val);
+}
+
+}; // ~~~~~~~~~~~~~~~~~ END OF NAMESPACE DETAIL //
+// ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ //
+
+inline std::string clean(eOperandType e, std::string const &input) {
+
+	std::string (*const func[5])(std::string const &str) = {
+		[static_cast<int>(eOperandType::Int8)] = [](std::string const &in) {
+			return serial<int8_t>(detail::unserial_safe<int8_t>(in));
+		},
+		[static_cast<int>(eOperandType::Int16)] = [](std::string const &in) {
+			return serial<int16_t>(detail::unserial_safe<int16_t>(in));
+		},
+		[static_cast<int>(eOperandType::Int32)] = [](std::string const &in) {
+			return serial<int32_t>(detail::unserial_safe<int32_t>(in));
+		},
+		[static_cast<int>(eOperandType::Float)] = [](std::string const &in) {
+			return serial<float>(detail::unserial_safe<float>(in));
+		},
+		[static_cast<int>(eOperandType::Double)] = [](std::string const &in) {
+			return serial<double>(detail::unserial_safe<double>(in));
+		},
+	};
+
+	return func[static_cast<int>(e)](input);
 }
 
 
