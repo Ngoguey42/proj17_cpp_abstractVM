@@ -6,7 +6,7 @@
 //   By: ngoguey <ngoguey@student.42.fr>            +#+  +:+       +#+        //
 //                                                +#+#+#+#+#+   +#+           //
 //   Created: 2016/01/24 15:53:42 by ngoguey           #+#    #+#             //
-//   Updated: 2016/01/24 15:55:53 by ngoguey          ###   ########.fr       //
+//   Updated: 2016/01/24 18:17:44 by ngoguey          ###   ########.fr       //
 //                                                                            //
 // ************************************************************************** //
 
@@ -125,6 +125,25 @@ struct OperationToOss
 	}
 };
 
+/*
+inline void debug(void){
+
+#define TESTLOLL(ARG)							\
+	if (std::fetestexcept(ARG))					\
+		std::cout << #ARG << ", "
+
+	std::cout << "[";
+	TESTLOLL(FE_DIVBYZERO);
+	TESTLOLL(FE_INEXACT);
+	TESTLOLL(FE_INVALID);
+	TESTLOLL(FE_OVERFLOW);
+	TESTLOLL(FE_UNDERFLOW);
+	TESTLOLL(FE_DENORMALOPERAND);
+	TESTLOLL(FE_ALL_EXCEPT);
+	std::cout << "]" << std::endl;
+	return ;
+}
+*/
 // Error handling ======================================= //
 template <class T, eOperation Operation>
 [[ noreturn ]] void floatThrow(T const &x, T const &y) {
@@ -143,7 +162,7 @@ template <class T, eOperation Operation>
 		throw std::overflow_error(oss.str());
 	else if (std::fetestexcept(FE_UNDERFLOW))
 		throw std::underflow_error(oss.str());
-	oss << __FUNCTION__ << ":" << __LINE__ << "Should not be reached";
+	oss << __FUNCTION__ << ":" << __LINE__ << " Should not be reached";
 	throw std::logic_error(oss.str());
 }
 
@@ -170,17 +189,21 @@ template <class T, eOperation Operation>
 template <class T, eOperation Operation, bool IsFloat, bool IsDivOrMod>
 struct SecuredOperation;
 
+constexpr unsigned int fe_checked_flags =
+		   FE_DIVBYZERO |  FE_INVALID | FE_OVERFLOW | FE_UNDERFLOW;
+
 template <class T, eOperation Operation, bool IsDivOrMod>
 struct SecuredOperation<T, Operation, true, IsDivOrMod>
 {
 	T operator () (T const &x, T const &y) const {
 
-		T ret;
+		T volatile ret;
 
-		std::feclearexcept(FE_ALL_EXCEPT);
-		ret = RawOperation<T, Operation, true>::func(x, y);
-		if (std::fetestexcept(FE_ALL_EXCEPT & ~FE_INEXACT))
-			floatThrow<T, eOperation::Mod>(x, y);
+		std::feclearexcept(fe_checked_flags);
+		ret = RawOperation<T, Operation, true>::func(
+			static_cast<T volatile>(x), static_cast<T volatile>(y));
+		if (std::fetestexcept(fe_checked_flags))
+			floatThrow<T, Operation>(x, y);
 		return ret;
 	}
 };
@@ -190,11 +213,12 @@ struct SecuredOperation<T, eOperation::Mod, true, true>
 {
 	T operator () (T const &x, T const &y) const {
 
-		T ret;
+		T volatile ret;
 
-		std::feclearexcept(FE_ALL_EXCEPT);
-		ret = RawOperation<T, eOperation::Mod, true>::func(x, y);
-		if (std::fetestexcept(FE_ALL_EXCEPT & ~FE_INEXACT))
+		std::feclearexcept(fe_checked_flags);
+		ret = RawOperation<T, eOperation::Mod, true>::func(
+			static_cast<T volatile>(x), static_cast<T volatile>(y));
+		if (std::fetestexcept(fe_checked_flags))
 		{
 			if (std::fpclassify(y) == FP_ZERO)
 			{
@@ -215,8 +239,10 @@ struct SecuredOperation<T, Operation, false, false>
 		using ROp = RawOperation<T, Operation, false>;
 		using ROpi = RawOperation<int64_t, Operation, false>;
 
-		T const ret = ROp::func(x, y);
-		int64_t const reti = ROpi::func(x, y);
+		T const volatile ret = ROp::func(
+			static_cast<T volatile>(x), static_cast<T volatile>(y));
+		int64_t const volatile reti = ROpi::func(
+			static_cast<T volatile>(x), static_cast<T volatile>(y));
 
 		if (int64_t(ret) != reti)
 			integerOverflowThrow<T, Operation>(x, y);
@@ -251,9 +277,11 @@ std::string eval(std::string const &lhs, std::string const &rhs) {
 	using Op = detail::SecuredOperation<
 		T, Operation, ISFLOAT(T), detail::IsDivOrMod<Operation>::value>;
 
-	T const res =
-		Op()(ser::unserial_unsafe<T>(lhs), ser::unserial_unsafe<T>(rhs));
+	T const x = ser::unserial_unsafe<T>(lhs);
+	T const y = ser::unserial_unsafe<T>(rhs);
+	T const res = Op()(x, y);
 
+	// std::cout << lhs << " + " << rhs << " = " << ser::serial<T>(res) <<  std::endl;
 	return ser::serial<T>(res);
 }
 

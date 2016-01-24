@@ -6,7 +6,7 @@
 //   By: ngoguey <ngoguey@student.42.fr>            +#+  +:+       +#+        //
 //                                                +#+#+#+#+#+   +#+           //
 //   Created: 2015/12/08 19:29:27 by ngoguey           #+#    #+#             //
-//   Updated: 2016/01/24 16:37:41 by ngoguey          ###   ########.fr       //
+//   Updated: 2016/01/24 18:17:04 by ngoguey          ###   ########.fr       //
 //                                                                            //
 // ************************************************************************** //
 
@@ -102,11 +102,18 @@ void test(VMStack &vmst, std::string const &type) {
 	for (;;)
 	{
 		tmp = Bordel{}.randomize();
-		if (tmp == tmp)
+		if (tmp == tmp && tmp != +1. / 0. && tmp != -1. / 0.)
 		{
 			VMStack::actmap.at("push")(&vmst, type + "(" + ser::serial<T>(tmp) + ')');
-			VMStack::actmap.at("add")(&vmst, "");
 			VMStack::actmap.at("dump")(&vmst, "");
+			std::cout << "=" << std::endl;
+			// VMStack::actmap.at("mul")(&vmst, "");
+			// VMStack::actmap.at("add")(&vmst, "");
+			VMStack::actmap.at("mod")(&vmst, "");
+			// VMStack::actmap.at("sub")(&vmst, "");
+			// VMStack::actmap.at("div")(&vmst, "");
+			VMStack::actmap.at("dump")(&vmst, "");
+			std::cout << "///////////////////////////////////" << std::endl;
 		}
 		// if (tmp != tmp)
 		// 	return ;
