@@ -6,7 +6,7 @@
 //   By: ngoguey <ngoguey@student.42.fr>            +#+  +:+       +#+        //
 //                                                +#+#+#+#+#+   +#+           //
 //   Created: 2015/12/08 19:29:27 by ngoguey           #+#    #+#             //
-//   Updated: 2016/01/24 18:17:04 by ngoguey          ###   ########.fr       //
+//   Updated: 2016/01/24 18:26:41 by ngoguey          ###   ########.fr       //
 //                                                                            //
 // ************************************************************************** //
 
@@ -108,8 +108,8 @@ void test(VMStack &vmst, std::string const &type) {
 			VMStack::actmap.at("dump")(&vmst, "");
 			std::cout << "=" << std::endl;
 			// VMStack::actmap.at("mul")(&vmst, "");
-			// VMStack::actmap.at("add")(&vmst, "");
-			VMStack::actmap.at("mod")(&vmst, "");
+			VMStack::actmap.at("add")(&vmst, "");
+			// VMStack::actmap.at("mod")(&vmst, "");
 			// VMStack::actmap.at("sub")(&vmst, "");
 			// VMStack::actmap.at("div")(&vmst, "");
 			VMStack::actmap.at("dump")(&vmst, "");
@@ -131,8 +131,8 @@ int							main(void)
 	// test<int8_t>(vmst, "Int8");
 	// test<int16_t>(vmst, "Int16");
 	// test<int32_t>(vmst, "Int32");
-	test<float>(vmst, "Float");
-	// test<double>(vmst, "Double");
+	// test<float>(vmst, "Float");
+	test<double>(vmst, "Double");
 
 
 

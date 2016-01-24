@@ -6,7 +6,7 @@
 //   By: ngoguey <ngoguey@student.42.fr>            +#+  +:+       +#+        //
 //                                                +#+#+#+#+#+   +#+           //
 //   Created: 2016/01/24 15:53:42 by ngoguey           #+#    #+#             //
-//   Updated: 2016/01/24 18:17:44 by ngoguey          ###   ########.fr       //
+//   Updated: 2016/01/24 18:25:24 by ngoguey          ###   ########.fr       //
 //                                                                            //
 // ************************************************************************** //
 
@@ -118,7 +118,8 @@ struct OperationToOss
 {
 	void operator () (std::stringstream &oss, T const &x, T const &y) const {
 
-		oss << "(" << ser::serial<T>(x)
+		oss << TypeToString<T>::name
+			<< "(" << ser::serial<T>(x)
 			<< " " << OperationChar()[Operation]
 			<< " " << ser::serial<T>(y) << ")";
 		return ;
@@ -186,11 +187,10 @@ template <class T, eOperation Operation>
 }
 
 // Secured Operations =================================== //
+#define HANDLED_FLAGS (FE_DIVBYZERO |  FE_INVALID | FE_OVERFLOW | FE_UNDERFLOW)
+
 template <class T, eOperation Operation, bool IsFloat, bool IsDivOrMod>
 struct SecuredOperation;
-
-constexpr unsigned int fe_checked_flags =
-		   FE_DIVBYZERO |  FE_INVALID | FE_OVERFLOW | FE_UNDERFLOW;
 
 template <class T, eOperation Operation, bool IsDivOrMod>
 struct SecuredOperation<T, Operation, true, IsDivOrMod>
@@ -199,10 +199,10 @@ struct SecuredOperation<T, Operation, true, IsDivOrMod>
 
 		T volatile ret;
 
-		std::feclearexcept(fe_checked_flags);
+		std::feclearexcept(HANDLED_FLAGS);
 		ret = RawOperation<T, Operation, true>::func(
 			static_cast<T volatile>(x), static_cast<T volatile>(y));
-		if (std::fetestexcept(fe_checked_flags))
+		if (std::fetestexcept(HANDLED_FLAGS))
 			floatThrow<T, Operation>(x, y);
 		return ret;
 	}
@@ -215,10 +215,10 @@ struct SecuredOperation<T, eOperation::Mod, true, true>
 
 		T volatile ret;
 
-		std::feclearexcept(fe_checked_flags);
+		std::feclearexcept(HANDLED_FLAGS);
 		ret = RawOperation<T, eOperation::Mod, true>::func(
 			static_cast<T volatile>(x), static_cast<T volatile>(y));
-		if (std::fetestexcept(fe_checked_flags))
+		if (std::fetestexcept(HANDLED_FLAGS))
 		{
 			if (std::fpclassify(y) == FP_ZERO)
 			{
@@ -281,7 +281,6 @@ std::string eval(std::string const &lhs, std::string const &rhs) {
 	T const y = ser::unserial_unsafe<T>(rhs);
 	T const res = Op()(x, y);
 
-	// std::cout << lhs << " + " << rhs << " = " << ser::serial<T>(res) <<  std::endl;
 	return ser::serial<T>(res);
 }
 
