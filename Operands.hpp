@@ -6,7 +6,7 @@
 //   By: ngoguey <ngoguey@student.42.fr>            +#+  +:+       +#+        //
 //                                                +#+#+#+#+#+   +#+           //
 //   Created: 2015/12/09 11:04:37 by ngoguey           #+#    #+#             //
-//   Updated: 2016/01/22 19:24:33 by ngoguey          ###   ########.fr       //
+//   Updated: 2016/01/24 15:37:32 by ngoguey          ###   ########.fr       //
 //                                                                            //
 // ************************************************************************** //
 
@@ -20,9 +20,7 @@
 #include <unordered_map>
 
 #include "Evalexpr.hpp"
-
-// eOperandType defined in subject.pdf
-//		simple enum
+#include "types.hpp"
 
 // operand_enum
 //		static (type -> enum) conversions
@@ -57,35 +55,6 @@
 //		may throw std::underflow_error from Evalexpr call
 // IOperand operator %
 //		may throw std::domain_error from Evalexpr call
-
-// Enum *************************************** //
-enum class eOperandType // eOperandType from subject.pdf
-{
-	Int8 = 0,
-		Int16,
-		Int32,
-		Float,
-		Double
-		};
-
-template <class T>	struct operand_enum;
-
-template <>			struct operand_enum<int8_t>
-	: std::integral_constant<eOperandType, eOperandType::Int8> {};
-
-template <>			struct operand_enum<int16_t>
-	: std::integral_constant<eOperandType, eOperandType::Int16> {};
-
-template <>			struct operand_enum<int32_t>
-	: std::integral_constant<eOperandType, eOperandType::Int32> {};
-
-template <>			struct operand_enum<float>
-	: std::integral_constant<eOperandType, eOperandType::Float> {};
-
-template <>			struct operand_enum<double>
-	: std::integral_constant<eOperandType, eOperandType::Double> {};
-
-extern std::unordered_map<std::string, eOperandType> const operandMap;
 
 // Interface ********************************** //
 class IOperand // IOperand from subject.pdf

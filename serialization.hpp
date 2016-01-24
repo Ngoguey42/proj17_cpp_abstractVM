@@ -6,7 +6,7 @@
 //   By: ngoguey <ngoguey@student.42.fr>            +#+  +:+       +#+        //
 //                                                +#+#+#+#+#+   +#+           //
 //   Created: 2016/01/24 13:13:41 by ngoguey           #+#    #+#             //
-//   Updated: 2016/01/24 13:39:17 by ngoguey          ###   ########.fr       //
+//   Updated: 2016/01/24 15:41:51 by ngoguey          ###   ########.fr       //
 //                                                                            //
 // ************************************************************************** //
 
@@ -19,17 +19,20 @@
 // # include <ios>
 // #include <iostream>
 // #include <sstream>
+# include "types.hpp"
 
 // # include <cmath> //tmp
 // # include <iostream> //debug
 
-# define OK_IF(PRED) typename std::enable_if<PRED>::type* = nullptr
+# define OK_IF(PRED) typename std::enable_if<PRED, int>::type = 42
 # define ISFLOAT(V) std::is_floating_point<V>::value
 
 
 namespace ser // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ //
 { // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ //
 
+
+// ========================================================================== //
 
 /*
 ** %fails on floating point serial+deserial operation
@@ -81,6 +84,8 @@ inline std::string serial<int8_t>(int8_t const &x) {
 	return iss.str();
 }
 
+// ========================================================================== //
+
 // string -> T
 // (does not check str correctness)
 template <typename T>
@@ -100,11 +105,47 @@ inline int8_t unserial_unsafe<int8_t>(std::string const &str) {
 	int16_t val;
 
 	std::stringstream(str) >> val;
+	return static_cast<int8_t>(val);
+}
+
+// ========================================================================== //
+
+namespace detail // ~~~~~~~~~~~~~~~~~~~~~~~~~~~ //
+{ // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ //
+
+template <typename T>
+[[ noreturn ]] void unserial_failed(char const *msg, std::string const &str) {
+
+	throw std::invalid_argument(
+		std::string(msg) + " occured while unserializing \""
+		+ str + "\" to " + TypeToString<T>::name);
+}
+
+}; // ~~~~~~~~~~~~~~~~~ END OF NAMESPACE DETAIL //
+// ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ //
+
+// string -> T		floating point overload
+// (takes [-]?[0..9]+.[0..9]+ only strings, checks str correctness)
+template <typename T, OK_IF(ISFLOAT(T))>
+T unserial_safe(std::string const &str) {
+
+	T val;
+	std::stringstream oss(str);
+
+	oss.clear();
+	std::feclearexcept(FE_ALL_EXCEPT);
+	oss >> val;
+	if (oss.fail() || oss.bad() || !oss.eof())
+		detail::unserial_failed<T>("Some error", str);
+	if (std::fetestexcept(FE_UNDERFLOW) && std::fpclassify(val) == FP_ZERO)
+		detail::unserial_failed<T>("Underflow", str);
+	else if (std::fetestexcept(FE_OVERFLOW) || std::isinf(val))
+		detail::unserial_failed<T>("Overflow", str);
 	return val;
 }
 
 // string -> T		integer overload
-// (takes digit-only strings, checks str correctness)
+// (takes [-]?[0..9]+ only strings, checks str correctness)
 template <typename T, OK_IF(!ISFLOAT(T))>
 T unserial_safe(std::string const &str) {
 
@@ -114,12 +155,12 @@ T unserial_safe(std::string const &str) {
 	oss.clear();
 	oss >> val;
 	if (oss.fail() || oss.bad() || !oss.eof())
-		throw std::invalid_argument("todo1");
+		detail::unserial_failed<T>("Some error", str);
 	return val;
 }
 
 // string -> T		char overload
-// (takes digit-only strings, checks str correctness)
+// (takes [-]?[0..9]+ only strings, checks str correctness)
 template <>
 inline int8_t unserial_safe<int8_t>(std::string const &str) {
 
@@ -130,23 +171,22 @@ inline int8_t unserial_safe<int8_t>(std::string const &str) {
 	oss.clear();
 	oss >> val;
 	if (oss.fail() || oss.bad() || !oss.eof())
-		throw std::invalid_argument("todo1");
+		detail::unserial_failed<int8_t>("Some error", str);
 	reserial = serial<int8_t>(val);
 	if (str != reserial)
-		throw std::invalid_argument("todo2");
-	return val;
+		detail::unserial_failed<int8_t>("Overflow", str);
+	return static_cast<int8_t>(val);
 }
 
-//TODO: rename all to serial / unserial_unsafe, make unserial_safe
+
+// ========================================================================== //
 
 
 }; // ~~~~~~~~~~~~~~~~~~~~ END OF NAMESPACE SER //
 // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ //
 
 
-
-
-# undef OF_IF
+# undef OK_IF
 # undef ISFLOAT
 
 #endif /* ************************************************* SERIALIZATION_HPP */

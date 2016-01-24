@@ -6,7 +6,7 @@
 //   By: ngoguey <ngoguey@student.42.fr>            +#+  +:+       +#+        //
 //                                                +#+#+#+#+#+   +#+           //
 //   Created: 2015/12/09 11:02:52 by ngoguey           #+#    #+#             //
-//   Updated: 2016/01/24 13:16:57 by ngoguey          ###   ########.fr       //
+//   Updated: 2016/01/24 13:48:56 by ngoguey          ###   ########.fr       //
 //                                                                            //
 // ************************************************************************** //
 
@@ -262,7 +262,7 @@ std::string eval(std::string const &lhs, std::string const &rhs) {
 // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ //
 
 
-# undef OF_IF
+# undef OK_IF
 # undef ISFLOAT
 
 #endif /* ****************************************************** EVALEXPR_HPP */

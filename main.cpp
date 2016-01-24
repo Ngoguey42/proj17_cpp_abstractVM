@@ -6,7 +6,7 @@
 //   By: ngoguey <ngoguey@student.42.fr>            +#+  +:+       +#+        //
 //                                                +#+#+#+#+#+   +#+           //
 //   Created: 2015/12/08 19:29:27 by ngoguey           #+#    #+#             //
-//   Updated: 2016/01/24 13:38:21 by ngoguey          ###   ########.fr       //
+//   Updated: 2016/01/24 15:32:49 by ngoguey          ###   ########.fr       //
 //                                                                            //
 // ************************************************************************** //
 
@@ -199,7 +199,7 @@ void test_unserial_safe(std::string const &str)
 		val = ser::unserial_safe<T>(str);
 		std::cout << "To (" << ser::serial(val) << ")" << std::endl;
 	} catch (std::invalid_argument e) {
-		std::cout << "Failed: " << e.what() << std::endl;
+		std::cout << "FAILED: " << e.what() << std::endl;
 	}
 	return ;
 }
@@ -210,26 +210,52 @@ int							main(void)
 
 	std::srand(time(NULL));
 
-	test_unserial_safe<int16_t>("-32769");
-	test_unserial_safe<int16_t>("-32768");
-	test_unserial_safe<int16_t>("-32767");
-	test_unserial_safe<int16_t>("-32766");
-	test_unserial_safe<int16_t>("-32765");
+	// test_unserial_safe<int16_t>("-32769");
+	// test_unserial_safe<int16_t>("-32768");
+	// test_unserial_safe<int16_t>("-32767");
+	// test_unserial_safe<int16_t>("-32766");
+	// test_unserial_safe<int16_t>("-32765");
 
-	test_unserial_safe<int16_t>("32769");
-	test_unserial_safe<int16_t>("32768");
-	test_unserial_safe<int16_t>("32767");
-	test_unserial_safe<int16_t>("32766");
-	test_unserial_safe<int16_t>("32765");
+	// test_unserial_safe<int16_t>("32769");
+	// test_unserial_safe<int16_t>("32768");
+	// test_unserial_safe<int16_t>("32767");
+	// test_unserial_safe<int16_t>("32766");
+	// test_unserial_safe<int16_t>("32765");
 
 
-	test_unserial_safe<int8_t>("128");
-	test_unserial_safe<int8_t>("127");
-	test_unserial_safe<int8_t>("126");
+	// test_unserial_safe<int8_t>("128");
+	// test_unserial_safe<int8_t>("127");
+	// test_unserial_safe<int8_t>("126");
 
-	test_unserial_safe<int8_t>("-129");
-	test_unserial_safe<int8_t>("-128");
-	test_unserial_safe<int8_t>("-127");
+	// test_unserial_safe<int8_t>("-129");
+	// test_unserial_safe<int8_t>("-128");
+	// test_unserial_safe<int8_t>("-127");
+	// test_unserial_safe<float>("0.0000000000000000000000000000000000001");
+	// test_unserial_safe<float>("0.00000000000000000000000000000000000001");
+	// test_unserial_safe<float>("0.000000000000000000000000000000000000001");
+
+	// test_unserial_safe<float>("0.0000000000000000000000000000000000000000001");
+	// test_unserial_safe<float>("0.00000000000000000000000000000000000000000001");
+	// test_unserial_safe<float>("0.000000000000000000000000000000000000000000001");
+	// test_unserial_safe<float>("0.0000000000000000000000000000000000000000000001");
+	test_unserial_safe<float>(ser::serial(std::numeric_limits<float>::max()));
+	test_unserial_safe<float>(ser::serial(std::numeric_limits<float>::lowest()));
+	test_unserial_safe<float>(ser::serial(std::numeric_limits<float>::min()));
+	test_unserial_safe<float>(ser::serial(std::numeric_limits<float>::denorm_min()));
+
+	test_unserial_safe<float>(ser::serial(std::numeric_limits<double>::max()));
+	test_unserial_safe<float>(ser::serial(std::numeric_limits<double>::lowest()));
+	test_unserial_safe<float>(ser::serial(std::numeric_limits<double>::min()));
+	test_unserial_safe<float>(ser::serial(std::numeric_limits<double>::denorm_min()));
+
+	test_unserial_safe<float>("1.40129846e-46");
+	test_unserial_safe<float>("0000000.0");
+
+
+	// ADD();
+	std::cout << (void*)TypeToString<double>::name << std::endl;
+	std::cout << (void*)TypeToString<float>::name << std::endl;
+
 
 	char c = -128;
 
@@ -253,18 +279,20 @@ int							main(void)
 	// testerloop<double>();
 	// testerloop<float>();
 
-	return (0);
-}
-
-int mainoldlu(void)
-{
-
 	DUMP(float, min);
 	DUMP(float, lowest);
 	DUMP(float, max);
 	DUMP(float, epsilon);
 	DUMP(float, infinity);
 	DUMP(float, denorm_min);
+
+
+
+	return (0);
+}
+
+int mainoldlu(void)
+{
 
 
 // dotest<float>((int32_t(42) + int32_t(33)) * float(44.55f));
