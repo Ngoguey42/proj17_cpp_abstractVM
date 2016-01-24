@@ -1,22 +1,18 @@
 // ************************************************************************** //
 //                                                                            //
 //                                                        :::      ::::::::   //
-//   types.hpp                                          :+:      :+:    :+:   //
+//   arith_types.hpp                                    :+:      :+:    :+:   //
 //                                                    +:+ +:+         +:+     //
 //   By: ngoguey <ngoguey@student.42.fr>            +#+  +:+       +#+        //
 //                                                +#+#+#+#+#+   +#+           //
-//   Created: 2016/01/24 15:36:48 by ngoguey           #+#    #+#             //
-//   Updated: 2016/01/24 15:37:21 by ngoguey          ###   ########.fr       //
+//   Created: 2016/01/24 15:53:27 by ngoguey           #+#    #+#             //
+//   Updated: 2016/01/24 15:53:34 by ngoguey          ###   ########.fr       //
 //                                                                            //
 // ************************************************************************** //
 
-#ifndef TYPES_HPP
-# define TYPES_HPP
+#ifndef ARITH_TYPES_HPP
+# define ARITH_TYPES_HPP
 
-#include <type_traits>
-#include <string>
-#include <iostream> //tmp
-// #include <stack>
 #include <unordered_map>
 
 // Enum *************************************** //
@@ -69,4 +65,4 @@ template <>			struct TypeToString<double> {
 	static constexpr char const *name = "Double";
 };
 
-#endif /* ********************************************************* TYPES_HPP */
+#endif /* *************************************************** ARITH_TYPES_HPP */

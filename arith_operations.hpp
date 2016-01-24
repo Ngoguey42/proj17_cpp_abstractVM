@@ -1,17 +1,17 @@
 // ************************************************************************** //
 //                                                                            //
 //                                                        :::      ::::::::   //
-//   Evalexpr.hpp                                       :+:      :+:    :+:   //
+//   arith_operations.hpp                               :+:      :+:    :+:   //
 //                                                    +:+ +:+         +:+     //
 //   By: ngoguey <ngoguey@student.42.fr>            +#+  +:+       +#+        //
 //                                                +#+#+#+#+#+   +#+           //
-//   Created: 2015/12/09 11:02:52 by ngoguey           #+#    #+#             //
-//   Updated: 2016/01/24 13:48:56 by ngoguey          ###   ########.fr       //
+//   Created: 2016/01/24 15:53:42 by ngoguey           #+#    #+#             //
+//   Updated: 2016/01/24 15:55:53 by ngoguey          ###   ########.fr       //
 //                                                                            //
 // ************************************************************************** //
 
-#ifndef EVALEXPR_HPP
-# define EVALEXPR_HPP
+#ifndef ARITH_OPERATIONS_HPP
+# define ARITH_OPERATIONS_HPP
 
 #include <cstdlib>
 #include <functional>
@@ -19,7 +19,7 @@
 #include <cmath>
 #include <sstream>
 
-#include "serialization.hpp"
+#include "arith_serializations.hpp"
 
 # define OK_IF(PRED) typename std::enable_if<PRED>::type* = nullptr
 # define ISFLOAT(V) std::is_floating_point<V>::value
@@ -45,7 +45,7 @@
 */
 
 
-namespace ee // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ //
+namespace eval // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ //
 { // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ //
 
 
@@ -258,11 +258,11 @@ std::string eval(std::string const &lhs, std::string const &rhs) {
 }
 
 
-}; // ~~~~~~~~~~~~~~~~~~~~~ END OF NAMESPACE EE //
+}; // ~~~~~~~~~~~~~~~~~~~ END OF NAMESPACE EVAL //
 // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ //
 
 
 # undef OK_IF
 # undef ISFLOAT
 
-#endif /* ****************************************************** EVALEXPR_HPP */
+#endif /* ********************************************** ARITH_OPERATIONS_HPP */

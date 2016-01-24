@@ -1,4 +1,4 @@
-O_FILES :=	o/./InputHandler.o o/./Operands.o o/./VMStack.o o/./main.o
+O_FILES :=	o/./InputHandler.o o/./VMStack.o o/./arith_wrappers.o o/./main.o
 
 LIBS_DEPEND := 
 
@@ -7,11 +7,11 @@ libs:
 
 
 
-MAX_SOURCE_LEN := 18
+MAX_SOURCE_LEN := 20
 o/./InputHandler.o: ./InputHandler.cpp ./InputHandler.hpp | o/./
-o/./Operands.o: ./Operands.cpp ./Evalexpr.hpp ./Operands.hpp \
-	./serialization.hpp | o/./
-o/./VMStack.o: ./VMStack.cpp ./Evalexpr.hpp ./MStack.hpp ./Operands.hpp \
-	./VMStack.hpp ./serialization.hpp | o/./
-o/./main.o: ./main.cpp ./MStack.hpp ./Evalexpr.hpp ./Operands.hpp \
-	./VMStack.hpp ./serialization.hpp | o/./
+o/./VMStack.o: ./VMStack.cpp ./MStack.hpp ./VMStack.hpp ./arith_operations.hpp \
+	./arith_serializations.hpp ./arith_types.hpp ./arith_wrappers.hpp | o/./
+o/./arith_wrappers.o: ./arith_wrappers.cpp ./arith_operations.hpp \
+	./arith_serializations.hpp ./arith_types.hpp ./arith_wrappers.hpp | o/./
+o/./main.o: ./main.cpp ./MStack.hpp ./VMStack.hpp ./arith_operations.hpp \
+	./arith_serializations.hpp ./arith_types.hpp ./arith_wrappers.hpp | o/./

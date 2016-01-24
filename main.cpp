@@ -6,7 +6,7 @@
 //   By: ngoguey <ngoguey@student.42.fr>            +#+  +:+       +#+        //
 //                                                +#+#+#+#+#+   +#+           //
 //   Created: 2015/12/08 19:29:27 by ngoguey           #+#    #+#             //
-//   Updated: 2016/01/24 15:32:49 by ngoguey          ###   ########.fr       //
+//   Updated: 2016/01/24 15:58:02 by ngoguey          ###   ########.fr       //
 //                                                                            //
 // ************************************************************************** //
 
@@ -18,12 +18,7 @@
 #include <cstring>
 #include <iomanip>
 
-#include "MStack.hpp"
 #include "VMStack.hpp"
-
-#include "Operands.hpp"
-#include "Evalexpr.hpp"
-#include "serialization.hpp"
 
 /*
 ** For non commutative operations, consider the stack v1 on v2 on stack_tail,

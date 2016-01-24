@@ -1,28 +1,23 @@
 // ************************************************************************** //
 //                                                                            //
 //                                                        :::      ::::::::   //
-//   serialization.hpp                                  :+:      :+:    :+:   //
+//   arith_serializations.hpp                           :+:      :+:    :+:   //
 //                                                    +:+ +:+         +:+     //
 //   By: ngoguey <ngoguey@student.42.fr>            +#+  +:+       +#+        //
 //                                                +#+#+#+#+#+   +#+           //
-//   Created: 2016/01/24 13:13:41 by ngoguey           #+#    #+#             //
-//   Updated: 2016/01/24 15:41:51 by ngoguey          ###   ########.fr       //
+//   Created: 2016/01/24 15:54:40 by ngoguey           #+#    #+#             //
+//   Updated: 2016/01/24 15:54:49 by ngoguey          ###   ########.fr       //
 //                                                                            //
 // ************************************************************************** //
 
-#ifndef SERIALIZATION_HPP
-# define SERIALIZATION_HPP
+#ifndef ARITH_SERIALIZATIONS_HPP
+# define ARITH_SERIALIZATIONS_HPP
 
 # include <sstream>
 # include <iomanip>
 # include <limits>
-// # include <ios>
-// #include <iostream>
-// #include <sstream>
-# include "types.hpp"
 
-// # include <cmath> //tmp
-// # include <iostream> //debug
+# include "arith_types.hpp"
 
 # define OK_IF(PRED) typename std::enable_if<PRED, int>::type = 42
 # define ISFLOAT(V) std::is_floating_point<V>::value
@@ -189,4 +184,4 @@ inline int8_t unserial_safe<int8_t>(std::string const &str) {
 # undef OK_IF
 # undef ISFLOAT
 
-#endif /* ************************************************* SERIALIZATION_HPP */
+#endif /* ****************************************** ARITH_SERIALIZATIONS_HPP */

@@ -6,7 +6,7 @@
 //   By: ngoguey <ngoguey@student.42.fr>            +#+  +:+       +#+        //
 //                                                +#+#+#+#+#+   +#+           //
 //   Created: 2015/12/09 17:44:53 by ngoguey           #+#    #+#             //
-//   Updated: 2016/01/22 19:26:47 by ngoguey          ###   ########.fr       //
+//   Updated: 2016/01/24 15:57:40 by ngoguey          ###   ########.fr       //
 //                                                                            //
 // ************************************************************************** //
 
@@ -19,7 +19,7 @@
 # include <string>
 
 # include "MStack.hpp"
-# include "Operands.hpp"
+# include "arith_wrappers.hpp"
 
 // VMStack is an iterable stack of IOperand const
 //		supports 11 actions (5 arithmetic)

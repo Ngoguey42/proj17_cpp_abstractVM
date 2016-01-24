@@ -1,46 +1,32 @@
 // ************************************************************************** //
 //                                                                            //
 //                                                        :::      ::::::::   //
-//   Operands.hpp                                       :+:      :+:    :+:   //
+//   arith_wrappers.hpp                                 :+:      :+:    :+:   //
 //                                                    +:+ +:+         +:+     //
 //   By: ngoguey <ngoguey@student.42.fr>            +#+  +:+       +#+        //
 //                                                +#+#+#+#+#+   +#+           //
-//   Created: 2015/12/09 11:04:37 by ngoguey           #+#    #+#             //
-//   Updated: 2016/01/24 15:37:32 by ngoguey          ###   ########.fr       //
+//   Created: 2016/01/24 15:56:07 by ngoguey           #+#    #+#             //
+//   Updated: 2016/01/24 15:56:58 by ngoguey          ###   ########.fr       //
 //                                                                            //
 // ************************************************************************** //
 
-#ifndef OPERANDS_HPP
-# define OPERANDS_HPP
+#ifndef ARITH_WRAPPERS_HPP
+# define ARITH_WRAPPERS_HPP
 
-#include <type_traits>
-#include <string>
-#include <iostream> //tmp
-// #include <stack>
-#include <unordered_map>
+# include <type_traits>
+# include <string>
+# include <iostream> //tmp
 
-#include "Evalexpr.hpp"
-#include "types.hpp"
-
-// operand_enum
-//		static (type -> enum) conversions
-
-// OperandMap
-//		runtime (string -> enum) conversions
+# include "arith_operations.hpp"
 
 // IOperand defined in subject.pdf
-//		interface will all allowed operations
+//		interface with all allowed operations on operands
 
 // OpFactory required by subject.pdf
 //		factory
 
 // Operand required by subject.pdf
-// OpFactory defined in subject.pdf
-
-
-// Operand constructor
-// OpFactory
-//		may throw std::invalid_argument from Operand constructor call
+//		wrapper around a value
 
 // IOperand operator +
 //		may throw std::overflow_error from Evalexpr call
@@ -100,17 +86,16 @@ class Operand : public IOperand
 
 public:
 
-	~Operand() {}
+	~Operand(){}
 	Operand(OpFactory const &fact, std::string const &str)
 		: _fact(fact), _val(str)
-	{}
+		{}
 
 	Operand() = delete;
 	Operand(Operand const &src) = delete;
 	Operand(Operand &&src) = delete;
 	Operand				&operator=(Operand const &rhs) = delete;
 	Operand				&operator=(Operand &&rhs) = delete;
-
 
 	int					getPrecision(void) const override {
 		return static_cast<int>(TEnumVal);
@@ -134,7 +119,7 @@ public:
 		if (dstType == TEnumVal)										\
 		{																\
 			return _fact.createOperand(									\
-				dstType, ee::eval<T, ee::OPNAME>(_val, rhs.toString())); \
+				dstType, eval::eval<T, eval::OPNAME>(_val, rhs.toString())); \
 		}																\
 		else															\
 		{																\
@@ -155,4 +140,4 @@ public:
 
 };
 
-#endif /* ****************************************************** OPERANDS_HPP */
+#endif /* ************************************************ ARITH_WRAPPERS_HPP */

@@ -1,18 +1,18 @@
 // ************************************************************************** //
 //                                                                            //
 //                                                        :::      ::::::::   //
-//   Operands.cpp                                       :+:      :+:    :+:   //
+//   arith_wrappers.cpp                                 :+:      :+:    :+:   //
 //                                                    +:+ +:+         +:+     //
 //   By: ngoguey <ngoguey@student.42.fr>            +#+  +:+       +#+        //
 //                                                +#+#+#+#+#+   +#+           //
-//   Created: 2015/12/09 11:03:21 by ngoguey           #+#    #+#             //
-//   Updated: 2016/01/14 16:24:32 by ngoguey          ###   ########.fr       //
+//   Created: 2016/01/24 15:57:06 by ngoguey           #+#    #+#             //
+//   Updated: 2016/01/24 15:57:13 by ngoguey          ###   ########.fr       //
 //                                                                            //
 // ************************************************************************** //
 
 #include <cstdint>
 
-#include "Operands.hpp"
+#include "arith_wrappers.hpp"
 
 using OF = OpFactory;
 
