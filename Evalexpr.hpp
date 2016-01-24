@@ -6,7 +6,7 @@
 //   By: ngoguey <ngoguey@student.42.fr>            +#+  +:+       +#+        //
 //                                                +#+#+#+#+#+   +#+           //
 //   Created: 2015/12/09 11:02:52 by ngoguey           #+#    #+#             //
-//   Updated: 2016/01/22 20:03:24 by ngoguey          ###   ########.fr       //
+//   Updated: 2016/01/24 13:16:57 by ngoguey          ###   ########.fr       //
 //                                                                            //
 // ************************************************************************** //
 
@@ -19,7 +19,7 @@
 #include <cmath>
 #include <sstream>
 
-#include "Converter.hpp"
+#include "serialization.hpp"
 
 # define OK_IF(PRED) typename std::enable_if<PRED>::type* = nullptr
 # define ISFLOAT(V) std::is_floating_point<V>::value
@@ -118,9 +118,9 @@ struct OperationToOss
 {
 	void operator () (std::stringstream &oss, T const &x, T const &y) const {
 
-		oss << "(" << conv::convert<T>(x)
+		oss << "(" << ser::serial<T>(x)
 			<< " " << OperationChar()[Operation]
-			<< " " << conv::convert<T>(y) << ")";
+			<< " " << ser::serial<T>(y) << ")";
 		return ;
 	}
 };
@@ -251,9 +251,10 @@ std::string eval(std::string const &lhs, std::string const &rhs) {
 	using Op = detail::SecuredOperation<
 		T, Operation, ISFLOAT(T), detail::IsDivOrMod<Operation>::value>;
 
-	T const res = Op()(conv::convert<T>(lhs), conv::convert<T>(rhs));
+	T const res =
+		Op()(ser::unserial_unsafe<T>(lhs), ser::unserial_unsafe<T>(rhs));
 
-	return conv::convert<T>(res);
+	return ser::serial<T>(res);
 }
 
 

@@ -6,7 +6,7 @@
 //   By: ngoguey <ngoguey@student.42.fr>            +#+  +:+       +#+        //
 //                                                +#+#+#+#+#+   +#+           //
 //   Created: 2015/12/08 19:29:27 by ngoguey           #+#    #+#             //
-//   Updated: 2016/01/23 16:15:22 by ngoguey          ###   ########.fr       //
+//   Updated: 2016/01/24 13:38:21 by ngoguey          ###   ########.fr       //
 //                                                                            //
 // ************************************************************************** //
 
@@ -23,7 +23,7 @@
 
 #include "Operands.hpp"
 #include "Evalexpr.hpp"
-#include "Converter.hpp"
+#include "serialization.hpp"
 
 /*
 ** For non commutative operations, consider the stack v1 on v2 on stack_tail,
@@ -69,7 +69,7 @@ void dotest(T const &f)
 {
 	// setflags<T>(std::cout);
 	std::cout << "direct output: " << f << std::endl;
-	std::cout << "built output:  " << conv::convert<T>(f) << std::endl;
+	std::cout << "built output:  " << ser::serial<T>(f) << std::endl;
 	std::cout << "" << std::endl;
 	return ;
 }
@@ -135,8 +135,8 @@ void testerloop(void)
 		occ_map[clas]++;
 		if (clas != FP_NAN && clas != FP_INFINITE)
 		{
-			tostr = conv::convert<T>(ref);
-			toT = conv::convert<T>(tostr);
+			tostr = ser::serial<T>(ref);
+			toT = ser::unserial_unsafe<T>(tostr);
 
 			if (ref != toT)
 			{
@@ -176,33 +176,80 @@ void test12(T const &x)
 {
 	std::cout << "test12 with: " << x << std::endl;
 
-	auto tostr = conv::convert(x);
+	auto tostr = ser::serial(x);
 	std::cout << "tostr: " << tostr << std::endl;
 
-	T tot = conv::convert<T>(tostr);
+	T tot = ser::unserial_unsafe<T>(tostr);
 	std::cout << "back to T: " << tot << std::endl;
 	std::cout << "identical? " << std::boolalpha << (x == tot) << std::endl;
 
 	std::cout << "" << std::endl;
 }
 
+
+
+template <class T>
+void test_unserial_safe(std::string const &str)
+{
+	std::cout << std::endl;
+
+	std::cout << "From " << '"' << str << '"'  << std::endl;
+	T val;
+	try {
+		val = ser::unserial_safe<T>(str);
+		std::cout << "To (" << ser::serial(val) << ")" << std::endl;
+	} catch (std::invalid_argument e) {
+		std::cout << "Failed: " << e.what() << std::endl;
+	}
+	return ;
+}
+
+
 int							main(void)
 {
 
 	std::srand(time(NULL));
 
-	test12<double>(9007199254740990.);
-	test12<double>(9007199254740991.);
-	test12<double>(9007199254740992.);
-	test12<double>(9007199254740993.);
-	test12<double>(9007199254740994.);
-	test12<double>(9007199254740995.);
-	
-	test12<float>(42.42f);
-	test12<double>(42.42f);
-	test12<int8_t>(42);
-	test12<int16_t>(42);
-	test12<int32_t>(42);
+	test_unserial_safe<int16_t>("-32769");
+	test_unserial_safe<int16_t>("-32768");
+	test_unserial_safe<int16_t>("-32767");
+	test_unserial_safe<int16_t>("-32766");
+	test_unserial_safe<int16_t>("-32765");
+
+	test_unserial_safe<int16_t>("32769");
+	test_unserial_safe<int16_t>("32768");
+	test_unserial_safe<int16_t>("32767");
+	test_unserial_safe<int16_t>("32766");
+	test_unserial_safe<int16_t>("32765");
+
+
+	test_unserial_safe<int8_t>("128");
+	test_unserial_safe<int8_t>("127");
+	test_unserial_safe<int8_t>("126");
+
+	test_unserial_safe<int8_t>("-129");
+	test_unserial_safe<int8_t>("-128");
+	test_unserial_safe<int8_t>("-127");
+
+	char c = -128;
+
+	do {
+
+
+	} while (c++ < 127);
+
+	// test12<double>(9007199254740990.);
+	// test12<double>(9007199254740991.);
+	// test12<double>(9007199254740992.);
+	// test12<double>(9007199254740993.);
+	// test12<double>(9007199254740994.);
+	// test12<double>(9007199254740995.);
+
+	// test12<float>(42.42f);
+	// test12<double>(42.42f);
+	// test12<int8_t>(42);
+	// test12<int16_t>(42);
+	// test12<int32_t>(42);
 	// testerloop<double>();
 	// testerloop<float>();
 
