@@ -1,4 +1,5 @@
-O_FILES :=	o/./InputHandler.o o/./VMStack.o o/./arith_wrappers.o o/./main.o
+O_FILES :=	o/srcs/InputHandler.o o/srcs/VMStack.o o/srcs/arith_wrappers.o \
+			o/srcs/main.o
 
 LIBS_DEPEND := 
 
@@ -7,11 +8,14 @@ libs:
 
 
 
-MAX_SOURCE_LEN := 20
-o/./InputHandler.o: ./InputHandler.cpp ./InputHandler.hpp | o/./
-o/./VMStack.o: ./VMStack.cpp ./MStack.hpp ./VMStack.hpp ./arith_operations.hpp \
-	./arith_serializations.hpp ./arith_types.hpp ./arith_wrappers.hpp | o/./
-o/./arith_wrappers.o: ./arith_wrappers.cpp ./arith_operations.hpp \
-	./arith_serializations.hpp ./arith_types.hpp ./arith_wrappers.hpp | o/./
-o/./main.o: ./main.cpp ./MStack.hpp ./VMStack.hpp ./arith_operations.hpp \
-	./arith_serializations.hpp ./arith_types.hpp ./arith_wrappers.hpp | o/./
+MAX_SOURCE_LEN := 23
+o/srcs/InputHandler.o: srcs/InputHandler.cpp srcs/InputHandler.hpp | o/srcs/
+o/srcs/VMStack.o: srcs/VMStack.cpp srcs/MStack.hpp srcs/VMStack.hpp \
+	srcs/arith_operations.hpp srcs/arith_serializations.hpp \
+	srcs/arith_types.hpp srcs/arith_wrappers.hpp | o/srcs/
+o/srcs/arith_wrappers.o: srcs/arith_wrappers.cpp srcs/arith_operations.hpp \
+	srcs/arith_serializations.hpp srcs/arith_types.hpp srcs/arith_wrappers.hpp \
+	| o/srcs/
+o/srcs/main.o: srcs/main.cpp srcs/MStack.hpp srcs/VMStack.hpp \
+	srcs/arith_operations.hpp srcs/arith_serializations.hpp \
+	srcs/arith_types.hpp srcs/arith_wrappers.hpp | o/srcs/

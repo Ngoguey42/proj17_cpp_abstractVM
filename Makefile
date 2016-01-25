@@ -4,8 +4,8 @@
 NAME			:= abstractVM
 
 # Project directories
-DIRS			:= .
-INCLUDE_DIRS	:= .
+DIRS			:= srcs
+INCLUDE_DIRS	:= include
 
 # Git submodule to init
 MODULES			:=
@@ -41,7 +41,7 @@ export DEBUG_MODE
 JOBS			:= 4
 
 # Column output
-COLUMN_OUTPUT	:= 0
+COLUMN_OUTPUT	:= 1
 
 ifeq ($(COLUMN_OUTPUT),0)
 	PRINT_OK	= printf '\033[32m$<\033[0m\n'
