@@ -4,7 +4,8 @@
 NAME			:= abstractVM
 
 # Project directories
-DIRS			:= srcs
+# DIRS			:= srcs srcs_build
+DIRS			:= srcs srcs_test
 INCLUDE_DIRS	:= include
 
 # Git submodule to init
@@ -14,7 +15,7 @@ LIBS			:=
 
 # Base flags
 BASE_FLAGS		= -Wall -Wextra
-HEAD_FLAGS		= $(addprefix -I,$(DIRS))
+HEAD_FLAGS		= $(addprefix -I,$(INCLUDE_DIRS))
 
 # Compilation flags (per language)
 C_FLAGS			= $(HEAD_FLAGS) $(BASE_FLAGS)
