@@ -4,8 +4,8 @@
 NAME			:= abstractVM
 
 # Project directories
-# DIRS			:= srcs srcs_build
-DIRS			:= srcs srcs_test
+DIRS			:= srcs srcs_build
+# DIRS			:= srcs srcs_test
 INCLUDE_DIRS	:= include
 
 # Git submodule to init

@@ -6,7 +6,7 @@
 //   By: ngoguey <ngoguey@student.42.fr>            +#+  +:+       +#+        //
 //                                                +#+#+#+#+#+   +#+           //
 //   Created: 2015/12/09 12:24:05 by ngoguey           #+#    #+#             //
-//   Updated: 2016/01/14 15:18:41 by ngoguey          ###   ########.fr       //
+//   Updated: 2016/01/26 16:42:54 by ngoguey          ###   ########.fr       //
 //                                                                            //
 // ************************************************************************** //
 
@@ -15,10 +15,10 @@
 
 # include <istream>
 # include <string>
-# include <queue>
+# include <deque>
 
 // Constructor() takes istream informations
-// handle() - ouputs a queue of strings read from stream
+// handle() - ouputs a deque of strings read from stream
 //			- does not close the stream
 //			- may throw std::runtime_error
 
@@ -37,7 +37,7 @@ public:
 	InputHandler	&operator=(InputHandler &&rhs) = delete;
 
 	auto			handle(void)
-		-> std::queue<std::string>;
+		-> std::deque<std::string>;
 
 private:
 
@@ -50,7 +50,7 @@ private:
 	/* ATTRIBUTES ******************* */
 	std::istream				&_is;
 	bool						_fd0;
-	std::queue<std::string>		_q;
+	std::deque<std::string>	_q;
 	std::string					_line;
 
 };

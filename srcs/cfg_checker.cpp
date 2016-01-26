@@ -6,12 +6,16 @@
 //   By: ngoguey <ngoguey@student.42.fr>            +#+  +:+       +#+        //
 //                                                +#+#+#+#+#+   +#+           //
 //   Created: 2016/01/26 14:23:16 by ngoguey           #+#    #+#             //
-//   Updated: 2016/01/26 16:01:59 by ngoguey          ###   ########.fr       //
+//   Updated: 2016/01/26 16:58:27 by ngoguey          ###   ########.fr       //
 //                                                                            //
 // ************************************************************************** //
 
 #include <iostream> //debug
 #include <regex> //debug
+
+namespace cfg // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ //
+{ // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ //
+
 
 static char const *n{"[-]?[0-9]+"};
 static char const *z{"[-]?[0-9]+[.][0-9]+"};
@@ -96,13 +100,5 @@ bool string_in_language(std::string const &str)
 	return std::regex_match(str, re);
 }
 
-// static int dobordel()
-// {
-// 	std::string const inst{make_instr()};
-// 	std::cout << inst << std::endl;
-// 	std::cout << std::regex_match("pop", VALUE) << std::endl;
-// 	std::cout << std::regex_match("push double(-999.0)", VALUE) << std::endl;
-// 	return 0;
-// }
-
-// static int lol = dobordel();
+}; // ~~~~~~~~~~~~~~~~~~~~ END OF NAMESPACE CFG //
+// ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ //

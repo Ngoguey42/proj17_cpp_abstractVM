@@ -6,7 +6,7 @@
 //   By: ngoguey <ngoguey@student.42.fr>            +#+  +:+       +#+        //
 //                                                +#+#+#+#+#+   +#+           //
 //   Created: 2015/12/08 19:29:27 by ngoguey           #+#    #+#             //
-//   Updated: 2016/01/24 18:26:41 by ngoguey          ###   ########.fr       //
+//   Updated: 2016/01/26 16:33:32 by ngoguey          ###   ########.fr       //
 //                                                                            //
 // ************************************************************************** //
 
@@ -18,7 +18,7 @@
 #include <cstring>
 #include <iomanip>
 
-#include "VMStack.hpp"
+#include "Controller.hpp"
 
 /*
 ** For non commutative operations, consider the stack v1 on v2 on stack_tail,
@@ -31,21 +31,21 @@
 ** v2 - v1 = 42 - 30 = 12
 */
 
-void add_dump_pop(VMStack &vmst)
-{
-	VMStack::actmap.at("add")(&vmst, "");
-	VMStack::actmap.at("dump")(&vmst, "");
-	VMStack::actmap.at("pop")(&vmst, "");
-	return ;
-}
+// void add_dump_pop(VMStack &vmst)
+// {
+// 	VMStack::actmap.at("add")(&vmst, "");
+// 	VMStack::actmap.at("dump")(&vmst, "");
+// 	VMStack::actmap.at("pop")(&vmst, "");
+// 	return ;
+// }
 
-void sub_dump_pop(VMStack &vmst)
-{
-	VMStack::actmap.at("sub")(&vmst, "");
-	VMStack::actmap.at("dump")(&vmst, "");
-	VMStack::actmap.at("pop")(&vmst, "");
-	return ;
-}
+// void sub_dump_pop(VMStack &vmst)
+// {
+// 	VMStack::actmap.at("sub")(&vmst, "");
+// 	VMStack::actmap.at("dump")(&vmst, "");
+// 	VMStack::actmap.at("pop")(&vmst, "");
+// 	return ;
+// }
 
 union Bordel
 {
@@ -91,56 +91,7 @@ union Bordel
 
 };
 
-
-template <class T>
-void test(VMStack &vmst, std::string const &type) {
-
-	T tmp;
-	tmp = Bordel{}.randomize();
-	VMStack::actmap.at("push")(&vmst, type + "(" + ser::serial<T>(tmp) + ')');
-
-	for (;;)
-	{
-		tmp = Bordel{}.randomize();
-		if (tmp == tmp && tmp != +1. / 0. && tmp != -1. / 0.)
-		{
-			VMStack::actmap.at("push")(&vmst, type + "(" + ser::serial<T>(tmp) + ')');
-			VMStack::actmap.at("dump")(&vmst, "");
-			std::cout << "=" << std::endl;
-			// VMStack::actmap.at("mul")(&vmst, "");
-			VMStack::actmap.at("add")(&vmst, "");
-			// VMStack::actmap.at("mod")(&vmst, "");
-			// VMStack::actmap.at("sub")(&vmst, "");
-			// VMStack::actmap.at("div")(&vmst, "");
-			VMStack::actmap.at("dump")(&vmst, "");
-			std::cout << "///////////////////////////////////" << std::endl;
-		}
-		// if (tmp != tmp)
-		// 	return ;
-	}
-
-}
-
-int							main(void)
+int							main(int ac, char const *av[])
 {
-	OpFactory fact;
-	VMStack vmst(fact);
-	std::srand(time(NULL));
-
-
-	// test<int8_t>(vmst, "Int8");
-	// test<int16_t>(vmst, "Int16");
-	// test<int32_t>(vmst, "Int32");
-	// test<float>(vmst, "Float");
-	test<double>(vmst, "Double");
-
-
-
-	// do {
-
-
-	// } while (c++ < 127);
-	VMStack::actmap.at("dump")(&vmst, "");
-
-	return (0);
+	return Controller()(ac, av);
 }

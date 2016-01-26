@@ -1,0 +1,15 @@
+push int8(42);tmp
+ push int8(42);tmp
+push  int8(42);tmp
+push int8(42) ;tmp
+ push  int8(42);tmp
+ push int8(42) ;tmp
+push  int8(42) ;tmp
+ push  int8(42) ;tmp
+
+ pop;lol
+pop ;lol
+  pop;lol
+pop  ;lol
+  pop	;lol
+pop;lol
