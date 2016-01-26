@@ -6,7 +6,7 @@
 //   By: ngoguey <ngoguey@student.42.fr>            +#+  +:+       +#+        //
 //                                                +#+#+#+#+#+   +#+           //
 //   Created: 2016/01/24 15:53:27 by ngoguey           #+#    #+#             //
-//   Updated: 2016/01/24 15:53:34 by ngoguey          ###   ########.fr       //
+//   Updated: 2016/01/26 20:25:00 by ngoguey          ###   ########.fr       //
 //                                                                            //
 // ************************************************************************** //
 
@@ -19,11 +19,11 @@
 enum class eOperandType // eOperandType from subject.pdf
 {
 	Int8 = 0,
-		Int16,
-		Int32,
-		Float,
-		Double
-		};
+	Int16,
+	Int32,
+	Float,
+	Double
+};
 
 // Type -> Enum (static) ********************** //
 template <class T>	struct operand_enum;
@@ -45,6 +45,9 @@ template <>			struct operand_enum<double>
 
 // TypeName -> Enum (runtime) ***************** //
 extern std::unordered_map<std::string, eOperandType> const operandMap;
+
+// Enum -> TypeName (runtime) ***************** //
+extern std::unordered_map<eOperandType, std::string> const operandStringsMap;
 
 // Type -> TypeName (static) ****************** //
 template <class T>	struct TypeToString;

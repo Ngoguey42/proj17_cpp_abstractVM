@@ -6,7 +6,7 @@
 //   By: ngoguey <ngoguey@student.42.fr>            +#+  +:+       +#+        //
 //                                                +#+#+#+#+#+   +#+           //
 //   Created: 2015/12/09 18:12:25 by ngoguey           #+#    #+#             //
-//   Updated: 2016/01/26 19:01:16 by ngoguey          ###   ########.fr       //
+//   Updated: 2016/01/26 20:45:09 by ngoguey          ###   ########.fr       //
 //                                                                            //
 // ************************************************************************** //
 
@@ -47,12 +47,8 @@ VMS::~VMStack()
 
 bool VMS::push(std::string const &arg)
 {
-	std::size_t const opparen = arg.find('(');
-	std::string const type = arg.substr(0, opparen);
-	eOperandType const etype = operandMap.at(type);
-	std::string const n = arg.substr(opparen + 1, arg.find(')') - opparen - 1);
-	std::string const nClean = ser::clean(etype, n);
-	IOperand const *const op = this->_opFact.createOperand(etype, nClean);
+	IOperand const *const op =
+		this->_opFact.createOperandFromString(arg);
 
 	MStack::push(op); /*super call*/
 	return false;
@@ -71,6 +67,28 @@ bool VMS::dump(std::string const &) /*unused argument*/
 {
 	for (auto const &op : *this)
 		std::cout << op->toString() << std::endl;
+	return false;
+}
+
+bool VMS::assert(std::string const &arg)
+{
+	std::string (*opToStr)(IOperand const&) = [](IOperand const& op) {
+
+		return operandStringsMap.at(op.getType()) + '(' + op.toString() + ')';
+	};
+	std::unique_ptr<IOperand const> const pred{
+		this->_opFact.createOperandFromString(arg)};
+	IOperand const *cur;
+
+
+	if (this->size() < 1)
+		throw std::out_of_range("Stack size too low for assert");
+	cur = MStack::top();
+	if (cur->getType() != pred->getType()
+		|| cur->toString() != pred->toString())
+		throw std::invalid_argument(
+			opToStr(*cur) + " does not match given value " + opToStr(*pred)
+			+ " (aka " + arg + ')');
 	return false;
 }
 

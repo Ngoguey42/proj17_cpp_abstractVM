@@ -6,7 +6,7 @@
 //   By: ngoguey <ngoguey@student.42.fr>            +#+  +:+       +#+        //
 //                                                +#+#+#+#+#+   +#+           //
 //   Created: 2016/01/26 15:57:21 by ngoguey           #+#    #+#             //
-//   Updated: 2016/01/26 17:49:28 by ngoguey          ###   ########.fr       //
+//   Updated: 2016/01/26 20:51:08 by ngoguey          ###   ########.fr       //
 //                                                                            //
 // ************************************************************************** //
 
@@ -100,8 +100,10 @@ void Controller::_run()
 		std::tie(instr, arg1) = _sepInstrArg(instrQ.front());
 		std::cout << "\"" << instr << "\" \""<< arg1 << "\"" << std::endl; //TODO
 		instrQ.pop_front();
-		VMStack::actmap.at(instr)(&vms, arg1);
+		if (VMStack::actmap.at(instr)(&vms, arg1))
+			return ;
 	}
+	throw std::invalid_argument("Missing exit statement");
 	return ;
 }
 

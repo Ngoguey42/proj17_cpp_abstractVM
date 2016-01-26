@@ -6,7 +6,7 @@
 //   By: ngoguey <ngoguey@student.42.fr>            +#+  +:+       +#+        //
 //                                                +#+#+#+#+#+   +#+           //
 //   Created: 2016/01/24 15:56:07 by ngoguey           #+#    #+#             //
-//   Updated: 2016/01/26 18:32:24 by ngoguey          ###   ########.fr       //
+//   Updated: 2016/01/26 20:18:11 by ngoguey          ###   ########.fr       //
 //                                                                            //
 // ************************************************************************** //
 
@@ -74,6 +74,9 @@ class OpFactory // OpFactory from subject.pdf
 public:
 	IOperand const		*createOperand(
 		eOperandType type, std::string const &value) const;
+
+	IOperand const		*createOperandFromString(
+		std::string const &str) const;
 
 };
 

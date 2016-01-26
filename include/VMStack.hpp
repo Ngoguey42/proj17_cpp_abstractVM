@@ -6,7 +6,7 @@
 //   By: ngoguey <ngoguey@student.42.fr>            +#+  +:+       +#+        //
 //                                                +#+#+#+#+#+   +#+           //
 //   Created: 2015/12/09 17:44:53 by ngoguey           #+#    #+#             //
-//   Updated: 2016/01/26 19:01:30 by ngoguey          ###   ########.fr       //
+//   Updated: 2016/01/26 20:17:11 by ngoguey          ###   ########.fr       //
 //                                                                            //
 // ************************************************************************** //
 
@@ -21,10 +21,9 @@
 # include "MStack.hpp"
 # include "arith_wrappers.hpp"
 
-// VMStack is an iterable stack of IOperand const
+// VMStack is an iterable stack of IOperand const*
 //		supports 11 actions (5 arithmetic)
 //		all arguments are grammar valid, only 2 actions use argument
-
 
 // 1 push
 //		may throw std::invalid_argument
@@ -36,6 +35,7 @@
 //		may throw std::domain_error from Operators call
 //		may throw std::underflow_error from Operators call
 //		may throw std::overflow_error from Operators call
+// 1 exit
 
 class VMStack : public MStack<IOperand const *>
 {
@@ -51,7 +51,7 @@ public:
 	bool push(std::string const &arg);
 	bool pop(std::string const &);
 	bool dump(std::string const &);
-	bool assert(std::string const &arg) {return false;}
+	bool assert(std::string const &arg);
 	bool arithmetic(arithfun_t f, std::string const &);
 	bool print(std::string const &) {return false;}
 	bool exit(std::string const &);
