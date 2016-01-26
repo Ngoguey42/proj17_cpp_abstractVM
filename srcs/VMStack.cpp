@@ -6,7 +6,7 @@
 //   By: ngoguey <ngoguey@student.42.fr>            +#+  +:+       +#+        //
 //                                                +#+#+#+#+#+   +#+           //
 //   Created: 2015/12/09 18:12:25 by ngoguey           #+#    #+#             //
-//   Updated: 2016/01/26 20:45:09 by ngoguey          ###   ########.fr       //
+//   Updated: 2016/01/26 20:55:17 by ngoguey          ###   ########.fr       //
 //                                                                            //
 // ************************************************************************** //
 
@@ -72,14 +72,13 @@ bool VMS::dump(std::string const &) /*unused argument*/
 
 bool VMS::assert(std::string const &arg)
 {
-	std::string (*opToStr)(IOperand const&) = [](IOperand const& op) {
+	auto opToStr = [](IOperand const& op) {
 
 		return operandStringsMap.at(op.getType()) + '(' + op.toString() + ')';
 	};
 	std::unique_ptr<IOperand const> const pred{
 		this->_opFact.createOperandFromString(arg)};
 	IOperand const *cur;
-
 
 	if (this->size() < 1)
 		throw std::out_of_range("Stack size too low for assert");
