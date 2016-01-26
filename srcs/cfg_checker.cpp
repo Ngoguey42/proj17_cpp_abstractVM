@@ -6,7 +6,7 @@
 //   By: ngoguey <ngoguey@student.42.fr>            +#+  +:+       +#+        //
 //                                                +#+#+#+#+#+   +#+           //
 //   Created: 2016/01/26 14:23:16 by ngoguey           #+#    #+#             //
-//   Updated: 2016/01/26 15:52:12 by ngoguey          ###   ########.fr       //
+//   Updated: 2016/01/26 16:01:59 by ngoguey          ###   ########.fr       //
 //                                                                            //
 // ************************************************************************** //
 
@@ -89,15 +89,20 @@ static std::string make_instr(void)
 	return ret;
 }
 
-static int dobordel()
-{
-	std::string const inst{make_instr()};
-	std::regex const VALUE{inst};
+static std::regex const re{make_instr()};
 
-	std::cout << inst << std::endl;
-	std::cout << std::regex_match("pop", VALUE) << std::endl;
-	std::cout << std::regex_match("push double(-999.0)", VALUE) << std::endl;
-	return 0;
+bool string_in_language(std::string const &str)
+{
+	return std::regex_match(str, re);
 }
 
-static int lol = dobordel();
+// static int dobordel()
+// {
+// 	std::string const inst{make_instr()};
+// 	std::cout << inst << std::endl;
+// 	std::cout << std::regex_match("pop", VALUE) << std::endl;
+// 	std::cout << std::regex_match("push double(-999.0)", VALUE) << std::endl;
+// 	return 0;
+// }
+
+// static int lol = dobordel();
