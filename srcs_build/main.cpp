@@ -6,7 +6,7 @@
 //   By: ngoguey <ngoguey@student.42.fr>            +#+  +:+       +#+        //
 //                                                +#+#+#+#+#+   +#+           //
 //   Created: 2015/12/08 19:29:27 by ngoguey           #+#    #+#             //
-//   Updated: 2016/01/26 16:33:32 by ngoguey          ###   ########.fr       //
+//   Updated: 2016/01/26 18:29:43 by ngoguey          ###   ########.fr       //
 //                                                                            //
 // ************************************************************************** //
 
@@ -30,22 +30,6 @@
 ** *
 ** v2 - v1 = 42 - 30 = 12
 */
-
-// void add_dump_pop(VMStack &vmst)
-// {
-// 	VMStack::actmap.at("add")(&vmst, "");
-// 	VMStack::actmap.at("dump")(&vmst, "");
-// 	VMStack::actmap.at("pop")(&vmst, "");
-// 	return ;
-// }
-
-// void sub_dump_pop(VMStack &vmst)
-// {
-// 	VMStack::actmap.at("sub")(&vmst, "");
-// 	VMStack::actmap.at("dump")(&vmst, "");
-// 	VMStack::actmap.at("pop")(&vmst, "");
-// 	return ;
-// }
 
 union Bordel
 {

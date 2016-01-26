@@ -6,7 +6,7 @@
 //   By: ngoguey <ngoguey@student.42.fr>            +#+  +:+       +#+        //
 //                                                +#+#+#+#+#+   +#+           //
 //   Created: 2015/12/09 18:12:25 by ngoguey           #+#    #+#             //
-//   Updated: 2016/01/24 16:21:27 by ngoguey          ###   ########.fr       //
+//   Updated: 2016/01/26 19:01:16 by ngoguey          ###   ########.fr       //
 //                                                                            //
 // ************************************************************************** //
 
@@ -37,7 +37,15 @@ VMS::actmap_t const VMS::actmap = { /*static*/
 VMS::VMStack(OpFactory const &opFact) : MStack(), _opFact(opFact)
 {}
 
-void VMS::push(std::string const &arg)
+VMS::~VMStack()
+{
+	for (auto const &op : *this)
+		delete(op);
+	MStack::operator=({}); /*super call*/
+	return ;
+}
+
+bool VMS::push(std::string const &arg)
 {
 	std::size_t const opparen = arg.find('(');
 	std::string const type = arg.substr(0, opparen);
@@ -47,39 +55,45 @@ void VMS::push(std::string const &arg)
 	IOperand const *const op = this->_opFact.createOperand(etype, nClean);
 
 	MStack::push(op); /*super call*/
-	return ;
+	return false;
 }
 
-void VMS::pop(std::string const &) /*unused argument*/
+bool VMS::pop(std::string const &) /*unused argument*/
 {
 	if (this->size() < 1)
 		throw std::out_of_range("Stack size too low for pop");
 	delete(MStack::top()); /*super call*/
 	MStack::pop(); /*super call*/
-	return ;
+	return false;
 }
 
-void VMS::dump(std::string const &) /*unused argument*/
+bool VMS::dump(std::string const &) /*unused argument*/
 {
 	for (auto const &op : *this)
 		std::cout << op->toString() << std::endl;
-	return ;
+	return false;
 }
 
-void VMS::arithmetic(VMS::arithfun_t f, std::string const &) /*unused arg2*/
+bool VMS::arithmetic(VMS::arithfun_t f, std::string const &) /*unused arg2*/
 {
-	IOperand const *v1, *v2;
+	std::unique_ptr<IOperand const> v1, v2;
 	IOperand const *newop;
 
 	if (this->size() < 2)
 		throw std::out_of_range("Stack size too low for arithmetic");
-	v1 = this->top();
+	v1.reset(this->top());
 	MStack::pop(); /*super call*/
-	v2 = this->top();
+	v2.reset(this->top());
 	MStack::pop(); /*super call*/
-	newop = (v2 ->* f)(*v1);
+	newop = (v2.get() ->* f)(*v1.get());
 	MStack::push(newop); /*super call*/
-	delete(v1);
-	delete(v2);
-	return ;
+	return false;
+}
+
+bool VMS::exit(std::string const &)
+{
+	for (auto const &op : *this)
+		delete(op);
+	MStack::operator=({}); /*super call*/
+	return true;
 }

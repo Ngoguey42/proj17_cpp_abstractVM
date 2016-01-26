@@ -6,7 +6,7 @@
 //   By: ngoguey <ngoguey@student.42.fr>            +#+  +:+       +#+        //
 //                                                +#+#+#+#+#+   +#+           //
 //   Created: 2016/01/24 15:56:07 by ngoguey           #+#    #+#             //
-//   Updated: 2016/01/24 16:01:55 by ngoguey          ###   ########.fr       //
+//   Updated: 2016/01/26 18:32:24 by ngoguey          ###   ########.fr       //
 //                                                                            //
 // ************************************************************************** //
 
@@ -114,7 +114,8 @@ public:
 																		\
 																		\
 		eOperandType const	dstType = std::max(rhs.getType(), TEnumVal); \
-		IOperand const *tmp, *ret;										\
+		std::unique_ptr<IOperand const> tmp;							\
+		IOperand const *ret;											\
 																		\
 		if (dstType == TEnumVal)										\
 		{																\
@@ -123,9 +124,8 @@ public:
 		}																\
 		else															\
 		{																\
-			tmp = this->_fact.createOperand(dstType, _val);				\
-			ret = *tmp OP rhs;											\
-			delete(tmp);												\
+			tmp.reset(this->_fact.createOperand(dstType, _val));		\
+			ret = *tmp.get() OP rhs;									\
 			return ret;													\
 		}																\
 	}

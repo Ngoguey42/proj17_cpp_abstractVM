@@ -6,7 +6,7 @@
 //   By: ngoguey <ngoguey@student.42.fr>            +#+  +:+       +#+        //
 //                                                +#+#+#+#+#+   +#+           //
 //   Created: 2016/01/26 15:57:21 by ngoguey           #+#    #+#             //
-//   Updated: 2016/01/26 17:35:10 by ngoguey          ###   ########.fr       //
+//   Updated: 2016/01/26 17:49:28 by ngoguey          ###   ########.fr       //
 //                                                                            //
 // ************************************************************************** //
 
@@ -38,13 +38,53 @@ int Controller::operator () (int ac, char const *av[])
 		std::cout << "ERROR, invalid_argument:" << std::endl;
 		std::cout << e.what() << std::endl;
 	}
-	catch (...)
+	catch (std::range_error const &e)
+	{
+		std::cout << "ERROR, range_error:" << std::endl;
+		std::cout << e.what() << std::endl;
+	}
+	catch (std::overflow_error const &e)
+	{
+		std::cout << "ERROR, overflow_error:" << std::endl;
+		std::cout << e.what() << std::endl;
+	}
+	catch (std::underflow_error const &e)
+	{
+		std::cout << "ERROR, underflow_error:" << std::endl;
+		std::cout << e.what() << std::endl;
+	}
+	catch (std::domain_error const &e)
+	{
+		std::cout << "ERROR, domain_error:" << std::endl;
+		std::cout << e.what() << std::endl;
+	}
+
+	catch (std::length_error const &e) //debug
+	{
+		std::cout << "ERROR, length_error:" << std::endl;
+		std::cout << e.what() << std::endl;
+	}
+	catch (std::out_of_range const &e) //debug
+	{
+		std::cout << "ERROR, out_of_range:" << std::endl;
+		std::cout << e.what() << std::endl;
+	}
+	catch (std::logic_error const &e) //debug (lower level)
+	{
+		std::cout << "ERROR, logic_error:" << std::endl;
+		std::cout << e.what() << std::endl;
+	}
+	catch (std::runtime_error const &e) // (lower level)
+	{
+		std::cout << "ERROR, runtime_error:" << std::endl;
+		std::cout << e.what() << std::endl;
+	}
+	catch (...) //debug
 	{
 		std::cout << "ERROR, unknown error" << std::endl;
 	}
 	return 1;
 }
-
 
 void Controller::_run()
 {
@@ -57,12 +97,8 @@ void Controller::_run()
 	_validateInstructions(instrQ);
 	while (!instrQ.empty())
 	{
-		// instr = std::move(instrQ.front());
-		std::tie(instr, arg1) = _sepInstrArg(std::move(instrQ.front()));
-		if (arg1.size() > 0)
-			std::cout << "\"" << instr << " "<< arg1 << "\"" << std::endl;
-		else
-			std::cout << "\"" << instr << '"' << std::endl;
+		std::tie(instr, arg1) = _sepInstrArg(instrQ.front());
+		std::cout << "\"" << instr << "\" \""<< arg1 << "\"" << std::endl; //TODO
 		instrQ.pop_front();
 		VMStack::actmap.at(instr)(&vms, arg1);
 	}
@@ -97,24 +133,23 @@ void Controller::_validateInstructions(std::deque<std::string> const &q)
 	return ;
 }
 
-auto Controller::_sepInstrArg(std::string &&in)
+auto Controller::_sepInstrArg(std::string const &in)
 	-> std::pair<std::string, std::string>
 {
-	std::string tmp(in);
-	size_t const bInst = tmp.find_first_not_of(" \t");
-	size_t const eInst = tmp.find_first_of(" \t", bInst);
-	std::string inst = tmp.substr(bInst, eInst - bInst);
+	size_t const bInst = in.find_first_not_of(" \t");
+	size_t const eInst = in.find_first_of(" \t", bInst);
+	std::string inst = in.substr(bInst, eInst - bInst);
 	size_t bArg1;
 	size_t eArg1;
 	std::string arg1;
 
 	if (eInst != std::string::npos)
 	{
-		bArg1 = tmp.find_first_not_of(" \t", eInst);
+		bArg1 = in.find_first_not_of(" \t", eInst);
 		if (bArg1 != std::string::npos)
 		{
-			eArg1 = tmp.find_first_of(" \t", bArg1);
-			arg1 = tmp.substr(bArg1, eArg1 - bArg1);
+			eArg1 = in.find_first_of(" \t", bArg1);
+			arg1 = in.substr(bArg1, eArg1 - bArg1);
 		}
 	}
 	return {std::move(inst), std::move(arg1)};

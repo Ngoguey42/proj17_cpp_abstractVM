@@ -7,9 +7,13 @@ push int8(42) ;tmp
 push  int8(42) ;tmp
  push  int8(42) ;tmp
 
+push int32(10000020);tmp
+;push int8(420);tmp
+
  pop;lol
 pop ;lol
   pop;lol
 pop  ;lol
   pop	;lol
 pop;lol
+dump

@@ -6,7 +6,7 @@
 //   By: ngoguey <ngoguey@student.42.fr>            +#+  +:+       +#+        //
 //                                                +#+#+#+#+#+   +#+           //
 //   Created: 2015/12/09 17:44:53 by ngoguey           #+#    #+#             //
-//   Updated: 2016/01/24 15:57:40 by ngoguey          ###   ########.fr       //
+//   Updated: 2016/01/26 19:01:30 by ngoguey          ###   ########.fr       //
 //                                                                            //
 // ************************************************************************** //
 
@@ -41,24 +41,24 @@ class VMStack : public MStack<IOperand const *>
 {
 public:
 
-	typedef std::function<void(VMStack *, std::string const &arg)>	action_t;
+	typedef std::function<bool(VMStack *, std::string const &arg)> action_t;
 	typedef std::unordered_map<std::string, action_t> actmap_t;
 
 	static actmap_t const actmap;
 
 	typedef IOperand const *(IOperand::*arithfun_t)(IOperand const &) const;
 
-	void		push(std::string const &arg);
-	void		pop(std::string const &);
-	void		dump(std::string const &);
-	void		assert(std::string const &arg) {}
-	void		arithmetic(arithfun_t f, std::string const &);
-	void		print(std::string const &) {}
-	void		exit(std::string const &) {}
+	bool push(std::string const &arg);
+	bool pop(std::string const &);
+	bool dump(std::string const &);
+	bool assert(std::string const &arg) {return false;}
+	bool arithmetic(arithfun_t f, std::string const &);
+	bool print(std::string const &) {return false;}
+	bool exit(std::string const &);
 
 	/* CONSTRUCTION ***************** */
 	VMStack(OpFactory const &opFact);
-	~VMStack() {} //TODO: check functions implemented in a header
+	~VMStack(); //TODO: check functions implemented in a header
 
 	VMStack() = delete;
 	VMStack(VMStack const &src) = delete;

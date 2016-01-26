@@ -6,7 +6,7 @@
 //   By: ngoguey <ngoguey@student.42.fr>            +#+  +:+       +#+        //
 //                                                +#+#+#+#+#+   +#+           //
 //   Created: 2016/01/24 15:57:06 by ngoguey           #+#    #+#             //
-//   Updated: 2016/01/24 15:57:13 by ngoguey          ###   ########.fr       //
+//   Updated: 2016/01/26 17:38:53 by ngoguey          ###   ########.fr       //
 //                                                                            //
 // ************************************************************************** //
 
@@ -17,11 +17,11 @@
 using OF = OpFactory;
 
 std::unordered_map<std::string, eOperandType> const operandMap = {
-	{"Int8", eOperandType::Int8},
-	{"Int16", eOperandType::Int16},
-	{"Int32", eOperandType::Int32},
-	{"Float", eOperandType::Float},
-	{"Double", eOperandType::Double},
+	{"int8", eOperandType::Int8},
+	{"int16", eOperandType::Int16},
+	{"int32", eOperandType::Int32},
+	{"float", eOperandType::Float},
+	{"double", eOperandType::Double},
 };
 
 IOperand const *OF::createInt8(std::string const &value) const {
