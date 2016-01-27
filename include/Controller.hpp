@@ -6,7 +6,7 @@
 //   By: ngoguey <ngoguey@student.42.fr>            +#+  +:+       +#+        //
 //                                                +#+#+#+#+#+   +#+           //
 //   Created: 2016/01/26 15:56:17 by ngoguey           #+#    #+#             //
-//   Updated: 2016/01/26 17:40:58 by ngoguey          ###   ########.fr       //
+//   Updated: 2016/01/27 16:20:38 by ngoguey          ###   ########.fr       //
 //                                                                            //
 // ************************************************************************** //
 
@@ -31,9 +31,6 @@ public:
 
 	int operator () (int ac, char const *av[]);
 
-protected:
-
-
 private:
 	int _ac;
 	char const **_av;
@@ -45,6 +42,5 @@ private:
 		-> std::pair<std::string, std::string>;
 
 };
-//std::ostream			&operator<<(std::ostream &o, Controller const &rhs);
 
 #endif /* **************************************************** CONTROLLER_HPP */

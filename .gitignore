@@ -5,3 +5,4 @@ avm
 *.exe
 *.cmx
 .#*
+.DS_Store
