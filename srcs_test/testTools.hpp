@@ -6,7 +6,7 @@
 //   By: ngoguey <ngoguey@student.42.fr>            +#+  +:+       +#+        //
 //                                                +#+#+#+#+#+   +#+           //
 //   Created: 2016/01/27 17:18:52 by ngoguey           #+#    #+#             //
-//   Updated: 2016/01/27 19:13:25 by ngoguey          ###   ########.fr       //
+//   Updated: 2016/01/27 19:56:16 by ngoguey          ###   ########.fr       //
 //                                                                            //
 // ************************************************************************** //
 
@@ -15,6 +15,7 @@
 
 #define TAB std::string("    ")
 #define CYEL std::string("\033[33m")
+#define CRED std::string("\033[31m")
 #define CEND std::string("\033[0m")
 
 // fichier <- stream << data        ofstream

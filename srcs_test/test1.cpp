@@ -6,7 +6,7 @@
 //   By: ngoguey <ngoguey@student.42.fr>            +#+  +:+       +#+        //
 //                                                +#+#+#+#+#+   +#+           //
 //   Created: 2016/01/25 20:06:12 by ngoguey           #+#    #+#             //
-//   Updated: 2016/01/27 19:42:59 by ngoguey          ###   ########.fr       //
+//   Updated: 2016/01/27 19:57:16 by ngoguey          ###   ########.fr       //
 //                                                                            //
 // ************************************************************************** //
 
@@ -79,7 +79,7 @@ struct Fix {
 	}
 
 	template <class T>
-	void fx_run_selfmult(void) { // paad Push Add0 Assert Dump
+	void fx_run_selfmult(void) {
 
 		BOOST_TEST_MESSAGE(TAB + CYEL + "push_push_mul operations" + CEND);
 
@@ -104,6 +104,29 @@ struct Fix {
 	}
 
 	template <class T>
+	void fx_run_oneover(void) {
+
+		BOOST_TEST_MESSAGE(TAB + CYEL + "push_push_mul operations" + CEND);
+
+		std::stringstream oss;
+		cout_redirect guardout(fx_output.rdbuf());
+		cin_redirect guardin(oss.rdbuf());
+
+		oss << "push int8(1)\n";
+
+		oss << "push ";
+		oss << fx_ref_valtypestr;
+		oss << "\n";
+
+		oss << "div\n";
+
+		oss << "exit\n";
+		oss << ";;";
+		Controller()(1, nullptr); //run abstract vm program with ac=1 av=nullptr
+		return ;
+	}
+
+	template <class T>
 	void fx_validate_ok(void) {
 
 		long double dumped_valld;
@@ -117,6 +140,14 @@ struct Fix {
 	void fx_validate_underflow(void) {
 
 		BOOST_CHECK(UNDERFLOWED(fx_output.str()));
+		return ;
+	}
+
+	template <class T>
+	void fx_validate_overflow(void) {
+
+		BOOST_CHECK_MESSAGE(OVERFLOWED(fx_output.str())
+							, CRED + fx_output.str() + CEND);
 		return ;
 	}
 };
@@ -146,7 +177,7 @@ BOOST_AUTO_TEST_CASE_TEMPLATE(min, T, all_types)
 		std::stringstream iss;
 		int tmp;
 
-		tmp = -floor(log10(std::abs(std::numeric_limits<T>::denorm_min())));
+		tmp = -floor(log10(std::abs(val)));
 		tmp += std::numeric_limits<T>::max_digits10 - 1;
 		iss << std::fixed << std::noshowpos << std::setprecision(tmp);
 		nbrToStream(val, iss);
@@ -175,7 +206,7 @@ BOOST_AUTO_TEST_CASE_TEMPLATE(min_underflow, T, fp_types)
 		std::stringstream iss;
 		int tmp;
 
-		tmp = -floor(log10(std::abs(std::numeric_limits<T>::denorm_min())));
+		tmp = -floor(log10(std::abs(val)));
 		tmp += std::numeric_limits<T>::max_digits10 - 1;
 		iss << std::fixed << std::noshowpos << std::setprecision(tmp);
 		nbrToStream(val, iss);
@@ -185,5 +216,46 @@ BOOST_AUTO_TEST_CASE_TEMPLATE(min_underflow, T, fp_types)
 	fx_validate_underflow<T>();
 }
 
+BOOST_AUTO_TEST_CASE_TEMPLATE(max_overflow, T, all_types)
+{
+	fx_init<T>(std::numeric_limits<T>::max(), [](T const &val){
+		std::stringstream iss;
+
+		iss << std::fixed << std::noshowpos << std::setprecision(1);
+		nbrToStream(val, iss);
+		return iss.str();
+		});
+	fx_run_selfmult<T>();
+	fx_validate_overflow<T>();
+}
+
+BOOST_AUTO_TEST_CASE_TEMPLATE(lowest_overflow, T, all_types)
+{
+	fx_init<T>(std::numeric_limits<T>::lowest(), [](T const &val){
+		std::stringstream iss;
+
+		iss << std::fixed << std::noshowpos << std::setprecision(1);
+		nbrToStream(val, iss);
+		return iss.str();
+		});
+	fx_run_selfmult<T>();
+	fx_validate_overflow<T>();
+}
+
+BOOST_AUTO_TEST_CASE_TEMPLATE(min_overflow, T, fp_types)
+{
+	fx_init<T>(std::numeric_limits<T>::denorm_min(), [](T const &val){
+		std::stringstream iss;
+		int tmp;
+
+		tmp = -floor(log10(std::abs(val)));
+		tmp += std::numeric_limits<T>::max_digits10 - 1;
+		iss << std::fixed << std::noshowpos << std::setprecision(tmp);
+		nbrToStream(val, iss);
+		return iss.str();
+		});
+	fx_run_oneover<T>();
+	fx_validate_overflow<T>();
+}
 
 BOOST_AUTO_TEST_SUITE_END()
