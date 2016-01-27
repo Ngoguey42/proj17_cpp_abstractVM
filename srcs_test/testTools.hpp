@@ -6,13 +6,16 @@
 //   By: ngoguey <ngoguey@student.42.fr>            +#+  +:+       +#+        //
 //                                                +#+#+#+#+#+   +#+           //
 //   Created: 2016/01/27 17:18:52 by ngoguey           #+#    #+#             //
-//   Updated: 2016/01/27 18:56:45 by ngoguey          ###   ########.fr       //
+//   Updated: 2016/01/27 19:13:25 by ngoguey          ###   ########.fr       //
 //                                                                            //
 // ************************************************************************** //
 
 #ifndef TESTTOOLS_HPP
 # define TESTTOOLS_HPP
 
+#define TAB std::string("    ")
+#define CYEL std::string("\033[33m")
+#define CEND std::string("\033[0m")
 
 // fichier <- stream << data        ofstream
 // fichier -> stream >> data        ifstream
@@ -64,7 +67,7 @@ inline long double strToLD<int8_t>(std::string const &str)
 	return static_cast<long double>(val);
 }
 
-
+// T to string
 template <class T>  struct TypeToString;
 
 template <>         struct TypeToString<int8_t> {
@@ -99,7 +102,7 @@ inline void nbrToStream<int8_t>(int8_t const &val, std::stringstream &oss)
 }
 
 // Truncate string
-inline std::string truncate(std::string const &src, size_t len = 30)
+inline std::string truncate(std::string const &src, size_t len = 50)
 {
 	auto const srclen = src.size();
 	auto const halflen = len / 2;
