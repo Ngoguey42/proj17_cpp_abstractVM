@@ -6,7 +6,7 @@
 //   By: ngoguey <ngoguey@student.42.fr>            +#+  +:+       +#+        //
 //                                                +#+#+#+#+#+   +#+           //
 //   Created: 2016/01/27 17:18:52 by ngoguey           #+#    #+#             //
-//   Updated: 2016/01/27 19:56:16 by ngoguey          ###   ########.fr       //
+//   Updated: 2016/01/27 20:25:15 by ngoguey          ###   ########.fr       //
 //                                                                            //
 // ************************************************************************** //
 
@@ -15,6 +15,7 @@
 
 #define TAB std::string("    ")
 #define CYEL std::string("\033[33m")
+#define CCYA std::string("\033[36m")
 #define CRED std::string("\033[31m")
 #define CEND std::string("\033[0m")
 
@@ -102,6 +103,28 @@ inline void nbrToStream<int8_t>(int8_t const &val, std::stringstream &oss)
 	return ;
 }
 
+template <class T>
+std::string nbrToString(T const &val) {
+
+	std::stringstream iss;
+	float const log10res = log10(std::abs(val));
+	int tmp;
+
+	tmp = std::numeric_limits<T>::max_digits10;
+	if (log10res < 0)
+	{
+		tmp += -floor(log10res) - 1;
+		iss << std::fixed << std::noshowpos << std::setprecision(tmp);
+		nbrToStream(val, iss);
+	}
+	else
+	{
+		iss << std::fixed << std::noshowpos << std::setprecision(tmp);
+		nbrToStream(val, iss);
+	}
+	return iss.str();
+}
+
 // Truncate string
 inline std::string truncate(std::string const &src, size_t len = 50)
 {
@@ -114,6 +137,16 @@ inline std::string truncate(std::string const &src, size_t len = 50)
 	iss << "[ " << (srclen - halflen * 2) << "chars ]";
 	return src.substr(0, halflen) + iss.str()
 		+ src.substr(srclen - halflen, halflen);
+}
+
+//Kill last EOL
+inline std::string killTrailingEOL(std::string const &str) {
+
+	auto where = str.find_last_not_of(" \t\n");
+
+	if (where != std::string::npos)
+		return str.substr(0, where + 1);
+	return str;
 }
 
 #endif /* ***************************************************** TESTTOOLS_HPP */
