@@ -6,7 +6,7 @@
 //   By: ngoguey <ngoguey@student.42.fr>            +#+  +:+       +#+        //
 //                                                +#+#+#+#+#+   +#+           //
 //   Created: 2016/01/27 17:18:52 by ngoguey           #+#    #+#             //
-//   Updated: 2016/01/27 18:10:54 by ngoguey          ###   ########.fr       //
+//   Updated: 2016/01/27 18:56:45 by ngoguey          ###   ########.fr       //
 //                                                                            //
 // ************************************************************************** //
 
@@ -43,29 +43,6 @@ struct cin_redirect {
 private:
 	std::streambuf *old;
 };
-
-// string to number in long double
-// long double strToLD(std::string const &str, std::string const &type)
-// {
-// 	std::stringstream iss(str);
-// 	long double ld;
-// 	double d;
-// 	float f;
-
-// 	if (type == "float")
-// 	{
-// 		iss >> f;
-// 		ld = f;
-// 	}
-// 	else if (type == "double")
-// 	{
-// 		iss >> d;
-// 		ld = d;
-// 	}
-// 	else
-// 		iss >> ld;
-// 	return ld;
-// }
 
 template <class T>
 long double strToLD(std::string const &str)
@@ -126,10 +103,12 @@ inline std::string truncate(std::string const &src, size_t len = 30)
 {
 	auto const srclen = src.size();
 	auto const halflen = len / 2;
+	std::stringstream iss;
 
 	if (srclen <= len)
 		return src;
-	return src.substr(0, halflen) + "[...]"
+	iss << "[ " << (srclen - halflen * 2) << "chars ]";
+	return src.substr(0, halflen) + iss.str()
 		+ src.substr(srclen - halflen, halflen);
 }
 

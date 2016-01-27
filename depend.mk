@@ -22,5 +22,5 @@ o/srcs/arith_wrappers.o: srcs/arith_wrappers.cpp include/arith_operations.hpp \
 	include/arith_serializations.hpp include/arith_types.hpp \
 	include/arith_wrappers.hpp | o/srcs/
 o/srcs/cfg_checker.o: srcs/cfg_checker.cpp | o/srcs/
-o/srcs_test/test1.o: srcs_test/test1.cpp srcs_test/limitsTestsTools.hpp \
-	srcs_test/testTools.hpp include/Controller.hpp | o/srcs_test/
+o/srcs_test/test1.o: srcs_test/test1.cpp srcs_test/testTools.hpp \
+	include/Controller.hpp | o/srcs_test/
