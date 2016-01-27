@@ -6,7 +6,7 @@
 //   By: ngoguey <ngoguey@student.42.fr>            +#+  +:+       +#+        //
 //                                                +#+#+#+#+#+   +#+           //
 //   Created: 2016/01/24 15:54:40 by ngoguey           #+#    #+#             //
-//   Updated: 2016/01/24 16:33:35 by ngoguey          ###   ########.fr       //
+//   Updated: 2016/01/27 14:09:18 by ngoguey          ###   ########.fr       //
 //                                                                            //
 // ************************************************************************** //
 
@@ -75,7 +75,7 @@ inline std::string serial<int8_t>(int8_t const &x) {
 
 	std::stringstream iss;
 
-	iss << int(x);
+	iss << static_cast<int>(x);
 	return iss.str();
 }
 

@@ -6,7 +6,7 @@
 //   By: ngoguey <ngoguey@student.42.fr>            +#+  +:+       +#+        //
 //                                                +#+#+#+#+#+   +#+           //
 //   Created: 2015/12/09 18:12:25 by ngoguey           #+#    #+#             //
-//   Updated: 2016/01/26 20:55:17 by ngoguey          ###   ########.fr       //
+//   Updated: 2016/01/27 13:57:19 by ngoguey          ###   ########.fr       //
 //                                                                            //
 // ************************************************************************** //
 
@@ -104,6 +104,26 @@ bool VMS::arithmetic(VMS::arithfun_t f, std::string const &) /*unused arg2*/
 	MStack::pop(); /*super call*/
 	newop = (v2.get() ->* f)(*v1.get());
 	MStack::push(newop); /*super call*/
+	return false;
+}
+
+bool VMS::print(std::string const &)
+{
+	auto opToStr = [](IOperand const& op) {
+
+		return operandStringsMap.at(op.getType()) + '(' + op.toString() + ')';
+	};
+	IOperand const *topop;
+	int8_t val;
+
+	if (this->size() < 1)
+		throw std::out_of_range("Stack size too low for print");
+	topop = MStack::top();
+	val = ser::unserial_unsafe<int8_t>(topop->toString());
+	if (topop->getType() != eOperandType::Int8 || val < 0)
+		throw std::invalid_argument("Trying to print " + opToStr(*topop)
+									+ " as an ascii character.");
+	std::cout << val << std::endl;
 	return false;
 }
 

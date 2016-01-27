@@ -1,4 +1,4 @@
-abstractVM
+avm
 *.o
 *.cmo
 *.cmi

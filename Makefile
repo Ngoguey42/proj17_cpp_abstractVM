@@ -1,7 +1,7 @@
 #
 
 # Executable name
-NAME			:= abstractVM
+NAME			:= avm
 
 # Project directories
 DIRS			:= srcs srcs_build

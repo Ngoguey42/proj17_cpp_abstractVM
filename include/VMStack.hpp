@@ -6,7 +6,7 @@
 //   By: ngoguey <ngoguey@student.42.fr>            +#+  +:+       +#+        //
 //                                                +#+#+#+#+#+   +#+           //
 //   Created: 2015/12/09 17:44:53 by ngoguey           #+#    #+#             //
-//   Updated: 2016/01/26 20:17:11 by ngoguey          ###   ########.fr       //
+//   Updated: 2016/01/27 13:56:36 by ngoguey          ###   ########.fr       //
 //                                                                            //
 // ************************************************************************** //
 
@@ -53,7 +53,7 @@ public:
 	bool dump(std::string const &);
 	bool assert(std::string const &arg);
 	bool arithmetic(arithfun_t f, std::string const &);
-	bool print(std::string const &) {return false;}
+	bool print(std::string const &);
 	bool exit(std::string const &);
 
 	/* CONSTRUCTION ***************** */

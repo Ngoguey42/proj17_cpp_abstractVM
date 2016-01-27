@@ -6,7 +6,7 @@
 //   By: ngoguey <ngoguey@student.42.fr>            +#+  +:+       +#+        //
 //                                                +#+#+#+#+#+   +#+           //
 //   Created: 2016/01/26 15:57:21 by ngoguey           #+#    #+#             //
-//   Updated: 2016/01/26 20:51:08 by ngoguey          ###   ########.fr       //
+//   Updated: 2016/01/27 14:49:40 by ngoguey          ###   ########.fr       //
 //                                                                            //
 // ************************************************************************** //
 
@@ -95,10 +95,12 @@ void Controller::_run()
 	VMStack vms(fact);
 
 	_validateInstructions(instrQ);
+	if (instrQ.empty())
+		throw std::invalid_argument("No intructions");
 	while (!instrQ.empty())
 	{
 		std::tie(instr, arg1) = _sepInstrArg(instrQ.front());
-		std::cout << "\"" << instr << "\" \""<< arg1 << "\"" << std::endl; //TODO
+		// std::cout << "\"" << instr << "\" \""<< arg1 << "\"" << std::endl; //TODO
 		instrQ.pop_front();
 		if (VMStack::actmap.at(instr)(&vms, arg1))
 			return ;
