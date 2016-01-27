@@ -6,7 +6,7 @@
 //   By: ngoguey <ngoguey@student.42.fr>            +#+  +:+       +#+        //
 //                                                +#+#+#+#+#+   +#+           //
 //   Created: 2016/01/24 15:53:27 by ngoguey           #+#    #+#             //
-//   Updated: 2016/01/26 20:25:00 by ngoguey          ###   ########.fr       //
+//   Updated: 2016/01/27 18:09:06 by ngoguey          ###   ########.fr       //
 //                                                                            //
 // ************************************************************************** //
 
@@ -53,19 +53,19 @@ extern std::unordered_map<eOperandType, std::string> const operandStringsMap;
 template <class T>	struct TypeToString;
 
 template <>			struct TypeToString<int8_t> {
-	static constexpr char const *name = "Int8";
+	static constexpr char const *name = "int8";
 };
 template <>			struct TypeToString<int16_t> {
-	static constexpr char const *name = "Int16";
+	static constexpr char const *name = "int16";
 };
 template <>			struct TypeToString<int32_t> {
-	static constexpr char const *name = "Int32";
+	static constexpr char const *name = "int32";
 };
 template <>			struct TypeToString<float> {
-	static constexpr char const *name = "Float";
+	static constexpr char const *name = "float";
 };
 template <>			struct TypeToString<double> {
-	static constexpr char const *name = "Double";
+	static constexpr char const *name = "double";
 };
 
 #endif /* *************************************************** ARITH_TYPES_HPP */
