@@ -6,12 +6,17 @@
 //   By: ngoguey <ngoguey@student.42.fr>            +#+  +:+       +#+        //
 //                                                +#+#+#+#+#+   +#+           //
 //   Created: 2016/01/27 17:18:52 by ngoguey           #+#    #+#             //
-//   Updated: 2016/01/27 20:25:15 by ngoguey          ###   ########.fr       //
+//   Updated: 2016/01/28 13:36:45 by ngoguey          ###   ########.fr       //
 //                                                                            //
 // ************************************************************************** //
 
 #ifndef TESTTOOLS_HPP
 # define TESTTOOLS_HPP
+
+#include <iostream>
+#include <iomanip>
+#include <sstream>
+#include <cmath>
 
 #define TAB std::string("    ")
 #define CYEL std::string("\033[33m")

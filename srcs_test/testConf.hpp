@@ -6,7 +6,7 @@
 //   By: ngoguey <ngoguey@student.42.fr>            +#+  +:+       +#+        //
 //                                                +#+#+#+#+#+   +#+           //
 //   Created: 2016/01/27 19:34:12 by ngoguey           #+#    #+#             //
-//   Updated: 2016/01/27 20:28:14 by ngoguey          ###   ########.fr       //
+//   Updated: 2016/01/28 13:36:16 by ngoguey          ###   ########.fr       //
 //                                                                            //
 // ************************************************************************** //
 
@@ -14,6 +14,7 @@
 # define TESTCONF_HPP
 
 # include <regex>
+# include "Controller.hpp"
 
 #define RUN_ABSTRACT_VM							\
 	Controller()(1, nullptr)

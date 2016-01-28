@@ -3,11 +3,6 @@
 # Executable name
 NAME			:= avm
 
-# Project directories
-# DIRS			:= srcs srcs_build
-DIRS			:= srcs srcs_test
-INCLUDE_DIRS	:= include
-
 # Git submodule to init
 MODULES			:=
 # Makefiles to call
@@ -22,6 +17,20 @@ C_FLAGS			= $(HEAD_FLAGS) $(BASE_FLAGS)
 CPP_FLAGS		= $(HEAD_FLAGS) $(BASE_FLAGS) -std=c++14
 
 LINK_FLAGS		= $(BASE_FLAGS)
+
+
+# Project directories
+# DIRS			:= srcs srcs_build
+
+
+DIRS			:= srcs srcs_test
+LINK_FLAGS		+= -lboost_unit_test_framework
+
+INCLUDE_DIRS	:= include
+
+
+
+
 
 ifeq ($(DEBUG_MODE),1)
 	# Extra flags used in debug mode
