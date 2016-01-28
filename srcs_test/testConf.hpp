@@ -6,7 +6,7 @@
 //   By: ngoguey <ngoguey@student.42.fr>            +#+  +:+       +#+        //
 //                                                +#+#+#+#+#+   +#+           //
 //   Created: 2016/01/27 19:34:12 by ngoguey           #+#    #+#             //
-//   Updated: 2016/01/28 15:45:37 by ngoguey          ###   ########.fr       //
+//   Updated: 2016/01/28 17:10:18 by ngoguey          ###   ########.fr       //
 //                                                                            //
 // ************************************************************************** //
 
@@ -18,6 +18,9 @@
 
 #define RUN_ABSTRACT_VM							\
 	Controller()(1, nullptr)
+
+#define ERROROCCURED(OUTPUT)							\
+	std::regex_search((OUTPUT), std::regex("ERROR"))
 
 #define UNDERFLOWED(OUTPUT)										\
 	std::regex_search((OUTPUT), std::regex("underflow_error"))
@@ -34,10 +37,14 @@
 #define PRINTBADTYPE(OUTPUT)											\
 	std::regex_search((OUTPUT), std::regex("as an ascii character"))
 
-// #define PRINT_OUTPUT(STREAM)							\
-// 	BOOST_TEST_MESSAGE(std::string("Output:") + CCYA	\
-// 					   + killTrailingEOL((STREAM).str()) + CEND)
+#define NOINSTR(OUTPUT)											\
+	std::regex_search((OUTPUT), std::regex("No intructions"))
 
-#define PRINT_OUTPUT(STREAM)
+#define NOEXIT(OUTPUT)                                                  \
+	std::regex_search((OUTPUT), std::regex("Missing exit statement"))
+
+#define PARSEERROR(OUTPUT)										\
+	std::regex_search((OUTPUT), std::regex("not in language"))
+
 
 #endif /* ****************************************************** TESTCONF_HPP */

@@ -6,7 +6,7 @@
 //   By: ngoguey <ngoguey@student.42.fr>            +#+  +:+       +#+        //
 //                                                +#+#+#+#+#+   +#+           //
 //   Created: 2016/01/26 15:57:21 by ngoguey           #+#    #+#             //
-//   Updated: 2016/01/27 14:49:40 by ngoguey          ###   ########.fr       //
+//   Updated: 2016/01/28 16:46:49 by ngoguey          ###   ########.fr       //
 //                                                                            //
 // ************************************************************************** //
 
@@ -108,6 +108,13 @@ void Controller::_run()
 	throw std::invalid_argument("Missing exit statement");
 	return ;
 }
+
+#define NOINSTR(OUTPUT)													\
+	std::regex_search((OUTPUT), std::regex("No intructions"))
+#define NOEXIT(OUTPUT)													\
+	std::regex_search((OUTPUT), std::regex("Missing exit statement"))
+#define PARSEERROR(OUTPUT)													\
+	std::regex_search((OUTPUT), std::regex("not in language"))
 
 auto Controller::_readSource()
 	-> std::deque<std::string>

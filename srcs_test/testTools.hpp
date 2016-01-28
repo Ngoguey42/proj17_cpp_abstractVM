@@ -6,7 +6,7 @@
 //   By: ngoguey <ngoguey@student.42.fr>            +#+  +:+       +#+        //
 //                                                +#+#+#+#+#+   +#+           //
 //   Created: 2016/01/27 17:18:52 by ngoguey           #+#    #+#             //
-//   Updated: 2016/01/28 16:14:26 by ngoguey          ###   ########.fr       //
+//   Updated: 2016/01/28 16:58:44 by ngoguey          ###   ########.fr       //
 //                                                                            //
 // ************************************************************************** //
 
@@ -17,6 +17,7 @@
 #include <iomanip>
 #include <sstream>
 #include <cmath>
+#include <algorithm>
 
 #define TAB std::string("    ")
 #define CYEL std::string("\033[33m")
@@ -124,6 +125,7 @@ std::string nbrToString(T const &val) {
 	}
 	else
 	{
+		tmp = std::max(1., tmp - ceil(log10res) - 1.);
 		iss << std::fixed << std::noshowpos << std::setprecision(tmp);
 		nbrToStream(val, iss);
 	}
