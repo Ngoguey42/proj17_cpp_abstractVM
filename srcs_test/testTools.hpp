@@ -6,7 +6,7 @@
 //   By: ngoguey <ngoguey@student.42.fr>            +#+  +:+       +#+        //
 //                                                +#+#+#+#+#+   +#+           //
 //   Created: 2016/01/27 17:18:52 by ngoguey           #+#    #+#             //
-//   Updated: 2016/01/28 15:41:14 by ngoguey          ###   ########.fr       //
+//   Updated: 2016/01/28 16:14:26 by ngoguey          ###   ########.fr       //
 //                                                                            //
 // ************************************************************************** //
 
@@ -131,18 +131,18 @@ std::string nbrToString(T const &val) {
 }
 
 // Truncate string
-inline std::string truncate(std::string const &src, size_t len = 50)
-{
-	auto const srclen = src.size();
-	auto const halflen = len / 2;
-	std::stringstream iss;
+// inline std::string truncate(std::string const &src, size_t len = 50)
+// {
+// 	auto const srclen = src.size();
+// 	auto const halflen = len / 2;
+// 	std::stringstream iss;
 
-	if (srclen <= len)
-		return src;
-	iss << "[ " << (srclen - halflen * 2) << "chars ]";
-	return src.substr(0, halflen) + iss.str()
-		+ src.substr(srclen - halflen, halflen);
-}
+// 	if (srclen <= len)
+// 		return src;
+// 	iss << "[ " << (srclen - halflen * 2) << "chars ]";
+// 	return src.substr(0, halflen) + iss.str()
+// 		+ src.substr(srclen - halflen, halflen);
+// }
 
 //Kill last EOL
 inline std::string killTrailingEOL(std::string const &str) {

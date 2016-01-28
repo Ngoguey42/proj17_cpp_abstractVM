@@ -6,7 +6,7 @@
 //   By: ngoguey <ngoguey@student.42.fr>            +#+  +:+       +#+        //
 //                                                +#+#+#+#+#+   +#+           //
 //   Created: 2016/01/28 13:17:05 by ngoguey           #+#    #+#             //
-//   Updated: 2016/01/28 15:19:35 by ngoguey          ###   ########.fr       //
+//   Updated: 2016/01/28 16:11:19 by ngoguey          ###   ########.fr       //
 //                                                                            //
 // ************************************************************************** //
 
@@ -28,10 +28,12 @@ struct LFixture {
 	LFixture &operator=(LFixture &&rhs) = delete;
 
 	boost::test_tools::output_test_stream fx_output;
+	std::stringstream fx_oss_cin;
 	long double fx_ref_valld;
 	std::string fx_ref_valstr;
 	std::string fx_ref_valtypestr;
 	bool fx_isfloat;
+	bool (LFixture::*fx_pred)(void);
 
 	template <class T>
 	void fx_init(T const &val);
@@ -46,13 +48,12 @@ struct LFixture {
 	void fx_run_oneover(void);
 
 	template <class T>
-	void fx_validate_ok(void);
+	bool fx_validate_ok(void);
+	bool fx_validate_underflow(void);
+	bool fx_validate_overflow(void);
 
-	template <class T>
-	void fx_validate_underflow(void);
-
-	template <class T>
-	void fx_validate_overflow(void);
+	void _fx_exec1(void);
+	void _fx_exec2(void);
 
 };
 

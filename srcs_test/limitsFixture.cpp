@@ -6,7 +6,7 @@
 //   By: ngoguey <ngoguey@student.42.fr>            +#+  +:+       +#+        //
 //                                                +#+#+#+#+#+   +#+           //
 //   Created: 2016/01/28 13:13:53 by ngoguey           #+#    #+#             //
-//   Updated: 2016/01/28 15:19:26 by ngoguey          ###   ########.fr       //
+//   Updated: 2016/01/28 16:14:11 by ngoguey          ###   ########.fr       //
 //                                                                            //
 // ************************************************************************** //
 
@@ -32,123 +32,109 @@ void F::fx_init(T const &val) {
 	fx_ref_valtypestr = std::string(TypeToString<T>::name)
 		+ "(" + fx_ref_valstr + ")";
 	fx_isfloat = std::is_floating_point<T>::value;
-	BOOST_TEST_MESSAGE(CYEL + "preparing some test with "
-					   + truncate(fx_ref_valtypestr) + CEND);
 	return ;
 }
 
 template <class T>
-void F::fx_run_paad(void) { // paad Push Add0 Assert Dump
+void F::fx_run_paad(void) { // paad -> Push Add0 Assert Dump
 
-	BOOST_TEST_MESSAGE(
-		TAB + CYEL + "val+0+assert+dump operations" + CEND);
+	fx_oss_cin << "push ";
+	fx_oss_cin << fx_ref_valtypestr;
+	fx_oss_cin << "\n";
 
-	std::stringstream oss;
-	cout_redirect guardout(fx_output.rdbuf());
-	cin_redirect guardin(oss.rdbuf());
+	fx_oss_cin << "push int8(0)\n";
+	fx_oss_cin << "add\n";
 
-	oss << "push ";
-	oss << fx_ref_valtypestr;
-	oss << "\n";
+	fx_oss_cin << "assert ";
+	fx_oss_cin << fx_ref_valtypestr;
+	fx_oss_cin << "\n";
 
-	oss << "push int8(0)\n";
-	oss << "add\n";
-
-	oss << "assert ";
-	oss << fx_ref_valtypestr;
-	oss << "\n";
-
-	oss << "dump\n";
-	oss << "exit\n";
-	oss << ";;";
-	RUN_ABSTRACT_VM;
+	fx_oss_cin << "dump\n";
+	fx_oss_cin << "exit\n";
+	fx_oss_cin << ";;";
+	_fx_exec1();
 	return ;
 }
 
 template <class T>
 void F::fx_run_selfmult(void) {
 
-	BOOST_TEST_MESSAGE(TAB + CYEL + "val*val operations" + CEND);
+	fx_oss_cin << "push ";
+	fx_oss_cin << fx_ref_valtypestr;
+	fx_oss_cin << "\n";
 
-	std::stringstream oss;
-	cout_redirect guardout(fx_output.rdbuf());
-	cin_redirect guardin(oss.rdbuf());
+	fx_oss_cin << "push ";
+	fx_oss_cin << fx_ref_valtypestr;
+	fx_oss_cin << "\n";
 
-	oss << "push ";
-	oss << fx_ref_valtypestr;
-	oss << "\n";
+	fx_oss_cin << "mul\n";
 
-	oss << "push ";
-	oss << fx_ref_valtypestr;
-	oss << "\n";
-
-	oss << "mul\n";
-
-	oss << "exit\n";
-	oss << ";;";
-	RUN_ABSTRACT_VM;
+	fx_oss_cin << "exit\n";
+	fx_oss_cin << ";;";
+	_fx_exec1();
 	return ;
 }
 
 template <class T>
 void F::fx_run_oneover(void) {
 
-	BOOST_TEST_MESSAGE(TAB + CYEL + "1/val operations" + CEND);
+	fx_oss_cin << "push int8(1)\n";
 
-	std::stringstream oss;
-	cout_redirect guardout(fx_output.rdbuf());
-	cin_redirect guardin(oss.rdbuf());
+	fx_oss_cin << "push ";
+	fx_oss_cin << fx_ref_valtypestr;
+	fx_oss_cin << "\n";
 
-	oss << "push int8(1)\n";
+	fx_oss_cin << "div\n";
 
-	oss << "push ";
-	oss << fx_ref_valtypestr;
-	oss << "\n";
-
-	oss << "div\n";
-
-	oss << "exit\n";
-	oss << ";;";
-	RUN_ABSTRACT_VM;
+	fx_oss_cin << "exit\n";
+	fx_oss_cin << ";;";
+	_fx_exec1();
 	return ;
 }
 
 template <class T>
-void F::fx_validate_ok(void) {
+bool F::fx_validate_ok(void) {
 
 	long double dumped_valld;
 
 	dumped_valld = strToLD<T>(fx_output.str());
-	PRINT_OUTPUT(fx_output);
-	BOOST_CHECK_EQUAL(fx_ref_valld, dumped_valld);
+	return fx_ref_valld == dumped_valld;
+}
+
+bool F::fx_validate_underflow(void) {
+
+	return UNDERFLOWED(fx_output.str());
+}
+
+bool F::fx_validate_overflow(void) {
+
+	return OVERFLOWED(fx_output.str());
+}
+
+void F::_fx_exec1(void) {
+
+	BOOST_TEST_CONTEXT(ssFormat(fx_oss_cin, CCYA)) {
+		_fx_exec2();
+		BOOST_TEST_INFO(ssFormat(fx_output, CRED));
+		BOOST_CHECK( (this ->* fx_pred)() );
+	};
 	return ;
 }
 
-template <class T>
-void F::fx_validate_underflow(void) {
+void F::_fx_exec2(void) {
 
-	PRINT_OUTPUT(fx_output);
-	BOOST_CHECK(UNDERFLOWED(fx_output.str()));
-	return ;
-}
+	cout_redirect guardout(fx_output.rdbuf());
+	cin_redirect guardin(fx_oss_cin.rdbuf());
 
-template <class T>
-void F::fx_validate_overflow(void) {
-
-	PRINT_OUTPUT(fx_output);
-	BOOST_CHECK_MESSAGE(OVERFLOWED(fx_output.str())
-						, CRED + fx_output.str() + CEND);
-	return ;
+	RUN_ABSTRACT_VM;
 }
 
 #define INSTANCIATE(T)									\
 	template void F::fx_init<T>(T const &val);			\
 	template void F::fx_run_paad<T>(void);				\
 	template void F::fx_run_selfmult<T>(void);			\
+	template bool F::fx_validate_ok<T>(void);			\
 	template void F::fx_run_oneover<T>(void);			\
-	template void F::fx_validate_ok<T>(void);			\
-	template void F::fx_validate_underflow<T>(void);	\
-	template void F::fx_validate_overflow<T>(void);
 
 INSTANCIATE(int8_t)
 INSTANCIATE(int16_t)

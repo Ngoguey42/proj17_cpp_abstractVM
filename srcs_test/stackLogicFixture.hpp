@@ -6,7 +6,7 @@
 //   By: ngoguey <ngoguey@student.42.fr>            +#+  +:+       +#+        //
 //                                                +#+#+#+#+#+   +#+           //
 //   Created: 2016/01/28 15:06:34 by ngoguey           #+#    #+#             //
-//   Updated: 2016/01/28 15:39:50 by ngoguey          ###   ########.fr       //
+//   Updated: 2016/01/28 16:00:36 by ngoguey          ###   ########.fr       //
 //                                                                            //
 // ************************************************************************** //
 
@@ -29,22 +29,19 @@ public:
 
 	/* CONSTRUCTION ***************** */
 	SLFixture();
-	// virtual ~SLFixture();
 	~SLFixture();
 
-	// SLFixture() = delete;
 	SLFixture(SLFixture const &src) = delete;
 	SLFixture(SLFixture &&src) = delete;
 	SLFixture		&operator=(SLFixture const &rhs) = delete;
 	SLFixture		&operator=(SLFixture &&rhs) = delete;
 
-
-	void fx_validate_underflow(void);
-	void fx_validate_overflow(void);
-
 	void fx_exec(std::function< bool(std::string const&) > pred);
 
 private:
+
+	void _fx_exec(void);
+
 };
 
 #endif /* ********************************************* STACKLOGICFIXTURE_HPP */
