@@ -6,7 +6,7 @@
 //   By: ngoguey <ngoguey@student.42.fr>            +#+  +:+       +#+        //
 //                                                +#+#+#+#+#+   +#+           //
 //   Created: 2016/01/28 12:16:07 by ngoguey           #+#    #+#             //
-//   Updated: 2016/01/28 14:12:36 by ngoguey          ###   ########.fr       //
+//   Updated: 2016/01/28 15:19:45 by ngoguey          ###   ########.fr       //
 //                                                                            //
 // ************************************************************************** //
 
@@ -18,7 +18,7 @@ typedef boost::mpl::list<int8_t, int16_t, int32_t, float, double> all_types;
 typedef boost::mpl::list<float, double> fp_types;
 typedef boost::mpl::list<int8_t, int16_t, int32_t> i_types;
 
-BOOST_FIXTURE_TEST_SUITE(s, Fixture)
+BOOST_FIXTURE_TEST_SUITE(s, LFixture)
 
 BOOST_AUTO_TEST_CASE_TEMPLATE(max, T, all_types)
 {

@@ -6,7 +6,7 @@
 //   By: ngoguey <ngoguey@student.42.fr>            +#+  +:+       +#+        //
 //                                                +#+#+#+#+#+   +#+           //
 //   Created: 2016/01/24 15:53:42 by ngoguey           #+#    #+#             //
-//   Updated: 2016/01/24 18:25:24 by ngoguey          ###   ########.fr       //
+//   Updated: 2016/01/28 14:25:15 by ngoguey          ###   ########.fr       //
 //                                                                            //
 // ************************************************************************** //
 
@@ -126,25 +126,6 @@ struct OperationToOss
 	}
 };
 
-/*
-inline void debug(void){
-
-#define TESTLOLL(ARG)							\
-	if (std::fetestexcept(ARG))					\
-		std::cout << #ARG << ", "
-
-	std::cout << "[";
-	TESTLOLL(FE_DIVBYZERO);
-	TESTLOLL(FE_INEXACT);
-	TESTLOLL(FE_INVALID);
-	TESTLOLL(FE_OVERFLOW);
-	TESTLOLL(FE_UNDERFLOW);
-	TESTLOLL(FE_DENORMALOPERAND);
-	TESTLOLL(FE_ALL_EXCEPT);
-	std::cout << "]" << std::endl;
-	return ;
-}
-*/
 // Error handling ======================================= //
 template <class T, eOperation Operation>
 [[ noreturn ]] void floatThrow(T const &x, T const &y) {

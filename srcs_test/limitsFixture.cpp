@@ -6,7 +6,7 @@
 //   By: ngoguey <ngoguey@student.42.fr>            +#+  +:+       +#+        //
 //                                                +#+#+#+#+#+   +#+           //
 //   Created: 2016/01/28 13:13:53 by ngoguey           #+#    #+#             //
-//   Updated: 2016/01/28 14:09:18 by ngoguey          ###   ########.fr       //
+//   Updated: 2016/01/28 15:19:26 by ngoguey          ###   ########.fr       //
 //                                                                            //
 // ************************************************************************** //
 
@@ -17,11 +17,11 @@
 #include "testConf.hpp"
 #include "testTools.hpp"
 
-using F = Fixture;
+using F = LFixture;
 
-F::Fixture() {
+F::LFixture() {
 }
-F::~Fixture() {
+F::~LFixture() {
 }
 
 template <class T>
@@ -142,9 +142,9 @@ void F::fx_validate_overflow(void) {
 }
 
 #define INSTANCIATE(T)									\
-	template void F::fx_init<T>(T const &val);		\
-	template void F::fx_run_paad<T>(void);			\
-	template void F::fx_run_selfmult<T>(void);		\
+	template void F::fx_init<T>(T const &val);			\
+	template void F::fx_run_paad<T>(void);				\
+	template void F::fx_run_selfmult<T>(void);			\
 	template void F::fx_run_oneover<T>(void);			\
 	template void F::fx_validate_ok<T>(void);			\
 	template void F::fx_validate_underflow<T>(void);	\

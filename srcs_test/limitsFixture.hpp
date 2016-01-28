@@ -6,7 +6,7 @@
 //   By: ngoguey <ngoguey@student.42.fr>            +#+  +:+       +#+        //
 //                                                +#+#+#+#+#+   +#+           //
 //   Created: 2016/01/28 13:17:05 by ngoguey           #+#    #+#             //
-//   Updated: 2016/01/28 14:13:05 by ngoguey          ###   ########.fr       //
+//   Updated: 2016/01/28 15:19:35 by ngoguey          ###   ########.fr       //
 //                                                                            //
 // ************************************************************************** //
 
@@ -19,13 +19,13 @@
 
 using boost::test_tools::output_test_stream;
 
-struct Fixture {
-	Fixture();
-	~Fixture();
-	Fixture(Fixture const &src) = delete;
-	Fixture(Fixture &&src) = delete;
-	Fixture &operator=(Fixture const &rhs) = delete;
-	Fixture &operator=(Fixture &&rhs) = delete;
+struct LFixture {
+	LFixture();
+	~LFixture();
+	LFixture(LFixture const &src) = delete;
+	LFixture(LFixture &&src) = delete;
+	LFixture &operator=(LFixture const &rhs) = delete;
+	LFixture &operator=(LFixture &&rhs) = delete;
 
 	boost::test_tools::output_test_stream fx_output;
 	long double fx_ref_valld;

@@ -6,7 +6,7 @@
 //   By: ngoguey <ngoguey@student.42.fr>            +#+  +:+       +#+        //
 //                                                +#+#+#+#+#+   +#+           //
 //   Created: 2016/01/27 19:34:12 by ngoguey           #+#    #+#             //
-//   Updated: 2016/01/28 13:36:16 by ngoguey          ###   ########.fr       //
+//   Updated: 2016/01/28 15:45:37 by ngoguey          ###   ########.fr       //
 //                                                                            //
 // ************************************************************************** //
 
@@ -25,6 +25,14 @@
 #define OVERFLOWED(OUTPUT)										\
 	std::regex_search((OUTPUT), std::regex("overflow_error"))
 
+#define STACKSIZELOW(OUTPUT)										\
+	std::regex_search((OUTPUT), std::regex("Stack size too low"))
+
+#define ASSERTNOMATCH(OUTPUT)											\
+	std::regex_search((OUTPUT), std::regex("does not match given value"))
+
+#define PRINTBADTYPE(OUTPUT)											\
+	std::regex_search((OUTPUT), std::regex("as an ascii character"))
 
 // #define PRINT_OUTPUT(STREAM)							\
 // 	BOOST_TEST_MESSAGE(std::string("Output:") + CCYA	\

@@ -6,7 +6,7 @@
 //   By: ngoguey <ngoguey@student.42.fr>            +#+  +:+       +#+        //
 //                                                +#+#+#+#+#+   +#+           //
 //   Created: 2016/01/27 17:18:52 by ngoguey           #+#    #+#             //
-//   Updated: 2016/01/28 13:36:45 by ngoguey          ###   ########.fr       //
+//   Updated: 2016/01/28 15:41:14 by ngoguey          ###   ########.fr       //
 //                                                                            //
 // ************************************************************************** //
 
@@ -152,6 +152,13 @@ inline std::string killTrailingEOL(std::string const &str) {
 	if (where != std::string::npos)
 		return str.substr(0, where + 1);
 	return str;
+}
+
+//Format a string stream for output
+template <class T, class = decltype( ((T*)(0x0))->str() )>
+std::string ssFormat(T const &ss, std::string const &color) {
+
+	return color + killTrailingEOL(ss.str()) + CEND;
 }
 
 #endif /* ***************************************************** TESTTOOLS_HPP */
