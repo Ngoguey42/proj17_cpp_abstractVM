@@ -24,7 +24,7 @@ std::unordered_map<std::string, eOperandType> const operandMap = {
 	{"double", eOperandType::Double},
 };
 
-std::unordered_map<eOperandType, std::string> const operandStringsMap = {
+std::unordered_map<eOperandType, std::string, HasheOperandType> const operandStringsMap = {
 	{eOperandType::Int8, "int8"},
 	{eOperandType::Int16, "int16"},
 	{eOperandType::Int32, "int32"},

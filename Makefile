@@ -9,26 +9,30 @@ MODULES			:=
 LIBS			:=
 
 # Base flags
-BASE_FLAGS		= -Wall -Wextra
+BASE_FLAGS		= -Wall -Wextra -std=c++14
 HEAD_FLAGS		= $(addprefix -I,$(INCLUDE_DIRS))
 
 # Compilation flags (per language)
 C_FLAGS			= $(HEAD_FLAGS) $(BASE_FLAGS)
-CPP_FLAGS		= $(HEAD_FLAGS) $(BASE_FLAGS) -std=c++14
+CPP_FLAGS		= $(HEAD_FLAGS) $(BASE_FLAGS)
 
 LINK_FLAGS		= $(BASE_FLAGS)
 
 
 # Project directories
-# DIRS			:= srcs srcs_build
+DIRS			:= srcs srcs_build
 
-
-DIRS			:= srcs srcs_test
-LINK_FLAGS		+= -lboost_unit_test_framework
+# LINK_FLAGS		+= -lstdc++
+# LINK_FLAGS		+= -fno-exceptions
+# DIRS			:= srcs srcs_test
+# LINK_FLAGS		+= -lboost_unit_test_framework
 
 INCLUDE_DIRS	:= include
 
-
+# CC_CPP			:= clang++
+CC_CPP			:= g++
+# CC_CPP			:= x86_64-w64-mingw32-clang++
+# CC_CPP			:= i686-w64-mingw32-clang++
 
 
 
@@ -48,10 +52,10 @@ DEBUG_MODE		?= 0
 export DEBUG_MODE
 
 # Jobs
-JOBS			:= 4
+JOBS			:= 8
 
 # Column output
-COLUMN_OUTPUT	:= 1
+COLUMN_OUTPUT	:= 0
 
 ifeq ($(COLUMN_OUTPUT),0)
 	PRINT_OK	= printf '\033[32m$<\033[0m\n'
@@ -103,13 +107,13 @@ endif
 
 # Linking
 $(NAME): $(LIBS_DEPEND) $(O_FILES)
-	clang++ -o $@ $(O_FILES) $(LINK_FLAGS) && $(PRINT_LINK)
+	$(CC_CPP) -o $@ $(O_FILES) $(LINK_FLAGS) && $(PRINT_LINK)
 
 # Compiling
 $(O_DIR)/%.o: %.c
 	clang $(C_FLAGS) -c $< -o $@ && $(PRINT_OK)
 $(O_DIR)/%.o: %.cpp
-	clang++ $(CPP_FLAGS) -c $< -o $@ && $(PRINT_OK)
+	$(CC_CPP) $(CPP_FLAGS) -c $< -o $@ && $(PRINT_OK)
 
 # Init submodules
 $(MODULE_RULES):

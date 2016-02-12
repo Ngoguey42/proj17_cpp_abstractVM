@@ -46,8 +46,15 @@ template <>			struct operand_enum<double>
 // TypeName -> Enum (runtime) ***************** //
 extern std::unordered_map<std::string, eOperandType> const operandMap;
 
+
 // Enum -> TypeName (runtime) ***************** //
-extern std::unordered_map<eOperandType, std::string> const operandStringsMap;
+struct HasheOperandType {
+	std::size_t operator () (eOperandType const &combo) const {
+
+		return static_cast<std::size_t>(combo);
+	}
+};
+extern std::unordered_map<eOperandType, std::string, HasheOperandType> const operandStringsMap;
 
 // Type -> TypeName (static) ****************** //
 template <class T>	struct TypeToString;

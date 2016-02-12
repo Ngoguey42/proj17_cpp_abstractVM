@@ -15,6 +15,7 @@
 
 # include <type_traits>
 # include <string>
+# include <memory>
 # include <iostream> //tmp
 
 # include "arith_operations.hpp"

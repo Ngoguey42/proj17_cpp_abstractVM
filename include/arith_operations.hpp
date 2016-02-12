@@ -99,7 +99,7 @@ template <class T> struct RawOperation<T, eOperation::Mod, false> {
 // eOperation to char =================================== //
 struct OperationChar
 {
-	constexpr char operator [] (eOperation const &op) const {
+	char operator [] (eOperation const &op) const {
 
 		constexpr char value[] = {
 			[eOperation::Add] = '+',

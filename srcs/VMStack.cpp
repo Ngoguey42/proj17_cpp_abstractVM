@@ -70,12 +70,17 @@ bool VMS::dump(std::string const &) /*unused argument*/
 	return false;
 }
 
+static std::string opToStr(IOperand const& op) {
+
+	return operandStringsMap.at(op.getType()) + '(' + op.toString() + ')';
+};
+
 bool VMS::assert(std::string const &arg)
 {
-	auto opToStr = [](IOperand const& op) {
+	// auto opToStr = [](IOperand const& op) {
 
-		return operandStringsMap.at(op.getType()) + '(' + op.toString() + ')';
-	};
+		// return operandStringsMap.at(op.getType()) + '(' + op.toString() + ')';
+	// };
 	std::unique_ptr<IOperand const> const pred{
 		this->_opFact.createOperandFromString(arg)};
 	IOperand const *cur;
@@ -109,10 +114,10 @@ bool VMS::arithmetic(VMS::arithfun_t f, std::string const &) /*unused arg2*/
 
 bool VMS::print(std::string const &)
 {
-	auto opToStr = [](IOperand const& op) {
+	// auto opToStr = [](IOperand const& op) {
 
-		return operandStringsMap.at(op.getType()) + '(' + op.toString() + ')';
-	};
+		// return operandStringsMap.at(op.getType()) + '(' + op.toString() + ')';
+	// };
 	IOperand const *topop;
 	int8_t val;
 

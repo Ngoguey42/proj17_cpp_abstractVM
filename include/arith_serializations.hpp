@@ -53,7 +53,7 @@ std::string serial(T const &x) {
 	std::stringstream iss;
 
     iss << std::setprecision(std::numeric_limits<T>::max_digits10);
-	iss << std::defaultfloat; //TODO: undefined with cygwin
+	// iss << std::defaultfloat; //TODO: undefined with cygwin
 	iss << std::noshowpos;
 	iss << x;
 	return iss.str();
