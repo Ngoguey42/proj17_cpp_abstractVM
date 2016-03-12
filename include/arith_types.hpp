@@ -6,7 +6,7 @@
 //   By: ngoguey <ngoguey@student.42.fr>            +#+  +:+       +#+        //
 //                                                +#+#+#+#+#+   +#+           //
 //   Created: 2016/01/24 15:53:27 by ngoguey           #+#    #+#             //
-//   Updated: 2016/01/27 18:09:06 by ngoguey          ###   ########.fr       //
+//   Updated: 2016/03/12 16:14:19 by ngoguey          ###   ########.fr       //
 //                                                                            //
 // ************************************************************************** //
 
@@ -45,7 +45,6 @@ template <>			struct operand_enum<double>
 
 // TypeName -> Enum (runtime) ***************** //
 extern std::unordered_map<std::string, eOperandType> const operandMap;
-
 
 // Enum -> TypeName (runtime) ***************** //
 struct HasheOperandType {
