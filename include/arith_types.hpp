@@ -6,7 +6,7 @@
 //   By: ngoguey <ngoguey@student.42.fr>            +#+  +:+       +#+        //
 //                                                +#+#+#+#+#+   +#+           //
 //   Created: 2016/01/24 15:53:27 by ngoguey           #+#    #+#             //
-//   Updated: 2016/03/12 16:14:19 by ngoguey          ###   ########.fr       //
+//   Updated: 2016/03/12 18:07:26 by ngoguey          ###   ########.fr       //
 //                                                                            //
 // ************************************************************************** //
 
@@ -14,6 +14,7 @@
 # define ARITH_TYPES_HPP
 
 #include <unordered_map>
+#include <string>
 
 // Enum *************************************** //
 enum class eOperandType // eOperandType from subject.pdf

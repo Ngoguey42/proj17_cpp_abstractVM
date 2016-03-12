@@ -6,21 +6,14 @@
 //   By: ngoguey <ngoguey@student.42.fr>            +#+  +:+       +#+        //
 //                                                +#+#+#+#+#+   +#+           //
 //   Created: 2016/01/24 15:56:07 by ngoguey           #+#    #+#             //
-//   Updated: 2016/03/12 17:32:22 by ngoguey          ###   ########.fr       //
+//   Updated: 2016/03/12 18:06:32 by ngoguey          ###   ########.fr       //
 //                                                                            //
 // ************************************************************************** //
 
 #ifndef ARITH_WRAPPERS_HPP
 # define ARITH_WRAPPERS_HPP
 
-# include <type_traits>
-# include <string>
-# include <memory>
-# include <iostream> //tmp
-
 # include "arith_types.hpp"
-# include "arith_operations.hpp"
-
 
 // IOperand defined in subject.pdf
 //		interface with all allowed operations on operands
@@ -84,65 +77,34 @@ public:
 };
 
 // Operand ************************************ //
-template <class T, eOperandType TEnumVal = operand_enum<T>::value>
+template <class T>
 class Operand : public IOperand
 {
-	OpFactory const		&_fact;
-	std::string const	_val;
+	OpFactory const &_fact;
+	std::string const _val;
+
+	static const eOperandType _tEnumVal;
 
 public:
 
-	~Operand(){}
-	Operand(OpFactory const &fact, std::string const &str)
-		: _fact(fact), _val(str)
-		{}
+	~Operand();
+	Operand(OpFactory const &fact, std::string const &str);
 
 	Operand() = delete;
 	Operand(Operand const &src) = delete;
 	Operand(Operand &&src) = delete;
-	Operand				&operator=(Operand const &rhs) = delete;
-	Operand				&operator=(Operand &&rhs) = delete;
+	Operand &operator=(Operand const &rhs) = delete;
+	Operand &operator=(Operand &&rhs) = delete;
 
-	int					getPrecision(void) const override {
-		return static_cast<int>(TEnumVal);
-	}
+	int getPrecision(void) const override;
+	eOperandType getType(void) const override;
+	std::string const &toString(void) const override;
 
-	eOperandType		getType(void) const override {
-		return TEnumVal;
-	}
-
-	std::string const	&toString(void) const override {
-		return _val;
-	}
-
-# define DEFINE_OPERATOR(OP, OPNAME)									\
-	IOperand const		*operator OP(IOperand const &rhs) const override { \
-																		\
-																		\
-		eOperandType const	dstType = std::max(rhs.getType(), TEnumVal); \
-		std::unique_ptr<IOperand const> tmp;							\
-		IOperand const *ret;											\
-																		\
-		if (dstType == TEnumVal)										\
-		{																\
-			return _fact.createOperand(									\
-				dstType, eval::eval<T, eval::OPNAME>(_val, rhs.toString())); \
-		}																\
-		else															\
-		{																\
-			tmp.reset(this->_fact.createOperand(dstType, _val));		\
-			ret = *tmp.get() OP rhs;									\
-			return ret;													\
-		}																\
-	}
-
-	DEFINE_OPERATOR(+, Add)
-	DEFINE_OPERATOR(-, Sub)
-	DEFINE_OPERATOR(*, Mul)
-	DEFINE_OPERATOR(/, Div)
-	DEFINE_OPERATOR(%, Mod)
-
-# undef DEFINE_OPERATOR
+	IOperand const *operator +(IOperand const &rhs) const override;
+	IOperand const *operator -(IOperand const &rhs) const override;
+	IOperand const *operator *(IOperand const &rhs) const override;
+	IOperand const *operator /(IOperand const &rhs) const override;
+	IOperand const *operator %(IOperand const &rhs) const override;
 
 };
 

@@ -17,3 +17,7 @@ make re  6.14s user 0.31s system 291% cpu 2.214 total
 explicit instanciation of arith_operations file: (add arith_operations.cpp)
 second best of 5 try ->
 make re  6.51s user 0.33s system 281% cpu 2.428 total
+
+explicit instanciation of arith_wrappers file: (add arith_wrappers.cpp)
+second best of 5 try ->
+make re  6.50s user 0.33s system 285% cpu 2.389 total

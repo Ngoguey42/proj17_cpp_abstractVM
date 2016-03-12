@@ -6,18 +6,15 @@
 //   By: ngoguey <ngoguey@student.42.fr>            +#+  +:+       +#+        //
 //                                                +#+#+#+#+#+   +#+           //
 //   Created: 2016/03/12 17:35:00 by ngoguey           #+#    #+#             //
-//   Updated: 2016/03/12 17:44:42 by ngoguey          ###   ########.fr       //
+//   Updated: 2016/03/12 18:09:14 by ngoguey          ###   ########.fr       //
 //                                                                            //
 // ************************************************************************** //
 
-#include <cstdlib>
-#include <functional>
-#include <cfenv>
-#include <cmath>
-#include <sstream>
-
 #include "arith_operations.hpp"
 #include "arith_serializations.hpp"
+
+#include <cfenv>
+#include <sstream>
 
 # define OK_IF(PRED) typename std::enable_if<PRED>::type* = nullptr
 # define ISFLOAT(V) std::is_floating_point<V>::value

@@ -6,15 +6,16 @@
 //   By: ngoguey <ngoguey@student.42.fr>            +#+  +:+       +#+        //
 //                                                +#+#+#+#+#+   +#+           //
 //   Created: 2016/01/24 15:57:06 by ngoguey           #+#    #+#             //
-//   Updated: 2016/03/12 17:38:28 by ngoguey          ###   ########.fr       //
+//   Updated: 2016/03/12 18:07:45 by ngoguey          ###   ########.fr       //
 //                                                                            //
 // ************************************************************************** //
 
-#include <cstdint>
-
 #include "arith_serializations.hpp"
 #include "arith_wrappers.hpp"
+#include "arith_operations.hpp"
 
+template <class T>
+using OP = Operand<T>;
 using OF = OpFactory;
 
 std::unordered_map<std::string, eOperandType> const operandMap = {
@@ -73,3 +74,66 @@ IOperand const *OF::createOperandFromString(std::string const &str) const
 
 	return this->createOperand(etype, nClean);
 }
+
+template <class T>
+const eOperandType OP<T>::_tEnumVal = operand_enum<T>::value;
+
+template <class T>
+OP<T>::~Operand()
+{}
+
+template <class T>
+OP<T>::Operand(OpFactory const &fact, std::string const &str)
+	: _fact(fact), _val(str)
+{}
+
+template <class T>
+int OP<T>::getPrecision(void) const
+{
+	return static_cast<int>(_tEnumVal);
+}
+
+template <class T>
+eOperandType OP<T>::getType(void) const
+{
+	return _tEnumVal;
+}
+
+template <class T>
+std::string const	&OP<T>::toString(void) const
+{
+	return _val;
+}
+
+# define DEFINE_OPERATOR(OPER, OPNAME)									\
+	template <class T>													\
+	IOperand const		*OP<T>::operator OPER(IOperand const &rhs) const { \
+																		\
+		eOperandType const	dstType = std::max(rhs.getType(), _tEnumVal); \
+		std::unique_ptr<IOperand const> tmp;							\
+		IOperand const *ret;											\
+																		\
+		if (dstType == _tEnumVal)										\
+		{																\
+			return _fact.createOperand(									\
+				dstType, eval::eval<T, eval::OPNAME>(_val, rhs.toString())); \
+		}																\
+		else															\
+		{																\
+			tmp.reset(this->_fact.createOperand(dstType, _val));		\
+			ret = *tmp.get() OPER rhs;									\
+			return ret;													\
+		}																\
+	}
+
+DEFINE_OPERATOR(+, Add)
+DEFINE_OPERATOR(-, Sub)
+DEFINE_OPERATOR(*, Mul)
+DEFINE_OPERATOR(/, Div)
+DEFINE_OPERATOR(%, Mod)
+
+template class Operand<int8_t>;
+template class Operand<int16_t>;
+template class Operand<int32_t>;
+template class Operand<float>;
+template class Operand<double>;
