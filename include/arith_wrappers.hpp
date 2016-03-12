@@ -6,7 +6,7 @@
 //   By: ngoguey <ngoguey@student.42.fr>            +#+  +:+       +#+        //
 //                                                +#+#+#+#+#+   +#+           //
 //   Created: 2016/01/24 15:56:07 by ngoguey           #+#    #+#             //
-//   Updated: 2016/01/26 20:18:11 by ngoguey          ###   ########.fr       //
+//   Updated: 2016/03/12 17:32:22 by ngoguey          ###   ########.fr       //
 //                                                                            //
 // ************************************************************************** //
 
@@ -18,7 +18,9 @@
 # include <memory>
 # include <iostream> //tmp
 
+# include "arith_types.hpp"
 # include "arith_operations.hpp"
+
 
 // IOperand defined in subject.pdf
 //		interface with all allowed operations on operands

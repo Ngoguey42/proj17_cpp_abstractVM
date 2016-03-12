@@ -6,12 +6,13 @@
 //   By: ngoguey <ngoguey@student.42.fr>            +#+  +:+       +#+        //
 //                                                +#+#+#+#+#+   +#+           //
 //   Created: 2015/12/09 18:12:25 by ngoguey           #+#    #+#             //
-//   Updated: 2016/03/12 16:03:53 by ngoguey          ###   ########.fr       //
+//   Updated: 2016/03/12 17:38:53 by ngoguey          ###   ########.fr       //
 //                                                                            //
 // ************************************************************************** //
 
 #include <iostream>
 
+#include "arith_serializations.hpp"
 #include "VMStack.hpp"
 
 using VMS = VMStack;

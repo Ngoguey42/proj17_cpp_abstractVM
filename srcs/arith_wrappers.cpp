@@ -6,12 +6,13 @@
 //   By: ngoguey <ngoguey@student.42.fr>            +#+  +:+       +#+        //
 //                                                +#+#+#+#+#+   +#+           //
 //   Created: 2016/01/24 15:57:06 by ngoguey           #+#    #+#             //
-//   Updated: 2016/01/26 20:26:08 by ngoguey          ###   ########.fr       //
+//   Updated: 2016/03/12 17:38:28 by ngoguey          ###   ########.fr       //
 //                                                                            //
 // ************************************************************************** //
 
 #include <cstdint>
 
+#include "arith_serializations.hpp"
 #include "arith_wrappers.hpp"
 
 using OF = OpFactory;
