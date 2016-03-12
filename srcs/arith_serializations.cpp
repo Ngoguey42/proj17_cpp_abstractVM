@@ -6,14 +6,18 @@
 //   By: ngoguey <ngoguey@student.42.fr>            +#+  +:+       +#+        //
 //                                                +#+#+#+#+#+   +#+           //
 //   Created: 2016/03/12 16:16:54 by ngoguey           #+#    #+#             //
-//   Updated: 2016/03/12 17:14:04 by ngoguey          ###   ########.fr       //
+//   Updated: 2016/03/12 17:30:58 by ngoguey          ###   ########.fr       //
 //                                                                            //
 // ************************************************************************** //
 
-# include "arith_serializations.hpp"
+#include <sstream>
+#include <iomanip>
+#include <limits>
+#include <cfenv>
 
-# define OK_IF(PRED) typename std::enable_if<PRED, int>::type = 42
-# define ISFLOAT(V) std::is_floating_point<V>::value
+#include "arith_serializations.hpp"
+
+#define ISFLOAT(V) std::is_floating_point<V>::value
 
 namespace ser // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ //
 { // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ //
@@ -21,10 +25,27 @@ namespace ser // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ //
 
 // ========================================================================== //
 
+/*
+** %fails on floating point serial+deserial operation (random bits)
+** *
+** 0% with std::setprecision(std::numeric_limits<float>::max_digits10 + 2)
+** 0% with std::setprecision(std::numeric_limits<double>::max_digits10 + 2)
+** 0% with std::setprecision(std::numeric_limits<float>::max_digits10 + 1)
+** 0% with std::setprecision(std::numeric_limits<double>::max_digits10 + 1)
+** 0% with std::setprecision(std::numeric_limits<float>::max_digits10)
+** 0% with std::setprecision(std::numeric_limits<double>::max_digits10)
+** 1.5% with std::setprecision(std::numeric_limits<float>::max_digits10 - 1)
+** 37% with std::setprecision(std::numeric_limits<double>::max_digits10 - 1)
+** 67% with std::setprecision(std::numeric_limits<float>::max_digits10 - 2)
+** 79% with std::setprecision(std::numeric_limits<double>::max_digits10 - 2)
+** 96% with std::setprecision(std::numeric_limits<float>::max_digits10 - 3)
+** 85% with std::setprecision(std::numeric_limits<double>::max_digits10 - 3)
+*/
+
 // T -> string		floating point overload
 template <typename T>
-std::string serial(typename std::enable_if_t<ISFLOAT(T), T> const &x) {
-
+std::string serial(typename std::enable_if_t<ISFLOAT(T), T> const &x)
+{
 	std::stringstream iss;
 
     iss << std::setprecision(std::numeric_limits<T>::max_digits10);
@@ -35,10 +56,10 @@ std::string serial(typename std::enable_if_t<ISFLOAT(T), T> const &x) {
 template std::string serial<float>(float const &x);
 template std::string serial<double>(double const &x);
 
-// // T -> string		integer overload
+// T -> string		integer overload
 template <typename T>
-std::string serial(typename std::enable_if_t<!ISFLOAT(T), T> const &x) {
-
+std::string serial(typename std::enable_if_t<!ISFLOAT(T), T> const &x)
+{
 	std::stringstream iss;
 
 	iss << x;
@@ -47,20 +68,21 @@ std::string serial(typename std::enable_if_t<!ISFLOAT(T), T> const &x) {
 template std::string serial<int16_t>(int16_t const &x);
 template std::string serial<int32_t>(int32_t const &x);
 
-// // T -> string		char overload
-template <> std::string serial<int8_t>(int8_t const &x) {
-
+// T -> string		char overload
+template <>
+std::string serial<int8_t>(int8_t const &x)
+{
 	std::stringstream iss;
 
 	iss << static_cast<int>(x);
 	return iss.str();
 }
 
-// // ========================================================================== //
+// ========================================================================== //
 
 template <typename T>
-T unserial_unsafe(std::string const &str) {
-
+T unserial_unsafe(std::string const &str)
+{
 	T val;
 
 	std::stringstream(str) >> val;
@@ -72,8 +94,8 @@ template float unserial_unsafe<float>(std::string const &str);
 template double unserial_unsafe<double>(std::string const &str);
 
 template <>
-int8_t unserial_unsafe<int8_t>(std::string const &str) {
-
+int8_t unserial_unsafe<int8_t>(std::string const &str)
+{
 	int16_t val;
 
 	std::stringstream(str) >> val;
@@ -86,18 +108,21 @@ namespace detail // ~~~~~~~~~~~~~~~~~~~~~~~~~~~ //
 { // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ //
 
 template <typename T>
-[[ noreturn ]] void unserial_failed(char const *msg, std::string const &str) {
-
+[[ noreturn ]] void unserial_failed(char const *msg, std::string const &str)
+{
 	throw std::invalid_argument(
 		std::string(msg) + " occured while unserializing \""
 		+ str + "\" to " + TypeToString<T>::name);
 }
 
+}; // ~~~~~~~~~~~~~~~~~ END OF NAMESPACE DETAIL //
+// ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ //
+
 // string -> T		floating point overload
 // (takes [-]?[0..9]+.[0..9]+ only strings, checks str correctness)
-template <typename T, OK_IF(ISFLOAT(T))>
-T unserial_safe(std::string const &str) {
-
+template <typename T>
+typename std::enable_if_t<ISFLOAT(T), T> unserial_safe(std::string const &str)
+{
 	T val;
 	std::stringstream oss(str);
 
@@ -115,9 +140,9 @@ T unserial_safe(std::string const &str) {
 
 // string -> T		integer overload
 // (takes [-]?[0..9]+ only strings, checks str correctness)
-template <typename T, OK_IF(!ISFLOAT(T))>
-T unserial_safe(std::string const &str) {
-
+template <typename T>
+typename std::enable_if_t<!ISFLOAT(T), T> unserial_safe(std::string const &str)
+{
 	T val;
 	std::stringstream oss(str);
 
@@ -131,7 +156,7 @@ T unserial_safe(std::string const &str) {
 // string -> T		char overload
 // (takes [-]?[0..9]+ only strings, checks str correctness)
 template <>
-inline int8_t unserial_safe<int8_t>(std::string const &str) {
+int8_t unserial_safe<int8_t>(std::string const &str) {
 
 	int16_t val;
 	std::stringstream oss(str);
@@ -147,32 +172,28 @@ inline int8_t unserial_safe<int8_t>(std::string const &str) {
 	return static_cast<int8_t>(val);
 }
 
-}; // ~~~~~~~~~~~~~~~~~ END OF NAMESPACE DETAIL //
-// ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ //
-
 std::string clean(eOperandType e, std::string const &input) {
 
 	std::string (*const func[5])(std::string const &str) = {
 		[static_cast<int>(eOperandType::Int8)] = [](std::string const &in) {
-			return serial<int8_t>(detail::unserial_safe<int8_t>(in));
+			return serial<int8_t>(unserial_safe<int8_t>(in));
 		},
 		[static_cast<int>(eOperandType::Int16)] = [](std::string const &in) {
-			return serial<int16_t>(detail::unserial_safe<int16_t>(in));
+			return serial<int16_t>(unserial_safe<int16_t>(in));
 		},
 		[static_cast<int>(eOperandType::Int32)] = [](std::string const &in) {
-			return serial<int32_t>(detail::unserial_safe<int32_t>(in));
+			return serial<int32_t>(unserial_safe<int32_t>(in));
 		},
 		[static_cast<int>(eOperandType::Float)] = [](std::string const &in) {
-			return serial<float>(detail::unserial_safe<float>(in));
+			return serial<float>(unserial_safe<float>(in));
 		},
 		[static_cast<int>(eOperandType::Double)] = [](std::string const &in) {
-			return serial<double>(detail::unserial_safe<double>(in));
+			return serial<double>(unserial_safe<double>(in));
 		},
 	};
 
 	return func[static_cast<int>(e)](input);
 }
-
 
 // ========================================================================== //
 
