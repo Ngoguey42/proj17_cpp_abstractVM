@@ -5,5 +5,8 @@ avm-test
 *.cmi
 *.exe
 *.cmx
+\#*\#
+\.\#*
+*\~
 .#*
 .DS_Store

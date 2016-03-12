@@ -6,12 +6,14 @@
 //   By: ngoguey <ngoguey@student.42.fr>            +#+  +:+       +#+        //
 //                                                +#+#+#+#+#+   +#+           //
 //   Created: 2016/01/26 14:23:16 by ngoguey           #+#    #+#             //
-//   Updated: 2016/01/26 16:58:27 by ngoguey          ###   ########.fr       //
+//   Updated: 2016/03/12 16:08:47 by ngoguey          ###   ########.fr       //
 //                                                                            //
 // ************************************************************************** //
 
 #include <iostream> //debug
 #include <regex> //debug
+
+// TODO: constexpr regex construction (+ compilation?)
 
 namespace cfg // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ //
 { // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ //

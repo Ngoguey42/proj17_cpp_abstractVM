@@ -6,7 +6,7 @@
 //   By: ngoguey <ngoguey@student.42.fr>            +#+  +:+       +#+        //
 //                                                +#+#+#+#+#+   +#+           //
 //   Created: 2015/12/09 18:12:25 by ngoguey           #+#    #+#             //
-//   Updated: 2016/01/27 13:57:19 by ngoguey          ###   ########.fr       //
+//   Updated: 2016/03/12 16:03:53 by ngoguey          ###   ########.fr       //
 //                                                                            //
 // ************************************************************************** //
 
@@ -128,7 +128,7 @@ bool VMS::print(std::string const &)
 	if (topop->getType() != eOperandType::Int8 || val < 0)
 		throw std::invalid_argument("Trying to print " + opToStr(*topop)
 									+ " as an ascii character.");
-	std::cout << val << std::endl;
+	std::cout << val;
 	return false;
 }
 
