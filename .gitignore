@@ -1,4 +1,5 @@
 avm
+avm-test
 *.o
 *.cmo
 *.cmi
